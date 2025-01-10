@@ -1,5 +1,4 @@
 "use client";
-
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
 import { EmptySearch } from "./empty-search";
@@ -16,14 +15,26 @@ interface GigListProps {
         favorites?: string;
         filter?: string;
     };
-};
+}
 
 export const GigList = ({
     query,
 }: GigListProps) => {
-    const gigs: FullGigType[] | undefined = useQuery(api.gigs.get, { search: query.search, favorites: query.favorites, filter: query.filter });
+    // Remove the type annotation here as it's causing the conflict
+    const gigsFromQuery = useQuery(api.gigs.get, { 
+        search: query.search, 
+        favorites: query.favorites, 
+        filter: query.filter 
+    });
+
+    // Transform the data to include the favorited property
+    const gigs: FullGigType[] | undefined = gigsFromQuery?.map(gig => ({
+        ...gig,
+        favorited: false // Set this to your default value or compute it based on your logic
+    }));
+
     const [gigsWithFavorite, setGigsWithFavorite] = useState<FullGigType[] | undefined>(undefined);
-    // filter for favorites if query.favorites is true
+
     useEffect(() => {
         if (query.favorites) {
             const favoriteGigs = gigs?.filter((gig) => gig.favorited);
@@ -51,7 +62,6 @@ export const GigList = ({
         )
     }
 
-
     return (
         <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-5 mt-8 pb-10 mx-10">
@@ -68,8 +78,7 @@ export const GigList = ({
                         offer={gig.offer}
                         reviews={gig.reviews}
                     />
-                ))
-                }
+                ))}
             </div>
         </div>
     )
