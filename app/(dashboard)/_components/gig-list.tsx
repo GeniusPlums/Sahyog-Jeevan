@@ -20,17 +20,17 @@ interface GigListProps {
 export const GigList = ({
     query,
 }: GigListProps) => {
-    // Remove the type annotation here as it's causing the conflict
     const gigsFromQuery = useQuery(api.gigs.get, { 
         search: query.search, 
         favorites: query.favorites, 
         filter: query.filter 
     });
 
-    // Transform the data to include the favorited property
-    const gigs: FullGigType[] | undefined = gigsFromQuery?.map(gig => ({
+    // Transform the data to include the favorited property and handle null offer
+    const gigs: FullGigType[] | undefined = gigsFromQuery?.filter(gig => gig.offer !== null).map(gig => ({
         ...gig,
-        favorited: false // Set this to your default value or compute it based on your logic
+        favorited: false,
+        offer: gig.offer!, // We can safely use ! here because we filtered out null offers
     }));
 
     const [gigsWithFavorite, setGigsWithFavorite] = useState<FullGigType[] | undefined>(undefined);
