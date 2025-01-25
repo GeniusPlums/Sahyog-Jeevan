@@ -5,7 +5,7 @@ import session from "express-session";
 import createMemoryStore from "memorystore";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { users, type User } from "@db/schema";
+import { users, userSettings, type User } from "@db/schema";
 import { db } from "@db";
 import { eq } from "drizzle-orm";
 
@@ -99,8 +99,8 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, password, role } = req.body;
-      
+      const { username, password, role, preferredLanguage, whatsappNumber, region } = req.body;
+
       if (!username || !password || !role) {
         return res.status(400).send("Missing required fields");
       }
@@ -129,6 +129,21 @@ export function setupAuth(app: Express) {
           role
         })
         .returning();
+
+      // Create user settings
+      await db
+        .insert(userSettings)
+        .values({
+          userId: newUser.id,
+          preferredLanguage: preferredLanguage || "en",
+          region,
+          whatsappNumber,
+          notificationPreferences: {
+            email: true,
+            whatsapp: !!whatsappNumber,
+            sms: false
+          }
+        });
 
       req.login(newUser, (err) => {
         if (err) {

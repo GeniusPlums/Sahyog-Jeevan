@@ -9,24 +9,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
+import LanguageSelector from "@/components/language-selector";
 
 type FormData = {
   username: string;
   password: string;
   role?: "worker" | "employer";
+  preferredLanguage: string;
+  whatsappNumber?: string;
+  region?: string;
 };
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
   const { login, register, isLoginLoading, isRegisterLoading } = useUser();
   const { toast } = useToast();
-  
+
   const loginForm = useForm<FormData>({
     defaultValues: { username: "", password: "" }
   });
 
   const registerForm = useForm<FormData>({
-    defaultValues: { username: "", password: "", role: "worker" }
+    defaultValues: {
+      username: "",
+      password: "",
+      role: "worker",
+      preferredLanguage: "en"
+    }
   });
 
   const onLogin = async (data: FormData) => {
@@ -57,7 +66,7 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome to Blue Collar Jobs</CardTitle>
+          <CardTitle className="text-2xl text-center">Welcome to SahyogJeevan</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -112,6 +121,29 @@ export default function AuthPage() {
                     type="password"
                     {...registerForm.register("password")}
                     required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Preferred Language</Label>
+                  <LanguageSelector
+                    value={registerForm.watch("preferredLanguage")}
+                    onValueChange={(value) => registerForm.setValue("preferredLanguage", value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="whatsapp">WhatsApp Number (Optional)</Label>
+                  <Input
+                    id="whatsapp"
+                    {...registerForm.register("whatsappNumber")}
+                    placeholder="+91 "
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="region">Region (Optional)</Label>
+                  <Input
+                    id="region"
+                    {...registerForm.register("region")}
+                    placeholder="e.g. Maharashtra, Delhi"
                   />
                 </div>
                 <div className="space-y-2">

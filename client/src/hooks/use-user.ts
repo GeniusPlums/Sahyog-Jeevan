@@ -5,6 +5,9 @@ type RegisterData = {
   username: string;
   password: string;
   role: "worker" | "employer";
+  preferredLanguage: string;
+  whatsappNumber?: string;
+  region?: string;
 };
 
 type LoginData = {
