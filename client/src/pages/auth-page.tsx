@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import LanguageSelector from "@/components/language-selector";
+import RegionSelector from "@/components/region-selector";
 
 type FormData = {
   username: string;
@@ -34,9 +35,12 @@ export default function AuthPage() {
       username: "",
       password: "",
       role: "worker",
-      preferredLanguage: "en"
+      preferredLanguage: "en",
+      region: ""
     }
   });
+
+  const selectedLanguage = registerForm.watch("preferredLanguage");
 
   const onLogin = async (data: FormData) => {
     try {
@@ -126,7 +130,7 @@ export default function AuthPage() {
                 <div className="space-y-2">
                   <Label>Preferred Language</Label>
                   <LanguageSelector
-                    value={registerForm.watch("preferredLanguage")}
+                    value={selectedLanguage}
                     onValueChange={(value) => registerForm.setValue("preferredLanguage", value)}
                   />
                 </div>
@@ -139,11 +143,11 @@ export default function AuthPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="region">Region (Optional)</Label>
-                  <Input
-                    id="region"
-                    {...registerForm.register("region")}
-                    placeholder="e.g. Maharashtra, Delhi"
+                  <Label>Region</Label>
+                  <RegionSelector
+                    value={registerForm.watch("region")}
+                    onValueChange={(value) => registerForm.setValue("region", value)}
+                    language={selectedLanguage}
                   />
                 </div>
                 <div className="space-y-2">
