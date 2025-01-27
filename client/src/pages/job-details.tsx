@@ -1,7 +1,7 @@
 import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Menu, Filter, BookmarkIcon } from "lucide-react";
+import { Menu, BookmarkIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -57,8 +57,7 @@ const MOCK_JOB: JobDetails = {
 export default function JobDetailsPage() {
   const { jobId } = useParams();
 
-  // For now, use mock data instead of API call
-  const { data: job, isLoading } = useQuery<JobDetails>({
+  const { data: job, isLoading, error } = useQuery<JobDetails>({
     queryKey: [`/api/jobs/${jobId}`],
   });
 
@@ -79,7 +78,16 @@ export default function JobDetailsPage() {
     );
   }
 
-  // Use mock data if API call hasn't returned yet
+  if (error) {
+    return (
+      <RootLayout>
+        <div className="min-h-screen bg-background p-4">
+          <p>Error loading job details.</p>
+        </div>
+      </RootLayout>
+    );
+  }
+
   const jobData = job || MOCK_JOB;
 
   return (
@@ -102,7 +110,7 @@ export default function JobDetailsPage() {
         {/* Navigation Bar */}
         <div className="flex items-center justify-between p-4 gap-2">
           <Button variant="outline" className="rounded-full">
-            {jobData.category.toUpperCase()}
+            {(jobData.category || '').toUpperCase()}
           </Button>
           <Select defaultValue="jobs">
             <SelectTrigger className="w-[100px] bg-gray-900 text-white hover:bg-gray-800">
@@ -114,7 +122,7 @@ export default function JobDetailsPage() {
             </SelectContent>
           </Select>
           <Button variant="outline" size="icon" className="rounded-full">
-            <Filter className="h-4 w-4" />
+            <Menu className="h-4 w-4" />
           </Button>
         </div>
 
