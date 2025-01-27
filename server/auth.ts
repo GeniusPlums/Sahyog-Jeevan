@@ -30,7 +30,12 @@ const crypto = {
 
 declare global {
   namespace Express {
-    interface User extends User {}
+    // Use the User type from schema.ts
+    interface User extends Omit<User, keyof User> {
+      id: number;
+      username: string;
+      role: "worker" | "employer" | "admin";
+    }
   }
 }
 
@@ -42,7 +47,7 @@ export function setupAuth(app: Express) {
     saveUninitialized: false,
     cookie: {},
     store: new MemoryStore({
-      checkPeriod: 86400000,
+      checkPeriod: 86400000, // 24 hours
     }),
   };
 
@@ -50,6 +55,7 @@ export function setupAuth(app: Express) {
     app.set("trust proxy", 1);
     sessionSettings.cookie = {
       secure: true,
+      sameSite: "none"
     };
   }
 
@@ -108,6 +114,10 @@ export function setupAuth(app: Express) {
         return res.status(400).send("Username and password are required");
       }
 
+      if (!["worker", "employer", "admin"].includes(role)) {
+        return res.status(400).send("Invalid role");
+      }
+
       // Check if user already exists
       const [existingUser] = await db
         .select()
@@ -128,7 +138,7 @@ export function setupAuth(app: Express) {
         .values({
           username,
           password: hashedPassword,
-          role,
+          role: role as "worker" | "employer" | "admin",
         })
         .returning();
 
