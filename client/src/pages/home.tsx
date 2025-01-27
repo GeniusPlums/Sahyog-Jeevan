@@ -3,8 +3,7 @@ import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import RootLayout from "@/components/layouts/RootLayout";
-import { Search, Filter } from "lucide-react";
+import { Menu, Search, Filter } from "lucide-react";
 
 const JOB_CATEGORIES = [
   { id: 'driver', label: 'DRIVER' },
@@ -34,28 +33,41 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Search and Filter Header */}
-      <header className="sticky top-0 bg-background border-b p-4 space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="SEARCH INDUSTRY"
-              className="pl-9"
-            />
+      {/* Top Header with Menu and Logo */}
+      <header className="sticky top-0 bg-background border-b p-4">
+        <div className="flex items-center justify-between mb-4">
+          <Button variant="ghost" size="icon" className="hover:bg-transparent">
+            <Menu className="h-6 w-6" />
+          </Button>
+          <div className="flex items-center justify-center flex-1">
+            <h1 className="text-xl font-bold text-primary">SahyogJeevan</h1>
           </div>
-          <Button variant="outline" size="icon">
+          <div className="w-6" /> {/* Spacer for alignment */}
+        </div>
+
+        {/* Search Bar with Internal Filter */}
+        <div className="relative mb-4">
+          <Input
+            placeholder="SEARCH INDUSTRY"
+            className="pl-9 pr-12" // Added right padding for filter button
+          />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-transparent"
+          >
             <Filter className="h-4 w-4" />
           </Button>
         </div>
 
         {/* Job Categories */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="grid grid-cols-3 gap-2">
           {JOB_CATEGORIES.map((category) => (
             <Button
               key={category.id}
               variant="outline"
-              className="whitespace-nowrap"
+              className="w-full"
             >
               {category.label}
             </Button>
@@ -64,6 +76,16 @@ export default function Home() {
       </header>
 
       <main className="p-4 space-y-6">
+        {/* Advertisement Boxes */}
+        <section className="grid grid-cols-2 gap-4">
+          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+            <span className="text-muted-foreground">Ad Space 1</span>
+          </div>
+          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+            <span className="text-muted-foreground">Ad Space 2</span>
+          </div>
+        </section>
+
         {/* Video Section */}
         <section>
           <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
@@ -71,9 +93,15 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Jobs Around You */}
+        {/* Jobs Section with Filter */}
         <section>
-          <h2 className="text-lg font-semibold mb-4">Jobs around you</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">Jobs around you</h2>
+            <Button variant="outline" size="sm">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </Button>
+          </div>
           <div className="space-y-4">
             {FEATURED_JOBS.map((job) => (
               <Card key={job.id}>
