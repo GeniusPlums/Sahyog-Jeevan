@@ -67,9 +67,9 @@ export default function HomePage() {
               className="pl-9 pr-12"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-transparent"
             >
               <Filter className="h-4 w-4" />
@@ -135,7 +135,11 @@ export default function HomePage() {
               {/* Job Cards */}
               <div className="space-y-4">
                 {FEATURED_JOBS.map((job) => (
-                  <Card key={job.id}>
+                  <Card
+                    key={job.id}
+                    onClick={() => navigate(`/jobs/${job.id}`)}
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                  >
                     <CardContent className="p-4">
                       <div className="aspect-video bg-muted rounded-lg mb-3">
                         {/* Job Image */}
@@ -152,8 +156,11 @@ export default function HomePage() {
                           <p className="text-sm">{job.location}</p>
                           <p className="text-sm font-medium">{job.salary}</p>
                         </div>
-                        <Button 
-                          onClick={() => navigate(`/jobs/${job.id}`)}
+                        <Button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/jobs/${job.id}`);
+                          }}
                           className="whitespace-nowrap"
                         >
                           CLICK HERE TO APPLY
