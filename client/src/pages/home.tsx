@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Menu, Search, Filter } from "lucide-react";
-import * as Icons from "lucide-react";
+import RootLayout from "@/components/layouts/RootLayout";
 import {
   Select,
   SelectContent,
@@ -42,154 +42,126 @@ export default function HomePage() {
   const [location, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen bg-background pb-16">
-      {/* Top Header with Menu and Logo */}
-      <header className="sticky top-0 bg-background border-b p-4">
-        <div className="flex items-center justify-between mb-4">
-          <Button variant="ghost" size="icon" className="hover:bg-transparent">
-            <Menu className="h-6 w-6" />
-          </Button>
-          <div className="flex items-center justify-center flex-1">
-            <h1 className="text-xl font-bold text-primary">SahyogJeevan</h1>
-          </div>
-          <div className="w-6" /> {/* Spacer for alignment */}
-        </div>
-
-        {/* Search Bar with Internal Filter */}
-        <div className="relative mb-4">
-          <Input
-            placeholder="SEARCH INDUSTRY"
-            className="pl-9 pr-12" // Added right padding for filter button
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-transparent"
-          >
-            <Filter className="h-4 w-4" />
-          </Button>
-        </div>
-
-        {/* Job Categories */}
-        <div className="grid grid-cols-3 gap-2">
-          {JOB_CATEGORIES.map((category) => (
-            <Button
-              key={category.id}
-              variant="outline"
-              className="w-full"
-            >
-              {category.label}
+    <RootLayout>
+      <div className="min-h-screen bg-background">
+        {/* Top Header with Menu and Logo */}
+        <header className="sticky top-0 bg-background border-b p-4">
+          <div className="flex items-center justify-between mb-4">
+            <Button variant="ghost" size="icon" className="hover:bg-transparent">
+              <Menu className="h-6 w-6" />
             </Button>
-          ))}
-        </div>
-      </header>
-
-      <main className="p-4 space-y-6">
-        {/* Advertisement Boxes */}
-        <section className="grid grid-cols-2 gap-4">
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">Ad Space 1</span>
+            <div className="flex items-center justify-center flex-1">
+              <h1 className="text-xl font-bold text-primary">SahyogJeevan</h1>
+            </div>
+            <div className="w-6" /> {/* Spacer for alignment */}
           </div>
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">Ad Space 2</span>
+
+          {/* Search Bar with Internal Filter */}
+          <div className="relative mb-4">
+            <Input
+              placeholder="SEARCH INDUSTRY"
+              className="pl-9 pr-12"
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-transparent"
+            >
+              <Filter className="h-4 w-4" />
+            </Button>
           </div>
-        </section>
 
-        {/* Video Section */}
-        <section>
-          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-            <span className="text-muted-foreground">Job Preview Video</span>
-          </div>
-        </section>
-
-        {/* Jobs Section with Type Selection and Filter */}
-        <section>
-          <div className="space-y-4">
-            {/* Job Type Selector */}
-            <Select defaultValue="job">
-              <SelectTrigger>
-                <SelectValue placeholder="Select job type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="job">Regular Job</SelectItem>
-                <SelectItem value="gig">Gig Work</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Jobs Header with Filter */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Jobs around you</h2>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
+          {/* Job Categories */}
+          <div className="grid grid-cols-3 gap-2">
+            {JOB_CATEGORIES.map((category) => (
+              <Button
+                key={category.id}
+                variant="outline"
+                className="w-full"
+              >
+                {category.label}
               </Button>
-            </div>
-
-            {/* Job Cards */}
-            <div className="space-y-4">
-              {FEATURED_JOBS.map((job) => (
-                <Card key={job.id}>
-                  <CardContent className="p-4">
-                    <div className="aspect-video bg-muted rounded-lg mb-3">
-                      {/* Job Image */}
-                      <img
-                        src={job.image}
-                        alt={`${job.title} preview`}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </div>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-medium">{job.title}</h3>
-                        <p className="text-sm text-muted-foreground">{job.company}</p>
-                        <p className="text-sm">{job.location}</p>
-                        <p className="text-sm font-medium">{job.salary}</p>
-                      </div>
-                      <Button 
-                        onClick={() => navigate(`/jobs/${job.id}`)}
-                        className="whitespace-nowrap"
-                      >
-                        CLICK HERE TO APPLY
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            ))}
           </div>
-        </section>
-      </main>
+        </header>
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t">
-        <div className="flex justify-around items-center h-16">
-          <Button
-            variant="ghost"
-            className="flex flex-col items-center justify-center w-full h-full"
-            onClick={() => navigate("/")}
-          >
-            <Icons.Home className="h-5 w-5" />
-            <span className="text-xs mt-1">Home</span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-col items-center justify-center w-full h-full"
-            onClick={() => navigate("/applied")}
-          >
-            <Icons.Briefcase className="h-5 w-5" />
-            <span className="text-xs mt-1">Applied</span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="flex flex-col items-center justify-center w-full h-full"
-            onClick={() => navigate("/accepted")}
-          >
-            <Icons.CheckSquare className="h-5 w-5" />
-            <span className="text-xs mt-1">Accepted</span>
-          </Button>
-        </div>
-      </nav>
-    </div>
+        <main className="p-4 space-y-6">
+          {/* Advertisement Boxes */}
+          <section className="grid grid-cols-2 gap-4">
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+              <span className="text-muted-foreground">Ad Space 1</span>
+            </div>
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+              <span className="text-muted-foreground">Ad Space 2</span>
+            </div>
+          </section>
+
+          {/* Video Section */}
+          <section>
+            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+              <span className="text-muted-foreground">Job Preview Video</span>
+            </div>
+          </section>
+
+          {/* Jobs Section with Type Selection and Filter */}
+          <section>
+            <div className="space-y-4">
+              {/* Job Type Selector */}
+              <Select defaultValue="job">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select job type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="job">Regular Job</SelectItem>
+                  <SelectItem value="gig">Gig Work</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Jobs Header with Filter */}
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Jobs around you</h2>
+                <Button variant="outline" size="sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+              </div>
+
+              {/* Job Cards */}
+              <div className="space-y-4">
+                {FEATURED_JOBS.map((job) => (
+                  <Card key={job.id}>
+                    <CardContent className="p-4">
+                      <div className="aspect-video bg-muted rounded-lg mb-3">
+                        {/* Job Image */}
+                        <img
+                          src={job.image}
+                          alt={`${job.title} preview`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </div>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-medium">{job.title}</h3>
+                          <p className="text-sm text-muted-foreground">{job.company}</p>
+                          <p className="text-sm">{job.location}</p>
+                          <p className="text-sm font-medium">{job.salary}</p>
+                        </div>
+                        <Button 
+                          onClick={() => navigate(`/jobs/${job.id}`)}
+                          className="whitespace-nowrap"
+                        >
+                          CLICK HERE TO APPLY
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </RootLayout>
   );
 }

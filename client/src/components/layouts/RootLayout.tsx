@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { Home, Briefcase, CheckSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -42,30 +43,6 @@ export default function RootLayout({
           ))}
         </div>
       </nav>
-
-      {/* Desktop sidebar */}
-      <aside className="fixed top-0 left-0 h-full w-[250px] border-r bg-background hidden md:block">
-        <div className="p-6">
-          <h1 className="text-xl font-bold">Job Platform</h1>
-        </div>
-        <nav className="px-2">
-          {navItems.map(({ icon: Icon, label, path }) => (
-            <button
-              key={path}
-              onClick={() => navigate(path)}
-              className={cn(
-                "flex items-center gap-3 w-full p-3 rounded-lg mb-1",
-                location === path
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
-              )}
-            >
-              <Icon className="h-5 w-5" />
-              <span>{label}</span>
-            </button>
-          ))}
-        </nav>
-      </aside>
     </div>
   );
 }
