@@ -1,4 +1,7 @@
 import { useParams, useLocation } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Select,
   SelectContent,
@@ -9,6 +12,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
+import { useToast } from "@/hooks/use-toast";
+
+const applicationSchema = z.object({
+  gender: z.string().min(1, "Please select your gender"),
+  experience: z.string().min(1, "Please select your experience"),
+  shift: z.string().min(1, "Please select your preferred shift"),
+  profileImage: z.any().optional(),
+});
+
+type FormData = z.infer<typeof applicationSchema>;
 
 const GENDER_OPTIONS = ["Male", "Female", "Other"];
 const EXPERIENCE_OPTIONS = ["0-1 years", "1-3 years", "3-5 years", "5+ years"];
@@ -17,6 +30,17 @@ const SHIFT_OPTIONS = ["Morning", "Afternoon", "Night", "Flexible"];
 export default function JobApplicationForm() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
+  const { toast } = useToast();
+
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+    resolver: zodResolver(applicationSchema),
+  });
+
+  const onSubmit = (data: FormData) => {
+    // Here you would typically submit the application data to your API
+    console.log('Application data:', data);
+    navigate(`/jobs/${jobId}/finish`);
+  };
 
   return (
     <RootLayout>
@@ -44,35 +68,39 @@ export default function JobApplicationForm() {
           </div>
 
           {/* Form */}
-          <form className="space-y-6" onSubmit={(e) => {
-            e.preventDefault();
-            navigate(`/jobs/${jobId}/finish`);
-          }}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             {/* Dropdowns */}
             {[
-              { label: "GENDER", options: GENDER_OPTIONS },
-              { label: "EXPERIENCE", options: EXPERIENCE_OPTIONS },
-              { label: "SHIFT", options: SHIFT_OPTIONS },
-            ].map(({ label, options }) => (
-              <Select key={label}>
-                <SelectTrigger
-                  className="w-full rounded-lg overflow-hidden"
-                  style={{
-                    background: "linear-gradient(to right, #808080 70%, #000000 30%)",
-                    color: "white",
-                    border: "none",
-                  }}
-                >
-                  <SelectValue placeholder={label} />
-                </SelectTrigger>
-                <SelectContent>
-                  {options.map((option) => (
-                    <SelectItem key={option} value={option.toLowerCase()}>
-                      {option}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              { label: "GENDER", options: GENDER_OPTIONS, field: "gender" },
+              { label: "EXPERIENCE", options: EXPERIENCE_OPTIONS, field: "experience" },
+              { label: "SHIFT", options: SHIFT_OPTIONS, field: "shift" },
+            ].map(({ label, options, field }) => (
+              <div key={field}>
+                <Select onValueChange={(value) => setValue(field, value)}>
+                  <SelectTrigger
+                    className="w-full rounded-lg overflow-hidden"
+                    style={{
+                      background: "linear-gradient(to right, #808080 70%, #000000 30%)",
+                      color: "white",
+                      border: "none",
+                    }}
+                  >
+                    <SelectValue placeholder={label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map((option) => (
+                      <SelectItem key={option} value={option.toLowerCase()}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors[field as keyof FormData] && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors[field as keyof FormData]?.message}
+                  </p>
+                )}
+              </div>
             ))}
 
             {/* Upload Section */}
@@ -87,6 +115,7 @@ export default function JobApplicationForm() {
                 id="profile-upload"
                 className="hidden"
                 accept="image/*"
+                {...register("profileImage")}
               />
             </div>
 
