@@ -39,7 +39,11 @@ const FEATURED_JOBS = [
 ];
 
 export default function HomePage() {
-  const [location, navigate] = useLocation();
+  const [_, navigate] = useLocation();
+
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/jobs/category/${encodeURIComponent(categoryId)}`);
+  };
 
   return (
     <RootLayout>
@@ -79,6 +83,7 @@ export default function HomePage() {
                 key={category.id}
                 variant="outline"
                 className="w-full"
+                onClick={() => handleCategoryClick(category.id)}
               >
                 {category.label}
               </Button>
