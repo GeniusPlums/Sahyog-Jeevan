@@ -1,7 +1,6 @@
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { Home, Briefcase, CheckSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -17,21 +16,21 @@ export default function RootLayout({
   const [location, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       {/* Main content */}
-      <main className="pb-16 md:pb-0 md:pl-[250px]">
+      <main className="h-[calc(100vh-4rem)] overflow-y-auto">
         {children}
       </main>
 
       {/* Mobile bottom navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t md:hidden z-50">
         <div className="flex justify-around items-center h-16">
           {navItems.map(({ icon: Icon, label, path }) => (
             <button
               key={path}
               onClick={() => navigate(path)}
               className={cn(
-                "flex flex-col items-center justify-center w-full h-full",
+                "flex flex-col items-center justify-center w-full h-full px-2",
                 location === path
                   ? "text-primary"
                   : "text-muted-foreground hover:text-primary"
