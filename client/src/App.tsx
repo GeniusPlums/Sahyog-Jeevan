@@ -8,6 +8,7 @@ import AppliedJobsPage from "@/pages/applied-jobs";
 import AcceptedJobsPage from "@/pages/accepted-jobs";
 import CategoryJobsPage from "@/pages/category-jobs";
 import JobDetailsPage from "@/pages/job-details";
+import JobApplicationForm from "@/pages/job-application-form";
 
 function Router() {
   return (
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/accepted" component={AcceptedJobsPage} />
       <Route path="/jobs/category/:category" component={CategoryJobsPage} />
       <Route path="/jobs/:jobId" component={JobDetailsPage} />
+      <Route path="/jobs/:jobId/apply" component={JobApplicationForm} />
       <Route component={NotFound} />
     </Switch>
   );
