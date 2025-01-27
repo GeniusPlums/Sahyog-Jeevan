@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import RootLayout from "@/components/layouts/RootLayout";
 import type { Job } from "@db/schema";
+import { useLocation } from "wouter";
 
 // Mock company data
 const TOP_COMPANIES = [
@@ -80,6 +81,7 @@ const MOCK_JOBS = [
 export default function CategoryJobsPage() {
   const { category } = useParams();
   const decodedCategory = category ? decodeURIComponent(category) : '';
+  const [_, navigate] = useLocation();
 
   // For now, use mock data instead of API call
   const { data: jobs = MOCK_JOBS, isLoading } = useQuery<typeof MOCK_JOBS>({
@@ -148,7 +150,11 @@ export default function CategoryJobsPage() {
                 ))
               ) : (
                 jobs.map((job) => (
-                  <Card key={job.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-lg">
+                  <Card 
+                    key={job.id} 
+                    className="overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-lg cursor-pointer"
+                    onClick={() => navigate(`/jobs/${job.id}`)}
+                  >
                     <CardContent className="p-4">
                       <div className="aspect-video bg-muted rounded-lg mb-3">
                         <img
@@ -168,6 +174,10 @@ export default function CategoryJobsPage() {
                         </div>
                         <Button 
                           className="whitespace-nowrap bg-black text-white hover:bg-gray-800"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/jobs/${job.id}`);
+                          }}
                         >
                           CLICK HERE TO APPLY
                         </Button>

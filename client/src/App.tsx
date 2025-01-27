@@ -7,6 +7,7 @@ import HomePage from "@/pages/home";
 import AppliedJobsPage from "@/pages/applied-jobs";
 import AcceptedJobsPage from "@/pages/accepted-jobs";
 import CategoryJobsPage from "@/pages/category-jobs";
+import JobDetailsPage from "@/pages/job-details";
 
 function Router() {
   return (
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/applied" component={AppliedJobsPage} />
       <Route path="/accepted" component={AcceptedJobsPage} />
       <Route path="/jobs/category/:category" component={CategoryJobsPage} />
+      <Route path="/jobs/:jobId" component={JobDetailsPage} />
       <Route component={NotFound} />
     </Switch>
   );
