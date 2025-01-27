@@ -2,10 +2,11 @@ import { useUser } from "@/hooks/use-user";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
-import { Search, Briefcase, ShieldCheck, Car, HardHat, Wrench } from "lucide-react";
+import { Search, Briefcase, ShieldCheck, Car, HardHat, Wrench, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
+import WorkerNavigation from "@/components/worker-navigation";
 
 const INDUSTRY_CATEGORIES = [
   { id: 'driver', icon: Car, label: 'Driver' },
@@ -18,9 +19,12 @@ export default function Home() {
   const { user } = useUser();
   const [, navigate] = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   return (
     <div className="space-y-8">
+      {user?.role === "worker" && <WorkerNavigation />}
+
       {/* Hero Section with Search */}
       <section className="text-center space-y-4">
         <h1 className="text-4xl font-bold tracking-tight">
@@ -29,8 +33,8 @@ export default function Home() {
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Thousands of jobs available across India
         </p>
-        <div className="max-w-md mx-auto">
-          <div className="relative">
+        <div className="max-w-md mx-auto flex gap-2">
+          <div className="relative flex-1">
             <Search className="absolute left-2 top-3 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search jobs..."
@@ -39,7 +43,20 @@ export default function Home() {
               className="pl-8"
             />
           </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setShowFilters(!showFilters)}
+            className={showFilters ? "bg-muted" : ""}
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+          </Button>
         </div>
+        {showFilters && (
+          <div className="max-w-md mx-auto p-4 bg-muted rounded-lg mt-2">
+            <p className="text-sm text-muted-foreground">Filters coming soon...</p>
+          </div>
+        )}
       </section>
 
       {/* Industry Categories */}
