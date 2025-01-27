@@ -67,19 +67,19 @@ export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
   employerId: integer("employer_id").references(() => users.id).notNull(),
   title: text("title").notNull(),
+  category: text("category").notNull(),
   description: text("description").notNull(),
   location: text("location").notNull(),
-  salary: text("salary"),
+  salary: text("salary").notNull(),
   requirements: text("requirements").array(),
-  type: text("type", { enum: ["full-time", "part-time", "contract"] }).notNull(),
+  type: text("type", { enum: ["FULL TIME", "PART TIME", "CONTRACT"] }).notNull(),
+  shift: text("shift").notNull(),
+  workingDays: text("working_days").notNull(),
   status: text("status", { enum: ["open", "closed"] }).notNull().default("open"),
-  createdAt: timestamp("created_at").defaultNow(),
-  // New fields for enhanced job listings
-  languageRequirements: text("language_requirements").array(),
   benefits: jsonb("benefits"),
-  shiftTiming: text("shift_timing"),
-  immediateStart: boolean("immediate_start").default(false),
-  verificationRequired: boolean("verification_required").default(false)
+  companyLogo: text("company_logo"),
+  previewImage: text("preview_image"),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const applications = pgTable("applications", {
