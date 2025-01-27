@@ -3,6 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Menu, Filter } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import RootLayout from "@/components/layouts/RootLayout";
 import type { Job } from "@db/schema";
 
@@ -36,6 +43,15 @@ export default function CategoryJobsPage() {
               </Button>
               <h1 className="text-lg font-semibold">JOBS</h1>
             </div>
+            <Select defaultValue="job">
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="Select type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="job">Regular Job</SelectItem>
+                <SelectItem value="gig">Gig Work</SelectItem>
+              </SelectContent>
+            </Select>
             <Button variant="ghost" size="icon">
               <Filter className="h-6 w-6" />
             </Button>
@@ -50,7 +66,7 @@ export default function CategoryJobsPage() {
               {TOP_COMPANIES.map((company) => (
                 <div 
                   key={company.id} 
-                  className="aspect-square bg-muted rounded-lg flex items-center justify-center p-4"
+                  className="aspect-square bg-muted rounded-lg flex items-center justify-center p-4 shadow-sm hover:shadow-md transition-shadow"
                 >
                   <span className="text-sm text-center">{company.name}</span>
                 </div>
@@ -77,7 +93,7 @@ export default function CategoryJobsPage() {
                 ))
               ) : (
                 jobs.map((job) => (
-                  <Card key={job.id}>
+                  <Card key={job.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="aspect-video bg-muted rounded-lg mb-3">
                         <img
