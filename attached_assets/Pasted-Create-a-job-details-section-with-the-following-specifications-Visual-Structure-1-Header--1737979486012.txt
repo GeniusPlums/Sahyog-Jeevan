@@ -1,0 +1,80 @@
+Create a job details section with the following specifications:
+
+Visual Structure:
+1. Header:
+   - Text "JOB DETAILS" in the center
+   - Horizontal lines on both sides of the text
+   - Lines should be light grey (#E5E5E5)
+   - Text should be grey (#666666)
+
+2. Tab Container:
+   - Create a pill-shaped container with two tabs
+   - Container should have light grey background (#F5F5F5)
+   - Rounded corners (border-radius: 9999px)
+   - Two tabs: "JOB DESCRIPTION" and "OTHER DETAILS"
+   - Active tab should have grey background (#808080)
+   - Active tab text should be white
+   - Inactive tab text should be grey (#666666)
+   - Both tabs should have equal width
+   - Smooth transition between tab states
+
+3. Content Area:
+   - Large rounded rectangle container
+   - Light grey background (#F5F5F5)
+   - Generous padding (24px)
+   - Rounded corners (24px)
+   - Content should have two sections:
+
+Job Description Content:
+- Section: "Job Responsibilities:"
+  * Safe operation of delivery vehicles
+  * Timely delivery of packages to designated locations
+  * Maintaining delivery records and logs
+  * Vehicle maintenance checks
+
+- Section: "Requirements:"
+  * Valid driver's license
+  * Clean driving record
+  * Physical ability to lift up to 50 lbs
+  * Excellent time management skills
+
+Other Details Content:
+- Section: "Benefits:"
+  * Health insurance
+  * Paid time off
+  * Performance bonuses
+  * Fuel allowance
+
+- Section: "Additional Information:"
+  * Training provided
+  * Uniform provided
+  * Mobile device provided
+  * Regular performance reviews
+
+Styling Details:
+- Font: System default, semi-bold for headers
+- Text colors: 
+  * Headers: Dark grey (#333333)
+  * Content: Medium grey (#666666)
+- Spacing:
+  * 16px between sections
+  * 8px between list items
+  * 24px padding around content
+- List items should use bullet points
+- Maintain proper vertical rhythm
+
+Technical Requirements:
+1. Use React.js
+2. Create reusable components
+3. Use CSS modules or Tailwind CSS
+4. Implement tab switching functionality
+5. Ensure smooth transitions
+6. Make it responsive
+7. Ensure proper text hierarchy
+
+State Management:
+- Track active tab state
+- Toggle between job description and other details
+- Smooth content transition
+
+The final result should be a clean, professional job details section with easy-to-read content and smooth tab switching functionality.

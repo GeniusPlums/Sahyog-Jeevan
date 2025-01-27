@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RootLayout from "@/components/layouts/RootLayout";
+import { useState } from 'react';
 
 interface JobDetails {
   id: number;
@@ -55,6 +56,7 @@ const MOCK_JOB: JobDetails = {
 
 export default function JobDetailsPage() {
   const { jobId } = useParams();
+  const [activeTab, setActiveTab] = useState('description');
 
   const { data: job, isLoading, error } = useQuery<JobDetails>({
     queryKey: [`/api/jobs/${jobId}`],
@@ -170,52 +172,84 @@ export default function JobDetailsPage() {
           </div>
         </div>
 
-        {/* Unified Job Details Section */}
+        {/* Job Details Section with styled header */}
         <div className="px-4">
-          <div className="border-t border-b py-4">
-            <h3 className="text-center font-semibold">JOB DETAILS</h3>
+          {/* Header with lines */}
+          <div className="flex items-center gap-4 py-6">
+            <div className="h-[1px] flex-1 bg-[#E5E5E5]" />
+            <h3 className="text-[#666666] font-semibold whitespace-nowrap">JOB DETAILS</h3>
+            <div className="h-[1px] flex-1 bg-[#E5E5E5]" />
           </div>
 
-          <div className="mt-4 bg-muted rounded-lg p-4 space-y-6">
-            {/* Description Section */}
-            <div>
-              <h4 className="font-semibold mb-2">Job Description</h4>
-              <p>{jobData?.description || 'No description available'}</p>
+          {/* Tab Container */}
+          <div className="bg-[#F5F5F5] p-1 rounded-full mb-4">
+            <div className="grid grid-cols-2">
+              <button
+                onClick={() => setActiveTab('description')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  activeTab === 'description'
+                    ? 'bg-[#808080] text-white'
+                    : 'text-[#666666]'
+                }`}
+              >
+                JOB DESCRIPTION
+              </button>
+              <button
+                onClick={() => setActiveTab('other')}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  activeTab === 'other'
+                    ? 'bg-[#808080] text-white'
+                    : 'text-[#666666]'
+                }`}
+              >
+                OTHER DETAILS
+              </button>
             </div>
+          </div>
 
-            {/* Requirements Section */}
-            {jobData?.requirements && jobData.requirements.length > 0 && (
-              <div>
-                <h4 className="font-semibold mb-2">Requirements</h4>
-                <ul className="list-disc list-inside space-y-1">
-                  {jobData.requirements.map((req, index) => (
-                    <li key={index}>{req}</li>
-                  ))}
-                </ul>
+          {/* Content Area */}
+          <div className="bg-[#F5F5F5] rounded-[24px] p-6">
+            {activeTab === 'description' ? (
+              <div className="space-y-6">
+                <section>
+                  <h4 className="text-[#333333] font-semibold mb-4">Job Responsibilities:</h4>
+                  <ul className="list-disc list-inside space-y-2 text-[#666666]">
+                    <li>Drive safely and efficiently to deliver packages</li>
+                    <li>Maintain vehicle cleanliness and perform basic checks</li>
+                    <li>Follow traffic rules and company policies</li>
+                    <li>Provide excellent customer service</li>
+                  </ul>
+                </section>
+
+                <section>
+                  <h4 className="text-[#333333] font-semibold mb-4">Requirements:</h4>
+                  <ul className="list-disc list-inside space-y-2 text-[#666666]">
+                    {jobData?.requirements.map((req, index) => (
+                      <li key={index}>{req}</li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <section>
+                  <h4 className="text-[#333333] font-semibold mb-4">Benefits:</h4>
+                  <ul className="list-disc list-inside space-y-2 text-[#666666]">
+                    {jobData?.otherDetails?.benefits?.map((benefit, index) => (
+                      <li key={index}>{benefit}</li>
+                    )) || <li>Benefits information not available</li>}
+                  </ul>
+                </section>
+
+                <section>
+                  <h4 className="text-[#333333] font-semibold mb-4">Additional Information:</h4>
+                  <ul className="list-disc list-inside space-y-2 text-[#666666]">
+                    <li>Location: {jobData?.otherDetails?.location || 'Location not specified'}</li>
+                    <li>Working Days: {jobData?.otherDetails?.workingDays || 'Working days not specified'}</li>
+                  </ul>
+                </section>
               </div>
             )}
-
-            {/* Benefits Section */}
-            <div>
-              <h4 className="font-semibold mb-2">Benefits</h4>
-              <ul className="list-disc list-inside space-y-1">
-                {jobData?.otherDetails?.benefits?.map((benefit, index) => (
-                  <li key={index}>{benefit}</li>
-                )) || <li>No benefits listed</li>}
-              </ul>
-            </div>
-
-            {/* Additional Details */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-semibold mb-2">Location</h4>
-                <p>{jobData?.otherDetails?.location || 'Location not specified'}</p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">Working Days</h4>
-                <p>{jobData?.otherDetails?.workingDays || 'Working days not specified'}</p>
-              </div>
-            </div>
           </div>
         </div>
 
