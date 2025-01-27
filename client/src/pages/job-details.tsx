@@ -89,6 +89,7 @@ export default function JobDetailsPage() {
   }
 
   const jobData = job || MOCK_JOB;
+  const employerInitial = jobData?.employerName?.charAt(0) || '?';
 
   return (
     <RootLayout>
@@ -110,7 +111,7 @@ export default function JobDetailsPage() {
         {/* Navigation Bar */}
         <div className="flex items-center justify-between p-4 gap-2">
           <Button variant="outline" className="rounded-full">
-            {(jobData.category || '').toUpperCase()}
+            {(jobData?.category || '').toUpperCase()}
           </Button>
           <Select defaultValue="jobs">
             <SelectTrigger className="w-[100px] bg-gray-900 text-white hover:bg-gray-800">
@@ -130,25 +131,25 @@ export default function JobDetailsPage() {
         <div className="flex flex-col items-center p-6">
           <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mb-4">
             <span className="text-2xl font-bold text-primary-foreground">
-              {jobData.employerName.charAt(0)}
+              {employerInitial}
             </span>
           </div>
-          <h2 className="text-xl font-semibold">{jobData.employerName}</h2>
+          <h2 className="text-xl font-semibold">{jobData?.employerName || 'Company Name'}</h2>
         </div>
 
         {/* Job Information Pills */}
         <div className="flex justify-center gap-4 px-4 mb-6">
           <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
             <div className="text-xs opacity-75">SALARY</div>
-            <div>{jobData.salary}</div>
+            <div>{jobData?.salary || 'Not specified'}</div>
           </div>
           <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
             <div className="text-xs opacity-75">JOB TYPE</div>
-            <div>{jobData.type}</div>
+            <div>{jobData?.type || 'Not specified'}</div>
           </div>
           <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
             <div className="text-xs opacity-75">SHIFT</div>
-            <div>{jobData.shift}</div>
+            <div>{jobData?.shift || 'Not specified'}</div>
           </div>
         </div>
 
@@ -165,8 +166,8 @@ export default function JobDetailsPage() {
             </TabsList>
             <TabsContent value="description" className="mt-4">
               <div className="bg-muted rounded-lg p-4">
-                <p className="mb-4">{jobData.description}</p>
-                {jobData.requirements && (
+                <p className="mb-4">{jobData?.description || 'No description available'}</p>
+                {jobData?.requirements && jobData.requirements.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-2">Requirements:</h4>
                     <ul className="list-disc list-inside space-y-1">
@@ -182,14 +183,14 @@ export default function JobDetailsPage() {
               <div className="bg-muted rounded-lg p-4">
                 <h4 className="font-semibold mb-2">Benefits:</h4>
                 <ul className="list-disc list-inside space-y-1">
-                  {jobData.otherDetails.benefits.map((benefit, index) => (
+                  {jobData?.otherDetails?.benefits?.map((benefit, index) => (
                     <li key={index}>{benefit}</li>
-                  ))}
+                  )) || <li>No benefits listed</li>}
                 </ul>
                 <h4 className="font-semibold mt-4 mb-2">Location:</h4>
-                <p>{jobData.otherDetails.location}</p>
+                <p>{jobData?.otherDetails?.location || 'Location not specified'}</p>
                 <h4 className="font-semibold mt-4 mb-2">Working Days:</h4>
-                <p>{jobData.otherDetails.workingDays}</p>
+                <p>{jobData?.otherDetails?.workingDays || 'Working days not specified'}</p>
               </div>
             </TabsContent>
           </Tabs>
