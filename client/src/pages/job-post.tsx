@@ -9,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload } from "lucide-react";
 import { z } from "zod";
 
@@ -21,8 +20,8 @@ const jobSchema = z.object({
   salary: z.string().min(1, "Salary is required"),
   type: z.enum(["FULL TIME", "PART TIME", "CONTRACT"]),
   shift: z.string().min(1, "Shift is required"),
-  requirements: z.string(),
-  benefits: z.string(),
+  requirements: z.string().optional(),
+  benefits: z.string().optional(),
   workingDays: z.string().min(1, "Working days are required"),
   companyLogo: z.any().optional(),
   previewImage: z.any().optional(),
@@ -38,7 +37,7 @@ export default function JobPost() {
   const [, navigate] = useLocation();
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(jobSchema),
     defaultValues: {
       title: "",
@@ -53,6 +52,8 @@ export default function JobPost() {
       workingDays: "",
     }
   });
+
+  const { register, handleSubmit, formState: { errors }, setValue } = form;
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
@@ -120,7 +121,10 @@ export default function JobPost() {
 
                 <div>
                   <Label htmlFor="category">Category</Label>
-                  <Select onValueChange={(value) => register("category").onChange({ target: { value } })}>
+                  <Select 
+                    defaultValue={form.getValues("category")}
+                    onValueChange={(value) => setValue("category", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
                     </SelectTrigger>
@@ -139,7 +143,10 @@ export default function JobPost() {
 
                 <div>
                   <Label htmlFor="type">Job Type</Label>
-                  <Select onValueChange={(value) => register("type").onChange({ target: { value } })}>
+                  <Select 
+                    defaultValue={form.getValues("type")}
+                    onValueChange={(value) => setValue("type", value as "FULL TIME" | "PART TIME" | "CONTRACT")}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select job type" />
                     </SelectTrigger>
@@ -149,11 +156,17 @@ export default function JobPost() {
                       <SelectItem value="CONTRACT">CONTRACT</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.type && (
+                    <p className="text-sm text-destructive mt-1">{errors.type.message}</p>
+                  )}
                 </div>
 
                 <div>
                   <Label htmlFor="shift">Shift</Label>
-                  <Select onValueChange={(value) => register("shift").onChange({ target: { value } })}>
+                  <Select 
+                    defaultValue={form.getValues("shift")}
+                    onValueChange={(value) => setValue("shift", value)}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select shift" />
                     </SelectTrigger>
