@@ -25,26 +25,32 @@ export default function Navbar() {
       <div className="container flex h-16 items-center">
         <Link href="/" className="flex items-center space-x-2">
           <BriefcaseIcon className="h-6 w-6" />
-          <span className="font-bold">Blue Collar Jobs</span>
+          <span className="font-bold">SahyogJeevan</span>
         </Link>
 
         <div className="flex-1" />
 
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/jobs">
-            <Button variant="ghost">Browse Jobs</Button>
-          </Link>
-
-          {user?.role === "employer" && (
-            <Link href="/job/post">
-              <Button variant="ghost">Post Job</Button>
-            </Link>
+          {user?.role === "worker" && (
+            <>
+              <Link href="/">
+                <Button variant="ghost">Home</Button>
+              </Link>
+              <Link href="/applied">
+                <Button variant="ghost">Applied Jobs</Button>
+              </Link>
+            </>
           )}
 
-          {user?.role === "admin" && (
-            <Link href="/admin">
-              <Button variant="ghost">Admin Dashboard</Button>
-            </Link>
+          {user?.role === "employer" && (
+            <>
+              <Link href="/">
+                <Button variant="ghost">Dashboard</Button>
+              </Link>
+              <Link href="/employer/jobs/new">
+                <Button variant="ghost">Post Job</Button>
+              </Link>
+            </>
           )}
 
           <DropdownMenu>
@@ -54,12 +60,9 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <Link href="/profile">
-                <DropdownMenuItem>
-                  <UserCircle className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-              </Link>
+              <DropdownMenuItem className="text-sm text-muted-foreground">
+                Signed in as {user?.username}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 Logout
@@ -76,37 +79,43 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <Link href="/jobs">
-                <DropdownMenuItem>
-                  <BriefcaseIcon className="mr-2 h-4 w-4" />
-                  Browse Jobs
-                </DropdownMenuItem>
-              </Link>
-              
+              {user?.role === "worker" && (
+                <>
+                  <Link href="/">
+                    <DropdownMenuItem>
+                      <BriefcaseIcon className="mr-2 h-4 w-4" />
+                      Home
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/applied">
+                    <DropdownMenuItem>
+                      <BriefcaseIcon className="mr-2 h-4 w-4" />
+                      Applied Jobs
+                    </DropdownMenuItem>
+                  </Link>
+                </>
+              )}
+
               {user?.role === "employer" && (
-                <Link href="/job/post">
-                  <DropdownMenuItem>
-                    <BriefcaseIcon className="mr-2 h-4 w-4" />
-                    Post Job
-                  </DropdownMenuItem>
-                </Link>
+                <>
+                  <Link href="/">
+                    <DropdownMenuItem>
+                      <BriefcaseIcon className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/employer/jobs/new">
+                    <DropdownMenuItem>
+                      <BriefcaseIcon className="mr-2 h-4 w-4" />
+                      Post Job
+                    </DropdownMenuItem>
+                  </Link>
+                </>
               )}
 
-              {user?.role === "admin" && (
-                <Link href="/admin">
-                  <DropdownMenuItem>
-                    <BriefcaseIcon className="mr-2 h-4 w-4" />
-                    Admin Dashboard
-                  </DropdownMenuItem>
-                </Link>
-              )}
-
-              <Link href="/profile">
-                <DropdownMenuItem>
-                  <UserCircle className="mr-2 h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-              </Link>
+              <DropdownMenuItem className="text-sm text-muted-foreground">
+                Signed in as {user?.username}
+              </DropdownMenuItem>
 
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
