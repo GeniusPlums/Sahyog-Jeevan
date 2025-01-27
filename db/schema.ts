@@ -14,16 +14,12 @@ export const userSettings = pgTable("user_settings", {
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").unique(),  // Optional for workers, but can be used for login
-  password: text("password"),           // Optional for workers, but can be used for login
+  username: text("username").unique().notNull(),
+  password: text("password").notNull(),
   role: text("role", { enum: ["worker", "employer", "admin"] }).notNull().default("worker"),
-  phone: text("phone").unique(),        // Can be used for OTP login
-  otp: text("otp"),                     // For OTP authentication
-  otpExpiry: timestamp("otp_expiry"),   // OTP expiration timestamp
   createdAt: timestamp("created_at").defaultNow(),
   isVerified: boolean("is_verified").default(false),
   lastActive: timestamp("last_active"),
-  preferredAuth: text("preferred_auth", { enum: ["password", "otp"] }).default("password"),
 });
 
 export const profiles = pgTable("profiles", {
@@ -62,8 +58,8 @@ export const workHistory = pgTable("work_history", {
   skills: text("skills").array(),
   rating: integer("rating"),
   feedback: text("feedback"),
-  verificationStatus: text("verification_status", { 
-    enum: ["pending", "verified", "disputed"] 
+  verificationStatus: text("verification_status", {
+    enum: ["pending", "verified", "disputed"]
   }).default("pending"),
 });
 
@@ -90,8 +86,8 @@ export const applications = pgTable("applications", {
   id: serial("id").primaryKey(),
   jobId: integer("job_id").references(() => jobs.id).notNull(),
   workerId: integer("worker_id").references(() => users.id).notNull(),
-  status: text("status", { 
-    enum: ["pending", "shortlisted", "accepted", "rejected", "withdrawn"] 
+  status: text("status", {
+    enum: ["pending", "shortlisted", "accepted", "rejected", "withdrawn"]
   }).notNull().default("pending"),
   note: text("note"),
   createdAt: timestamp("created_at").defaultNow(),

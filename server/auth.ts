@@ -5,7 +5,7 @@ import session from "express-session";
 import createMemoryStore from "memorystore";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { users, userSettings, type User } from "@db/schema";
+import { users, type User } from "@db/schema";
 import { db } from "@db";
 import { eq } from "drizzle-orm";
 
@@ -25,9 +25,6 @@ const crypto = {
       64
     )) as Buffer;
     return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
-  },
-  generateOTP: () => {
-    return Math.floor(100000 + Math.random() * 900000).toString();
   },
 };
 
@@ -60,7 +57,6 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Local Strategy for both workers and employers
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
@@ -104,54 +100,35 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Registration endpoint that supports both methods
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, password, role = "worker", phone, preferredAuth = "password" } = req.body;
+      const { username, password, role = "worker" } = req.body;
 
-      // Validate input based on preferred authentication method
-      if (preferredAuth === "password") {
-        if (!username || !password) {
-          return res.status(400).send("Username and password are required for password authentication");
-        }
-      } else if (preferredAuth === "otp") {
-        if (!phone) {
-          return res.status(400).send("Phone number is required for OTP authentication");
-        }
+      if (!username || !password) {
+        return res.status(400).send("Username and password are required");
       }
 
       // Check if user already exists
       const [existingUser] = await db
         .select()
         .from(users)
-        .where(
-          preferredAuth === "password" 
-            ? eq(users.username, username) 
-            : eq(users.phone, phone)
-        )
+        .where(eq(users.username, username))
         .limit(1);
 
       if (existingUser) {
-        return res.status(400).send(
-          preferredAuth === "password" 
-            ? "Username already exists" 
-            : "Phone number already registered"
-        );
+        return res.status(400).send("Username already exists");
       }
 
-      let hashedPassword = null;
-      if (password) {
-        hashedPassword = await crypto.hash(password);
-      }
+      // Hash the password
+      const hashedPassword = await crypto.hash(password);
 
+      // Create the new user
       const [newUser] = await db
         .insert(users)
         .values({
           username,
           password: hashedPassword,
           role,
-          phone,
-          preferredAuth,
         })
         .returning();
 
@@ -167,124 +144,21 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Login endpoint that supports both methods
   app.post("/api/login", (req, res, next) => {
-    const { username, password, phone, otp } = req.body;
-
-    if (username && password) {
-      // Handle username/password login
-      passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
-        if (err) {
-          return next(err);
-        }
-        if (!user) {
-          return res.status(400).send(info.message ?? "Login failed");
-        }
-        req.logIn(user, (err) => {
-          if (err) {
-            return next(err);
-          }
-          return res.json(user);
-        });
-      })(req, res, next);
-    } else if (phone && otp) {
-      // Redirect to OTP verification
-      res.redirect(307, "/api/auth/verify-otp");
-    } else {
-      res.status(400).send("Invalid login credentials");
-    }
-  });
-
-  // Keep existing OTP-related endpoints
-  app.post("/api/auth/send-otp", async (req, res) => {
-    try {
-      const { phone } = req.body;
-
-      if (!phone) {
-        return res.status(400).send("Phone number is required");
+    passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
+      if (err) {
+        return next(err);
       }
-
-      const [existingUser] = await db
-        .select()
-        .from(users)
-        .where(eq(users.phone, phone))
-        .limit(1);
-
-      // Generate OTP
-      const otp = crypto.generateOTP();
-      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
-
-      if (existingUser) {
-        await db
-          .update(users)
-          .set({ otp, otpExpiry })
-          .where(eq(users.id, existingUser.id));
-      } else {
-        await db
-          .insert(users)
-          .values({
-            phone,
-            role: "worker",
-            otp,
-            otpExpiry
-          });
-      }
-
-      // TODO: Integrate with actual SMS service
-      console.log(`OTP for ${phone}: ${otp}`);
-
-      res.json({ message: "OTP sent successfully" });
-    } catch (error) {
-      res.status(500).send("Failed to send OTP");
-    }
-  });
-
-  app.post("/api/auth/verify-otp", async (req, res, next) => {
-    try {
-      const { phone, otp } = req.body;
-
-      if (!phone || !otp) {
-        return res.status(400).send("Phone and OTP are required");
-      }
-
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.phone, phone))
-        .limit(1);
-
       if (!user) {
-        return res.status(400).send("User not found");
+        return res.status(400).send(info.message ?? "Login failed");
       }
-
-      if (!user.otp || !user.otpExpiry) {
-        return res.status(400).send("No OTP was generated");
-      }
-
-      if (new Date() > new Date(user.otpExpiry)) {
-        return res.status(400).send("OTP has expired");
-      }
-
-      if (user.otp !== otp) {
-        return res.status(400).send("Invalid OTP");
-      }
-
-      // Clear OTP
-      await db
-        .update(users)
-        .set({ otp: null, otpExpiry: null })
-        .where(eq(users.id, user.id));
-
-      // Log the user in
-      req.login(user, (err) => {
+      req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
         return res.json(user);
       });
-    } catch (error) {
-      next(error);
-    }
+    })(req, res, next);
   });
 
   app.post("/api/logout", (req, res) => {
