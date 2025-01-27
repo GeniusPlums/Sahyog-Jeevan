@@ -136,19 +136,19 @@ export default function JobDetailsPage() {
           <h2 className="text-xl font-semibold">{jobData?.employerName || 'Company Name'}</h2>
         </div>
 
-        {/* Job Information Pills - Now in vertical layout */}
-        <div className="flex flex-col items-center gap-3 px-4 mb-6">
-          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+        {/* Job Information Pills - Horizontal capsules */}
+        <div className="px-4 mb-6 space-y-4">
+          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
             <div className="text-sm opacity-75">SALARY</div>
-            <div className="text-lg font-medium">{jobData?.salary || 'Not specified'}</div>
+            <div className="font-medium">{jobData?.salary || 'Not specified'}</div>
           </div>
-          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
             <div className="text-sm opacity-75">JOB TYPE</div>
-            <div className="text-lg font-medium">{jobData?.type || 'Not specified'}</div>
+            <div className="font-medium">{jobData?.type || 'Not specified'}</div>
           </div>
-          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
             <div className="text-sm opacity-75">SHIFT</div>
-            <div className="text-lg font-medium">{jobData?.shift || 'Not specified'}</div>
+            <div className="font-medium">{jobData?.shift || 'Not specified'}</div>
           </div>
         </div>
 
@@ -203,7 +203,7 @@ export default function JobDetailsPage() {
 
         {/* Apply Button */}
         <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t">
-          <Button 
+          <Button
             className="w-full bg-gray-900 hover:bg-gray-800 text-white"
             size="lg"
           >
