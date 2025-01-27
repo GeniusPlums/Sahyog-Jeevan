@@ -1,4 +1,4 @@
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import {
   Select,
   SelectContent,
@@ -16,6 +16,7 @@ const SHIFT_OPTIONS = ["Morning", "Afternoon", "Night", "Flexible"];
 
 export default function JobApplicationForm() {
   const { jobId } = useParams();
+  const [_, navigate] = useLocation();
 
   return (
     <RootLayout>
@@ -43,7 +44,10 @@ export default function JobApplicationForm() {
           </div>
 
           {/* Form */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={(e) => {
+            e.preventDefault();
+            navigate(`/jobs/${jobId}/finish`);
+          }}>
             {/* Dropdowns */}
             {[
               { label: "GENDER", options: GENDER_OPTIONS },
