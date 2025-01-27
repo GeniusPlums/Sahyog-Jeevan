@@ -4,6 +4,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Menu, Search, Filter } from "lucide-react";
+import * as Icons from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const JOB_CATEGORIES = [
   { id: 'driver', label: 'DRIVER' },
@@ -18,6 +26,7 @@ const FEATURED_JOBS = [
     company: 'Company A',
     salary: '25,000/month',
     location: 'Mumbai',
+    image: '/path/to/driver-job.jpg'
   },
   {
     id: 2,
@@ -25,14 +34,15 @@ const FEATURED_JOBS = [
     company: 'Company B',
     salary: '30,000/month',
     location: 'Delhi',
+    image: '/path/to/security-job.jpg'
   },
 ];
 
-export default function Home() {
-  const [, navigate] = useLocation();
+export default function HomePage() {
+  const [location, navigate] = useLocation();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16">
       {/* Top Header with Menu and Logo */}
       <header className="sticky top-0 bg-background border-b p-4">
         <div className="flex items-center justify-between mb-4">
@@ -93,39 +103,93 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Jobs Section with Filter */}
+        {/* Jobs Section with Type Selection and Filter */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Jobs around you</h2>
-            <Button variant="outline" size="sm">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-          </div>
           <div className="space-y-4">
-            {FEATURED_JOBS.map((job) => (
-              <Card key={job.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium">{job.title}</h3>
-                      <p className="text-sm text-muted-foreground">{job.company}</p>
-                      <p className="text-sm">{job.location}</p>
-                      <p className="text-sm font-medium">{job.salary}</p>
+            {/* Job Type Selector */}
+            <Select defaultValue="job">
+              <SelectTrigger>
+                <SelectValue placeholder="Select job type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="job">Regular Job</SelectItem>
+                <SelectItem value="gig">Gig Work</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Jobs Header with Filter */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Jobs around you</h2>
+              <Button variant="outline" size="sm">
+                <Filter className="h-4 w-4 mr-2" />
+                Filter
+              </Button>
+            </div>
+
+            {/* Job Cards */}
+            <div className="space-y-4">
+              {FEATURED_JOBS.map((job) => (
+                <Card key={job.id}>
+                  <CardContent className="p-4">
+                    <div className="aspect-video bg-muted rounded-lg mb-3">
+                      {/* Job Image */}
+                      <img
+                        src={job.image}
+                        alt={`${job.title} preview`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
                     </div>
-                    <Button 
-                      onClick={() => navigate(`/jobs/${job.id}`)}
-                      className="whitespace-nowrap"
-                    >
-                      CLICK HERE TO APPLY
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h3 className="font-medium">{job.title}</h3>
+                        <p className="text-sm text-muted-foreground">{job.company}</p>
+                        <p className="text-sm">{job.location}</p>
+                        <p className="text-sm font-medium">{job.salary}</p>
+                      </div>
+                      <Button 
+                        onClick={() => navigate(`/jobs/${job.id}`)}
+                        className="whitespace-nowrap"
+                      >
+                        CLICK HERE TO APPLY
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </section>
       </main>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t">
+        <div className="flex justify-around items-center h-16">
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center w-full h-full"
+            onClick={() => navigate("/")}
+          >
+            <Icons.Home className="h-5 w-5" />
+            <span className="text-xs mt-1">Home</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center w-full h-full"
+            onClick={() => navigate("/applied")}
+          >
+            <Icons.Briefcase className="h-5 w-5" />
+            <span className="text-xs mt-1">Applied</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex flex-col items-center justify-center w-full h-full"
+            onClick={() => navigate("/accepted")}
+          >
+            <Icons.CheckSquare className="h-5 w-5" />
+            <span className="text-xs mt-1">Accepted</span>
+          </Button>
+        </div>
+      </nav>
     </div>
   );
 }
