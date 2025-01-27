@@ -26,6 +26,9 @@ const crypto = {
     )) as Buffer;
     return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
   },
+  generateOTP: () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  },
 };
 
 declare global {
@@ -57,6 +60,7 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Local Strategy for employers
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
@@ -68,6 +72,9 @@ export function setupAuth(app: Express) {
 
         if (!user) {
           return done(null, false, { message: "Incorrect username." });
+        }
+        if (!user.password) {
+          return done(null, false, { message: "Invalid login method." });
         }
         const isMatch = await crypto.compare(password, user.password);
         if (!isMatch) {
@@ -97,36 +104,136 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/register", async (req, res, next) => {
+  // OTP Generation endpoint for workers
+  app.post("/api/auth/send-otp", async (req, res) => {
     try {
-      const { username, password, role, preferredLanguage, whatsappNumber, region } = req.body;
+      const { phone } = req.body;
 
-      if (!username || !password || !role) {
-        return res.status(400).send("Missing required fields");
-      }
-
-      if (!["worker", "employer"].includes(role)) {
-        return res.status(400).send("Invalid role");
+      if (!phone) {
+        return res.status(400).send("Phone number is required");
       }
 
       const [existingUser] = await db
         .select()
         .from(users)
-        .where(eq(users.username, username))
+        .where(eq(users.phone, phone))
+        .limit(1);
+
+      // Generate OTP
+      const otp = crypto.generateOTP();
+      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes validity
+
+      if (existingUser) {
+        await db
+          .update(users)
+          .set({ otp, otpExpiry })
+          .where(eq(users.id, existingUser.id));
+      } else {
+        await db
+          .insert(users)
+          .values({
+            phone,
+            role: "worker",
+            otp,
+            otpExpiry
+          });
+      }
+
+      // TODO: Integrate with actual SMS service
+      console.log(`OTP for ${phone}: ${otp}`);
+
+      res.json({ message: "OTP sent successfully" });
+    } catch (error) {
+      res.status(500).send("Failed to send OTP");
+    }
+  });
+
+  // OTP Verification endpoint for workers
+  app.post("/api/auth/verify-otp", async (req, res, next) => {
+    try {
+      const { phone, otp } = req.body;
+
+      if (!phone || !otp) {
+        return res.status(400).send("Phone and OTP are required");
+      }
+
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.phone, phone))
+        .limit(1);
+
+      if (!user) {
+        return res.status(400).send("User not found");
+      }
+
+      if (!user.otp || !user.otpExpiry) {
+        return res.status(400).send("No OTP was generated");
+      }
+
+      if (new Date() > new Date(user.otpExpiry)) {
+        return res.status(400).send("OTP has expired");
+      }
+
+      if (user.otp !== otp) {
+        return res.status(400).send("Invalid OTP");
+      }
+
+      // Clear OTP
+      await db
+        .update(users)
+        .set({ otp: null, otpExpiry: null })
+        .where(eq(users.id, user.id));
+
+      // Log the user in
+      req.login(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.json(user);
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post("/api/register", async (req, res, next) => {
+    try {
+      const { username, password, role, phone, preferredLanguage, region, whatsappNumber } = req.body;
+
+      if (role === "worker") {
+        if (!phone) {
+          return res.status(400).send("Phone number is required for workers");
+        }
+      } else {
+        if (!username || !password) {
+          return res.status(400).send("Username and password are required for employers");
+        }
+      }
+
+      // Check if user already exists
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(role === "worker" ? eq(users.phone, phone) : eq(users.username, username))
         .limit(1);
 
       if (existingUser) {
-        return res.status(400).send("Username already exists");
+        return res.status(400).send(role === "worker" ? "Phone number already registered" : "Username already exists");
       }
 
-      const hashedPassword = await crypto.hash(password);
+      let hashedPassword = null;
+      if (password) {
+        hashedPassword = await crypto.hash(password);
+      }
 
       const [newUser] = await db
         .insert(users)
         .values({
-          username,
+          username: username || null,
           password: hashedPassword,
-          role
+          role,
+          phone: phone || null
         })
         .returning();
 
@@ -141,7 +248,7 @@ export function setupAuth(app: Express) {
           notificationPreferences: {
             email: true,
             whatsapp: !!whatsappNumber,
-            sms: false
+            sms: !!phone
           }
         });
 
@@ -157,6 +264,15 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
+    const { phone, otp } = req.body;
+
+    if (phone && otp) {
+      // Handle worker login with OTP
+      res.redirect(307, "/api/auth/verify-otp");
+      return;
+    }
+
+    // Handle employer login with username/password
     passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
       if (err) {
         return next(err);

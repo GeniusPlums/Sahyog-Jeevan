@@ -13,38 +13,79 @@ import LanguageSelector from "@/components/language-selector";
 import RegionSelector from "@/components/region-selector";
 
 type FormData = {
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
+  phone?: string;
+  otp?: string;
   role?: "worker" | "employer";
-  preferredLanguage: string;
-  whatsappNumber?: string;
+  preferredLanguage?: string;
   region?: string;
 };
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
+  const [showOTP, setShowOTP] = useState(false);
+  const [userRole, setUserRole] = useState<"worker" | "employer">("worker");
   const { login, register, isLoginLoading, isRegisterLoading } = useUser();
   const { toast } = useToast();
 
-  const loginForm = useForm<FormData>({
-    defaultValues: { username: "", password: "" }
-  });
-
+  const loginForm = useForm<FormData>();
   const registerForm = useForm<FormData>({
     defaultValues: {
-      username: "",
-      password: "",
       role: "worker",
       preferredLanguage: "en",
-      region: ""
     }
   });
 
   const selectedLanguage = registerForm.watch("preferredLanguage");
 
+  const handleSendOTP = async () => {
+    const phone = loginForm.getValues("phone");
+    if (!phone) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter your phone number"
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      if (!response.ok) throw new Error(await response.text());
+
+      setShowOTP(true);
+      toast({
+        title: "OTP Sent",
+        description: "Please check your phone for the OTP"
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send OTP"
+      });
+    }
+  };
+
   const onLogin = async (data: FormData) => {
     try {
-      await login(data);
+      if (userRole === "worker") {
+        if (!data.phone || !data.otp) {
+          throw new Error("Phone and OTP are required");
+        }
+        await login({ phone: data.phone, otp: data.otp });
+      } else {
+        if (!data.username || !data.password) {
+          throw new Error("Username and password are required");
+        }
+        await login(data);
+      }
     } catch (error) {
       toast({
         variant: "destructive",
@@ -82,92 +123,170 @@ export default function AuthPage() {
             <TabsContent value="login">
               <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="login-username">Username</Label>
-                  <Input
-                    id="login-username"
-                    {...loginForm.register("username")}
-                    required
-                  />
+                  <Label>I am a</Label>
+                  <RadioGroup
+                    defaultValue="worker"
+                    onValueChange={(value) => setUserRole(value as "worker" | "employer")}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="worker" id="login-worker" />
+                      <Label htmlFor="login-worker">Worker</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="employer" id="login-employer" />
+                      <Label htmlFor="login-employer">Employer</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    {...loginForm.register("password")}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoginLoading}>
-                  {isLoginLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    "Login"
-                  )}
-                </Button>
+
+                {userRole === "worker" ? (
+                  // Worker Login with OTP
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Phone Number</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="+91"
+                        {...loginForm.register("phone")}
+                        required
+                      />
+                    </div>
+
+                    {!showOTP ? (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={handleSendOTP}
+                        disabled={isLoginLoading}
+                      >
+                        Send OTP
+                      </Button>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="otp">Enter OTP</Label>
+                          <Input
+                            id="otp"
+                            type="text"
+                            maxLength={6}
+                            {...loginForm.register("otp")}
+                            required
+                          />
+                        </div>
+                        <Button type="submit" className="w-full" disabled={isLoginLoading}>
+                          {isLoginLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "Verify & Login"
+                          )}
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  // Employer Login
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="login-username">Username</Label>
+                      <Input
+                        id="login-username"
+                        {...loginForm.register("username")}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="login-password">Password</Label>
+                      <Input
+                        id="login-password"
+                        type="password"
+                        {...loginForm.register("password")}
+                        required
+                      />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isLoginLoading}>
+                      {isLoginLoading ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "Login"
+                      )}
+                    </Button>
+                  </>
+                )}
               </form>
             </TabsContent>
 
             <TabsContent value="register">
               <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="register-username">Username</Label>
-                  <Input
-                    id="register-username"
-                    {...registerForm.register("username")}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    {...registerForm.register("password")}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Preferred Language</Label>
-                  <LanguageSelector
-                    value={selectedLanguage}
-                    onValueChange={(value) => registerForm.setValue("preferredLanguage", value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="whatsapp">WhatsApp Number (Optional)</Label>
-                  <Input
-                    id="whatsapp"
-                    {...registerForm.register("whatsappNumber")}
-                    placeholder="+91 "
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Region</Label>
-                  <RegionSelector
-                    value={registerForm.watch("region")}
-                    onValueChange={(value) => registerForm.setValue("region", value)}
-                    language={selectedLanguage}
-                  />
-                </div>
-                <div className="space-y-2">
                   <Label>I am a</Label>
                   <RadioGroup
                     defaultValue="worker"
-                    onValueChange={(value) => 
+                    onValueChange={(value) =>
                       registerForm.setValue("role", value as "worker" | "employer")
                     }
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="worker" id="worker" />
-                      <Label htmlFor="worker">Worker</Label>
+                      <RadioGroupItem value="worker" id="register-worker" />
+                      <Label htmlFor="register-worker">Worker</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="employer" id="employer" />
-                      <Label htmlFor="employer">Employer</Label>
+                      <RadioGroupItem value="employer" id="register-employer" />
+                      <Label htmlFor="register-employer">Employer</Label>
                     </div>
                   </RadioGroup>
                 </div>
+
+                {registerForm.watch("role") === "worker" ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="register-phone">Phone Number</Label>
+                    <Input
+                      id="register-phone"
+                      type="tel"
+                      placeholder="+91"
+                      {...registerForm.register("phone")}
+                      required
+                    />
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-username">Username</Label>
+                      <Input
+                        id="register-username"
+                        {...registerForm.register("username")}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="register-password">Password</Label>
+                      <Input
+                        id="register-password"
+                        type="password"
+                        {...registerForm.register("password")}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="space-y-2">
+                  <Label>Preferred Language</Label>
+                  <LanguageSelector
+                    value={selectedLanguage || "en"}
+                    onValueChange={(value) => registerForm.setValue("preferredLanguage", value)}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Region</Label>
+                  <RegionSelector
+                    value={registerForm.watch("region") || ""}
+                    onValueChange={(value) => registerForm.setValue("region", value)}
+                    language={selectedLanguage || "en"}
+                  />
+                </div>
+
                 <Button type="submit" className="w-full" disabled={isRegisterLoading}>
                   {isRegisterLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

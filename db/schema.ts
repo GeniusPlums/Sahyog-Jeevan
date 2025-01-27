@@ -14,9 +14,12 @@ export const userSettings = pgTable("user_settings", {
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").unique().notNull(),
-  password: text("password").notNull(),
+  username: text("username").unique(),  // Optional for workers
+  password: text("password"),           // Optional for workers
   role: text("role", { enum: ["worker", "employer", "admin"] }).notNull().default("worker"),
+  phone: text("phone").unique(),        // Required for workers
+  otp: text("otp"),                     // For worker authentication
+  otpExpiry: timestamp("otp_expiry"),   // OTP expiration timestamp
   createdAt: timestamp("created_at").defaultNow(),
   isVerified: boolean("is_verified").default(false),
   lastActive: timestamp("last_active"),
@@ -170,3 +173,5 @@ export type Profile = typeof profiles.$inferSelect;
 export type WorkHistory = typeof workHistory.$inferSelect;
 export type Job = typeof jobs.$inferSelect;
 export type Application = typeof applications.$inferSelect;
+export type InsertUser = typeof users.$inferInsert;
+export type SelectUser = typeof users.$inferSelect;
