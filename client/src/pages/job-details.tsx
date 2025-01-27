@@ -12,8 +12,26 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RootLayout from "@/components/layouts/RootLayout";
 
+interface JobDetails {
+  id: number;
+  title: string;
+  category: string;
+  employerName: string;
+  location: string;
+  salary: string;
+  type: string;
+  shift: string;
+  description: string;
+  requirements: string[];
+  otherDetails: {
+    benefits: string[];
+    location: string;
+    workingDays: string;
+  };
+}
+
 // Mock job data - replace with API call later
-const MOCK_JOB = {
+const MOCK_JOB: JobDetails = {
   id: 1,
   title: "Delivery Driver",
   category: "driver",
@@ -38,11 +56,38 @@ const MOCK_JOB = {
 
 export default function JobDetailsPage() {
   const { jobId } = useParams();
-  
+
   // For now, use mock data instead of API call
-  const { data: job = MOCK_JOB } = useQuery({
+  const { data: job, isLoading } = useQuery<JobDetails>({
     queryKey: [`/api/jobs/${jobId}`],
   });
+
+  if (isLoading) {
+    return (
+      <RootLayout>
+        <div className="min-h-screen bg-background p-4">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-muted rounded w-1/4" />
+            <div className="h-24 bg-muted rounded" />
+            <div className="space-y-2">
+              <div className="h-4 bg-muted rounded w-3/4" />
+              <div className="h-4 bg-muted rounded w-1/2" />
+            </div>
+          </div>
+        </div>
+      </RootLayout>
+    );
+  }
+
+  if (!job) {
+    return (
+      <RootLayout>
+        <div className="min-h-screen bg-background p-4">
+          <p className="text-center text-muted-foreground">Job not found</p>
+        </div>
+      </RootLayout>
+    );
+  }
 
   return (
     <RootLayout>
