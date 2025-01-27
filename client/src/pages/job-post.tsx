@@ -9,8 +9,11 @@ import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
-import { Upload } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { z } from "zod";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const jobSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -23,8 +26,27 @@ const jobSchema = z.object({
   requirements: z.string().optional(),
   benefits: z.string().optional(),
   workingDays: z.string().min(1, "Working days are required"),
-  companyLogo: z.any().optional(),
-  previewImage: z.any().optional(),
+  companyLogo: z.any()
+    .refine((file) => !file || (file instanceof FileList && file.length > 0), "Company logo is required")
+    .refine(
+      (file) => !file || (file instanceof FileList && file[0].size <= MAX_FILE_SIZE),
+      "Max file size is 5MB"
+    )
+    .refine(
+      (file) => !file || (file instanceof FileList && ACCEPTED_IMAGE_TYPES.includes(file[0].type)),
+      "Only .jpg, .jpeg, .png and .webp formats are supported"
+    )
+    .optional(),
+  previewImage: z.any()
+    .refine(
+      (file) => !file || (file instanceof FileList && file[0].size <= MAX_FILE_SIZE),
+      "Max file size is 5MB"
+    )
+    .refine(
+      (file) => !file || (file instanceof FileList && ACCEPTED_IMAGE_TYPES.includes(file[0].type)),
+      "Only .jpg, .jpeg, .png and .webp formats are supported"
+    )
+    .optional(),
 });
 
 type FormData = z.infer<typeof jobSchema>;
@@ -53,20 +75,32 @@ export default function JobPost() {
     }
   });
 
-  const { register, handleSubmit, formState: { errors }, setValue } = form;
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = form;
+  const companyLogo = watch("companyLogo");
+  const previewImage = watch("previewImage");
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       const formData = new FormData();
+
+      // Add text fields
       Object.entries(data).forEach(([key, value]) => {
         if (key === 'requirements' || key === 'benefits') {
-          formData.append(key, JSON.stringify(value.split('\n').filter(Boolean)));
-        } else if (key === 'companyLogo' || key === 'previewImage') {
-          if (value?.[0]) formData.append(key, value[0]);
-        } else {
-          formData.append(key, value);
+          // Convert multiline text to array and stringify
+          formData.append(key, JSON.stringify(value?.split('\n').filter(Boolean) || []));
+        } else if (key !== 'companyLogo' && key !== 'previewImage') {
+          // Add other text fields
+          formData.append(key, value as string);
         }
       });
+
+      // Add files if they exist
+      if (data.companyLogo?.[0]) {
+        formData.append('companyLogo', data.companyLogo[0]);
+      }
+      if (data.previewImage?.[0]) {
+        formData.append('previewImage', data.previewImage[0]);
+      }
 
       const response = await fetch("/api/jobs", {
         method: "POST",
@@ -75,7 +109,8 @@ export default function JobPost() {
       });
 
       if (!response.ok) {
-        throw new Error(await response.text());
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to post job');
       }
 
       return response.json();
@@ -86,7 +121,7 @@ export default function JobPost() {
         title: "Success",
         description: "Job posted successfully",
       });
-      navigate("/employer/dashboard");
+      navigate("/");
     },
     onError: (error) => {
       toast({
@@ -244,6 +279,9 @@ export default function JobPost() {
                   {...register("requirements")}
                   placeholder="Valid driver's license&#10;2+ years experience&#10;Clean driving record"
                 />
+                {errors.requirements && (
+                  <p className="text-sm text-destructive mt-1">{errors.requirements.message}</p>
+                )}
               </div>
 
               {/* Benefits */}
@@ -255,6 +293,9 @@ export default function JobPost() {
                   {...register("benefits")}
                   placeholder="Health Insurance&#10;Vehicle Provided&#10;Fuel Allowance"
                 />
+                {errors.benefits && (
+                  <p className="text-sm text-destructive mt-1">{errors.benefits.message}</p>
+                )}
               </div>
 
               {/* Media Upload */}
@@ -266,7 +307,9 @@ export default function JobPost() {
                     onClick={() => document.getElementById('company-logo')?.click()}
                   >
                     <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Upload Company Logo</p>
+                    <p className="text-sm text-muted-foreground">
+                      {companyLogo?.[0]?.name || "Upload Company Logo"}
+                    </p>
                     <input
                       type="file"
                       id="company-logo"
@@ -275,6 +318,9 @@ export default function JobPost() {
                       {...register("companyLogo")}
                     />
                   </div>
+                  {errors.companyLogo && (
+                    <p className="text-sm text-destructive mt-1">{errors.companyLogo.message}</p>
+                  )}
                 </div>
 
                 <div>
@@ -284,7 +330,9 @@ export default function JobPost() {
                     onClick={() => document.getElementById('preview-image')?.click()}
                   >
                     <Upload className="w-8 h-8 mx-auto mb-2 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">Upload Preview Image</p>
+                    <p className="text-sm text-muted-foreground">
+                      {previewImage?.[0]?.name || "Upload Preview Image"}
+                    </p>
                     <input
                       type="file"
                       id="preview-image"
@@ -293,6 +341,9 @@ export default function JobPost() {
                       {...register("previewImage")}
                     />
                   </div>
+                  {errors.previewImage && (
+                    <p className="text-sm text-destructive mt-1">{errors.previewImage.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -302,7 +353,14 @@ export default function JobPost() {
                   disabled={mutation.isPending}
                   className="w-full md:w-auto"
                 >
-                  {mutation.isPending ? "Posting..." : "Post Job"}
+                  {mutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Posting...
+                    </>
+                  ) : (
+                    "Post Job"
+                  )}
                 </Button>
               </CardFooter>
             </form>
