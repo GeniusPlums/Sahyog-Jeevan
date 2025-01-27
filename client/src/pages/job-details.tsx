@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RootLayout from "@/components/layouts/RootLayout";
 
 interface JobDetails {
@@ -137,69 +136,75 @@ export default function JobDetailsPage() {
           <h2 className="text-xl font-semibold">{jobData?.employerName || 'Company Name'}</h2>
         </div>
 
-        {/* Job Information Pills */}
-        <div className="flex justify-center gap-4 px-4 mb-6">
-          <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
-            <div className="text-xs opacity-75">SALARY</div>
-            <div>{jobData?.salary || 'Not specified'}</div>
+        {/* Job Information Pills - Now in vertical layout */}
+        <div className="flex flex-col items-center gap-3 px-4 mb-6">
+          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+            <div className="text-sm opacity-75">SALARY</div>
+            <div className="text-lg font-medium">{jobData?.salary || 'Not specified'}</div>
           </div>
-          <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
-            <div className="text-xs opacity-75">JOB TYPE</div>
-            <div>{jobData?.type || 'Not specified'}</div>
+          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+            <div className="text-sm opacity-75">JOB TYPE</div>
+            <div className="text-lg font-medium">{jobData?.type || 'Not specified'}</div>
           </div>
-          <div className="bg-gray-900 text-white px-4 py-2 rounded-full text-sm">
-            <div className="text-xs opacity-75">SHIFT</div>
-            <div>{jobData?.shift || 'Not specified'}</div>
+          <div className="w-full max-w-sm bg-gray-900 text-white px-4 py-3 rounded-lg">
+            <div className="text-sm opacity-75">SHIFT</div>
+            <div className="text-lg font-medium">{jobData?.shift || 'Not specified'}</div>
           </div>
         </div>
 
-        {/* Job Details Section */}
+        {/* Unified Job Details Section */}
         <div className="px-4">
           <div className="border-t border-b py-4">
             <h3 className="text-center font-semibold">JOB DETAILS</h3>
           </div>
 
-          <Tabs defaultValue="description" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="description">JOB DESCRIPTION</TabsTrigger>
-              <TabsTrigger value="other">OTHER DETAILS</TabsTrigger>
-            </TabsList>
-            <TabsContent value="description" className="mt-4">
-              <div className="bg-muted rounded-lg p-4">
-                <p className="mb-4">{jobData?.description || 'No description available'}</p>
-                {jobData?.requirements && jobData.requirements.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold mb-2">Requirements:</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      {jobData.requirements.map((req, index) => (
-                        <li key={index}>{req}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </TabsContent>
-            <TabsContent value="other" className="mt-4">
-              <div className="bg-muted rounded-lg p-4">
-                <h4 className="font-semibold mb-2">Benefits:</h4>
+          <div className="mt-4 bg-muted rounded-lg p-4 space-y-6">
+            {/* Description Section */}
+            <div>
+              <h4 className="font-semibold mb-2">Job Description</h4>
+              <p>{jobData?.description || 'No description available'}</p>
+            </div>
+
+            {/* Requirements Section */}
+            {jobData?.requirements && jobData.requirements.length > 0 && (
+              <div>
+                <h4 className="font-semibold mb-2">Requirements</h4>
                 <ul className="list-disc list-inside space-y-1">
-                  {jobData?.otherDetails?.benefits?.map((benefit, index) => (
-                    <li key={index}>{benefit}</li>
-                  )) || <li>No benefits listed</li>}
+                  {jobData.requirements.map((req, index) => (
+                    <li key={index}>{req}</li>
+                  ))}
                 </ul>
-                <h4 className="font-semibold mt-4 mb-2">Location:</h4>
+              </div>
+            )}
+
+            {/* Benefits Section */}
+            <div>
+              <h4 className="font-semibold mb-2">Benefits</h4>
+              <ul className="list-disc list-inside space-y-1">
+                {jobData?.otherDetails?.benefits?.map((benefit, index) => (
+                  <li key={index}>{benefit}</li>
+                )) || <li>No benefits listed</li>}
+              </ul>
+            </div>
+
+            {/* Additional Details */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-semibold mb-2">Location</h4>
                 <p>{jobData?.otherDetails?.location || 'Location not specified'}</p>
-                <h4 className="font-semibold mt-4 mb-2">Working Days:</h4>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-2">Working Days</h4>
                 <p>{jobData?.otherDetails?.workingDays || 'Working days not specified'}</p>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </div>
 
         {/* Apply Button */}
         <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t">
           <Button 
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-900"
+            className="w-full bg-gray-900 hover:bg-gray-800 text-white"
             size="lg"
           >
             <BookmarkIcon className="mr-2 h-5 w-5" />
