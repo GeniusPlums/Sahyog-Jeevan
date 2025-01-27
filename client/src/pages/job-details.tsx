@@ -139,21 +139,33 @@ export default function JobDetailsPage() {
         {/* Job Information Pills - Matching the provided design */}
         <div className="px-4 mb-6 space-y-4">
           <div className="w-full bg-gray-200 rounded-full p-1">
-            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
-              <div className="text-sm">SALARY</div>
-              <div className="font-medium">{jobData?.salary || 'Not specified'}</div>
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">SALARY</div>
+              </div>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">{jobData?.salary || 'Not specified'}</div>
+              </div>
             </div>
           </div>
           <div className="w-full bg-gray-200 rounded-full p-1">
-            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
-              <div className="text-sm">JOB TYPE</div>
-              <div className="font-medium">{jobData?.type || 'Not specified'}</div>
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">JOB TYPE</div>
+              </div>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">{jobData?.type || 'Not specified'}</div>
+              </div>
             </div>
           </div>
           <div className="w-full bg-gray-200 rounded-full p-1">
-            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
-              <div className="text-sm">SHIFT</div>
-              <div className="font-medium">{jobData?.shift || 'Not specified'}</div>
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">SHIFT</div>
+              </div>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">{jobData?.shift || 'Not specified'}</div>
+              </div>
             </div>
           </div>
         </div>
