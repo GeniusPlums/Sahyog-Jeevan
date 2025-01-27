@@ -60,7 +60,7 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Local Strategy for employers
+  // Local Strategy for both workers and employers
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
@@ -104,7 +104,98 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // OTP Generation endpoint for workers
+  // Registration endpoint that supports both methods
+  app.post("/api/register", async (req, res, next) => {
+    try {
+      const { username, password, role = "worker", phone, preferredAuth = "password" } = req.body;
+
+      // Validate input based on preferred authentication method
+      if (preferredAuth === "password") {
+        if (!username || !password) {
+          return res.status(400).send("Username and password are required for password authentication");
+        }
+      } else if (preferredAuth === "otp") {
+        if (!phone) {
+          return res.status(400).send("Phone number is required for OTP authentication");
+        }
+      }
+
+      // Check if user already exists
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(
+          preferredAuth === "password" 
+            ? eq(users.username, username) 
+            : eq(users.phone, phone)
+        )
+        .limit(1);
+
+      if (existingUser) {
+        return res.status(400).send(
+          preferredAuth === "password" 
+            ? "Username already exists" 
+            : "Phone number already registered"
+        );
+      }
+
+      let hashedPassword = null;
+      if (password) {
+        hashedPassword = await crypto.hash(password);
+      }
+
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          username,
+          password: hashedPassword,
+          role,
+          phone,
+          preferredAuth,
+        })
+        .returning();
+
+      // Log the user in after registration
+      req.login(newUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.json(newUser);
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  // Login endpoint that supports both methods
+  app.post("/api/login", (req, res, next) => {
+    const { username, password, phone, otp } = req.body;
+
+    if (username && password) {
+      // Handle username/password login
+      passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
+        if (err) {
+          return next(err);
+        }
+        if (!user) {
+          return res.status(400).send(info.message ?? "Login failed");
+        }
+        req.logIn(user, (err) => {
+          if (err) {
+            return next(err);
+          }
+          return res.json(user);
+        });
+      })(req, res, next);
+    } else if (phone && otp) {
+      // Redirect to OTP verification
+      res.redirect(307, "/api/auth/verify-otp");
+    } else {
+      res.status(400).send("Invalid login credentials");
+    }
+  });
+
+  // Keep existing OTP-related endpoints
   app.post("/api/auth/send-otp", async (req, res) => {
     try {
       const { phone } = req.body;
@@ -148,7 +239,6 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // OTP Verification endpoint for workers
   app.post("/api/auth/verify-otp", async (req, res, next) => {
     try {
       const { phone, otp } = req.body;
@@ -195,101 +285,6 @@ export function setupAuth(app: Express) {
     } catch (error) {
       next(error);
     }
-  });
-
-  app.post("/api/register", async (req, res, next) => {
-    try {
-      const { username, password, role, phone, preferredLanguage, region, whatsappNumber } = req.body;
-
-      if (role === "worker") {
-        if (!phone) {
-          return res.status(400).send("Phone number is required for workers");
-        }
-      } else {
-        if (!username || !password) {
-          return res.status(400).send("Username and password are required for employers");
-        }
-      }
-
-      // Check if user already exists
-      const [existingUser] = await db
-        .select()
-        .from(users)
-        .where(role === "worker" ? eq(users.phone, phone) : eq(users.username, username))
-        .limit(1);
-
-      if (existingUser) {
-        return res.status(400).send(role === "worker" ? "Phone number already registered" : "Username already exists");
-      }
-
-      let hashedPassword = null;
-      if (password) {
-        hashedPassword = await crypto.hash(password);
-      }
-
-      const [newUser] = await db
-        .insert(users)
-        .values({
-          username: username || null,
-          password: hashedPassword,
-          role,
-          phone: phone || null
-        })
-        .returning();
-
-      // Create user settings
-      await db
-        .insert(userSettings)
-        .values({
-          userId: newUser.id,
-          preferredLanguage: preferredLanguage || "en",
-          region,
-          whatsappNumber,
-          notificationPreferences: {
-            email: true,
-            whatsapp: !!whatsappNumber,
-            sms: !!phone
-          }
-        });
-
-      req.login(newUser, (err) => {
-        if (err) {
-          return next(err);
-        }
-        return res.json(newUser);
-      });
-    } catch (error) {
-      next(error);
-    }
-  });
-
-  app.post("/api/login", (req, res, next) => {
-    const { phone, otp } = req.body;
-
-    if (phone && otp) {
-      // Handle worker login with OTP
-      res.redirect(307, "/api/auth/verify-otp");
-      return;
-    }
-
-    // Handle employer login with username/password
-    passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
-      if (err) {
-        return next(err);
-      }
-
-      if (!user) {
-        return res.status(400).send(info.message ?? "Login failed");
-      }
-
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-
-        return res.json(user);
-      });
-    })(req, res, next);
   });
 
   app.post("/api/logout", (req, res) => {
