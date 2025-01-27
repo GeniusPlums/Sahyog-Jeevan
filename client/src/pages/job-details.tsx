@@ -1,4 +1,4 @@
-import { useParams, Link } from "wouter";
+import { useParams, useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Menu, BookmarkIcon } from "lucide-react";
@@ -57,6 +57,7 @@ const MOCK_JOB: JobDetails = {
 export default function JobDetailsPage() {
   const { jobId } = useParams();
   const [activeTab, setActiveTab] = useState('description');
+  const [_, navigate] = useLocation();
 
   const { data: job, isLoading, error } = useQuery<JobDetails>({
     queryKey: [`/api/jobs/${jobId}`],
@@ -258,6 +259,7 @@ export default function JobDetailsPage() {
           <Button
             className="w-full bg-gray-900 hover:bg-gray-800 text-white"
             size="lg"
+            onClick={() => navigate(`/jobs/${jobId}/apply`)}
           >
             <BookmarkIcon className="mr-2 h-5 w-5" />
             APPLY NOW
