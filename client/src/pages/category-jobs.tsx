@@ -13,7 +13,7 @@ import {
 import RootLayout from "@/components/layouts/RootLayout";
 import type { Job } from "@db/schema";
 
-// Mock company data - replace with actual API data later
+// Mock company data
 const TOP_COMPANIES = [
   { id: 1, name: "Company A", logo: "/company-a-logo.svg" },
   { id: 2, name: "Company B", logo: "/company-b-logo.svg" },
@@ -23,11 +23,66 @@ const TOP_COMPANIES = [
   { id: 6, name: "Company F", logo: "/company-f-logo.svg" },
 ];
 
+// Mock jobs data
+const MOCK_JOBS = [
+  {
+    id: 1,
+    title: "Delivery Driver",
+    employerName: "FastDeliver Co",
+    location: "Mumbai Central",
+    salary: "₹25,000/month",
+    description: "Full-time delivery driver needed for local deliveries",
+    image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80",
+    category: "driver"
+  },
+  {
+    id: 2,
+    title: "Truck Driver",
+    employerName: "Logistics Plus",
+    location: "Delhi NCR",
+    salary: "₹35,000/month",
+    description: "Experienced truck driver for interstate routes",
+    image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80",
+    category: "driver"
+  },
+  {
+    id: 3,
+    title: "Private Driver",
+    employerName: "Elite Services",
+    location: "South Mumbai",
+    salary: "₹28,000/month",
+    description: "Private chauffeur needed for corporate executives",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80",
+    category: "driver"
+  },
+  {
+    id: 4,
+    title: "Cab Driver",
+    employerName: "City Cabs",
+    location: "Bangalore",
+    salary: "₹30,000/month",
+    description: "Join our team of professional cab drivers",
+    image: "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80",
+    category: "driver"
+  },
+  {
+    id: 5,
+    title: "School Bus Driver",
+    employerName: "Education Transport Services",
+    location: "Pune",
+    salary: "₹22,000/month",
+    description: "School bus driver needed for morning and afternoon shifts",
+    image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80",
+    category: "driver"
+  }
+];
+
 export default function CategoryJobsPage() {
   const { category } = useParams();
   const decodedCategory = category ? decodeURIComponent(category) : '';
 
-  const { data: jobs = [], isLoading } = useQuery<Job[]>({
+  // For now, use mock data instead of API call
+  const { data: jobs = MOCK_JOBS, isLoading } = useQuery<typeof MOCK_JOBS>({
     queryKey: [`/api/jobs/category/${category}`],
   });
 
@@ -93,11 +148,11 @@ export default function CategoryJobsPage() {
                 ))
               ) : (
                 jobs.map((job) => (
-                  <Card key={job.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                  <Card key={job.id} className="overflow-hidden shadow-sm hover:shadow-md transition-shadow rounded-lg">
                     <CardContent className="p-4">
                       <div className="aspect-video bg-muted rounded-lg mb-3">
                         <img
-                          src={job.image || `/job-images/${job.category}.jpg`}
+                          src={job.image}
                           alt={`${job.title} preview`}
                           className="w-full h-full object-cover rounded-lg"
                         />
