@@ -13,10 +13,8 @@ import LanguageSelector from "@/components/language-selector";
 import RegionSelector from "@/components/region-selector";
 
 type FormData = {
-  username?: string;
-  password?: string;
-  phone?: string;
-  otp?: string;
+  username: string;
+  password: string;
   role?: "worker" | "employer";
   preferredLanguage?: string;
   region?: string;
@@ -24,7 +22,6 @@ type FormData = {
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState("login");
-  const [showOTP, setShowOTP] = useState(false);
   const [userRole, setUserRole] = useState<"worker" | "employer">("worker");
   const { login, register, isLoginLoading, isRegisterLoading } = useUser();
   const { toast } = useToast();
@@ -39,53 +36,9 @@ export default function AuthPage() {
 
   const selectedLanguage = registerForm.watch("preferredLanguage");
 
-  const handleSendOTP = async () => {
-    const phone = loginForm.getValues("phone");
-    if (!phone) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please enter your phone number"
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
-      });
-
-      if (!response.ok) throw new Error(await response.text());
-
-      setShowOTP(true);
-      toast({
-        title: "OTP Sent",
-        description: "Please check your phone for the OTP"
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to send OTP"
-      });
-    }
-  };
-
   const onLogin = async (data: FormData) => {
     try {
-      if (userRole === "worker") {
-        if (!data.phone || !data.otp) {
-          throw new Error("Phone and OTP are required");
-        }
-        await login({ phone: data.phone, otp: data.otp });
-      } else {
-        if (!data.username || !data.password) {
-          throw new Error("Username and password are required");
-        }
-        await login(data);
-      }
+      await login(data);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -139,80 +92,30 @@ export default function AuthPage() {
                   </RadioGroup>
                 </div>
 
-                {userRole === "worker" ? (
-                  // Worker Login with OTP
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="+91"
-                        {...loginForm.register("phone")}
-                        required
-                      />
-                    </div>
-
-                    {!showOTP ? (
-                      <Button
-                        type="button"
-                        className="w-full"
-                        onClick={handleSendOTP}
-                        disabled={isLoginLoading}
-                      >
-                        Send OTP
-                      </Button>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="otp">Enter OTP</Label>
-                          <Input
-                            id="otp"
-                            type="text"
-                            maxLength={6}
-                            {...loginForm.register("otp")}
-                            required
-                          />
-                        </div>
-                        <Button type="submit" className="w-full" disabled={isLoginLoading}>
-                          {isLoginLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "Verify & Login"
-                          )}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  // Employer Login
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="login-username">Username</Label>
-                      <Input
-                        id="login-username"
-                        {...loginForm.register("username")}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="login-password">Password</Label>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        {...loginForm.register("password")}
-                        required
-                      />
-                    </div>
-                    <Button type="submit" className="w-full" disabled={isLoginLoading}>
-                      {isLoginLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "Login"
-                      )}
-                    </Button>
-                  </>
-                )}
+                <div className="space-y-2">
+                  <Label htmlFor="login-username">Username</Label>
+                  <Input
+                    id="login-username"
+                    {...loginForm.register("username")}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="login-password">Password</Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    {...loginForm.register("password")}
+                    required
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={isLoginLoading}>
+                  {isLoginLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    "Login"
+                  )}
+                </Button>
               </form>
             </TabsContent>
 
@@ -237,38 +140,23 @@ export default function AuthPage() {
                   </RadioGroup>
                 </div>
 
-                {registerForm.watch("role") === "worker" ? (
-                  <div className="space-y-2">
-                    <Label htmlFor="register-phone">Phone Number</Label>
-                    <Input
-                      id="register-phone"
-                      type="tel"
-                      placeholder="+91"
-                      {...registerForm.register("phone")}
-                      required
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-username">Username</Label>
-                      <Input
-                        id="register-username"
-                        {...registerForm.register("username")}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-password">Password</Label>
-                      <Input
-                        id="register-password"
-                        type="password"
-                        {...registerForm.register("password")}
-                        required
-                      />
-                    </div>
-                  </>
-                )}
+                <div className="space-y-2">
+                  <Label htmlFor="register-username">Username</Label>
+                  <Input
+                    id="register-username"
+                    {...registerForm.register("username")}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-password">Password</Label>
+                  <Input
+                    id="register-password"
+                    type="password"
+                    {...registerForm.register("password")}
+                    required
+                  />
+                </div>
 
                 <div className="space-y-2">
                   <Label>Preferred Language</Label>
