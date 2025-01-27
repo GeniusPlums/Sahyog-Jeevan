@@ -137,6 +137,26 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Add employer jobs endpoint
+  app.get("/api/employer/jobs", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.role !== "employer") {
+      return res.status(401).send("Unauthorized");
+    }
+
+    try {
+      const employerJobs = await db
+        .select()
+        .from(jobs)
+        .where(eq(jobs.employerId, req.user.id))
+        .orderBy(jobs.createdAt);
+      res.json(employerJobs);
+    } catch (error) {
+      console.error('Error fetching employer jobs:', error);
+      res.status(500).json({ error: "Failed to fetch employer jobs" });
+    }
+  });
+
+
   // Applications
   app.post("/api/applications", async (req, res) => {
     if (!req.isAuthenticated() || req.user.role !== "worker") {
