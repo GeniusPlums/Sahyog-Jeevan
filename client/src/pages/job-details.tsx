@@ -136,19 +136,25 @@ export default function JobDetailsPage() {
           <h2 className="text-xl font-semibold">{jobData?.employerName || 'Company Name'}</h2>
         </div>
 
-        {/* Job Information Pills - Horizontal capsules */}
+        {/* Job Information Pills - Matching the provided design */}
         <div className="px-4 mb-6 space-y-4">
-          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
-            <div className="text-sm opacity-75">SALARY</div>
-            <div className="font-medium">{jobData?.salary || 'Not specified'}</div>
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
+              <div className="text-sm">SALARY</div>
+              <div className="font-medium">{jobData?.salary || 'Not specified'}</div>
+            </div>
           </div>
-          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
-            <div className="text-sm opacity-75">JOB TYPE</div>
-            <div className="font-medium">{jobData?.type || 'Not specified'}</div>
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
+              <div className="text-sm">JOB TYPE</div>
+              <div className="font-medium">{jobData?.type || 'Not specified'}</div>
+            </div>
           </div>
-          <div className="w-full bg-gray-900 text-white rounded-full px-6 py-2 flex justify-between items-center">
-            <div className="text-sm opacity-75">SHIFT</div>
-            <div className="font-medium">{jobData?.shift || 'Not specified'}</div>
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex justify-between items-center bg-black text-white rounded-full px-6 py-2">
+              <div className="text-sm">SHIFT</div>
+              <div className="font-medium">{jobData?.shift || 'Not specified'}</div>
+            </div>
           </div>
         </div>
 
