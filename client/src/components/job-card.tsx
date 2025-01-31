@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Building, Clock, DollarSign, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Job } from "@db/schema";
 
 type JobCardProps = {
@@ -48,74 +49,131 @@ export default function JobCard({ job }: JobCardProps) {
   });
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-semibold">{job.title}</h3>
-              <Badge variant={job.status === "open" ? "default" : "secondary"}>
-                {job.status}
-              </Badge>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ scale: 1.02 }}
+      className="group"
+    >
+      <Card className="overflow-hidden border-primary/10 bg-gradient-to-br from-background to-primary/5 transition-colors hover:border-primary/20">
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                  {job.title}
+                </h3>
+                <Badge 
+                  variant={job.status === "open" ? "default" : "secondary"}
+                  className="transition-colors"
+                >
+                  {job.status}
+                </Badge>
+              </div>
+
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-center gap-2"
+                >
+                  <Building className="h-4 w-4 text-primary" />
+                  <span>Company {job.employerId}</span>
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="flex items-center gap-2"
+                >
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span>{job.location}</span>
+                </motion.div>
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-center gap-2"
+                >
+                  <Clock className="h-4 w-4 text-primary" />
+                  <span>{job.type}</span>
+                </motion.div>
+                {job.salary && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex items-center gap-2"
+                  >
+                    <DollarSign className="h-4 w-4 text-primary" />
+                    <span>{job.salary}</span>
+                  </motion.div>
+                )}
+              </div>
             </div>
 
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                <span>Company {job.employerId}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                <span>{job.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                <span>{job.type}</span>
-              </div>
-              {job.salary && (
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4" />
-                  <span>{job.salary}</span>
-                </div>
-              )}
-            </div>
+            {user?.role === "worker" && job.status === "open" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Button
+                  onClick={() => applyMutation.mutate()}
+                  disabled={applyMutation.isPending}
+                  className="relative overflow-hidden"
+                >
+                  {applyMutation.isPending ? (
+                    "Applying..."
+                  ) : (
+                    <>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Quick Apply
+                    </>
+                  )}
+                </Button>
+              </motion.div>
+            )}
           </div>
 
-          {user?.role === "worker" && job.status === "open" && (
-            <Button
-              onClick={() => applyMutation.mutate()}
-              disabled={applyMutation.isPending}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4"
+          >
+            <p className="text-sm">{job.description}</p>
+          </motion.div>
+
+          {job.requirements && job.requirements.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-4"
             >
-              {applyMutation.isPending ? (
-                "Applying..."
-              ) : (
-                <>
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Quick Apply
-                </>
-              )}
-            </Button>
+              <h4 className="text-sm font-semibold mb-2">Requirements:</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm">
+                {job.requirements.map((req, index) => (
+                  <motion.li 
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + index * 0.1 }}
+                  >
+                    {req}
+                  </motion.li>
+                ))}
+              </ul>
+            </motion.div>
           )}
-        </div>
-
-        <div className="mt-4">
-          <p className="text-sm">{job.description}</p>
-        </div>
-
-        {job.requirements && job.requirements.length > 0 && (
-          <div className="mt-4">
-            <h4 className="text-sm font-semibold mb-2">Requirements:</h4>
-            <ul className="list-disc list-inside space-y-1 text-sm">
-              {job.requirements.map((req, index) => (
-                <li key={index}>{req}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </CardContent>
-      <CardFooter className="text-sm text-muted-foreground">
-        Posted {new Date(job.createdAt!).toLocaleDateString()}
-      </CardFooter>
-    </Card>
+        </CardContent>
+        <CardFooter className="text-sm text-muted-foreground border-t border-primary/10">
+          Posted {new Date(job.createdAt!).toLocaleDateString()}
+        </CardFooter>
+      </Card>
+    </motion.div>
   );
 }
