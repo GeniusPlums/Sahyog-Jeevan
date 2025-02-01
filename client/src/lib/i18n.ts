@@ -158,8 +158,7 @@ const hiTranslations = {
   }
 };
 
-// Initialize i18next
-const i18nInstance = i18n
+i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -181,4 +180,4 @@ const i18nInstance = i18n
     }
   });
 
-export default i18nInstance;
+export default i18n;
