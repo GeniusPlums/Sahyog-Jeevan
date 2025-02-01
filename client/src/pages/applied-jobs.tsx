@@ -20,36 +20,7 @@ import {
   Building2
 } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
-import type { Application } from "@db/schema";
-
-const MOCK_APPLICATIONS = [
-  {
-    id: 1,
-    jobId: 1,
-    status: "pending",
-    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-    job: {
-      title: "Driver",
-      company: "Company A",
-      location: "Mumbai",
-      salary: "₹25,000/month",
-      image: "/path/to/driver-job.jpg"
-    }
-  },
-  {
-    id: 2,
-    jobId: 2,
-    status: "shortlisted",
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-    job: {
-      title: "Security Guard",
-      company: "Company B",
-      location: "Delhi",
-      salary: "₹30,000/month",
-      image: "/path/to/security-job.jpg"
-    }
-  }
-];
+import { applicationsApi, type Application } from "@/lib/api";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -84,14 +55,15 @@ export default function AppliedJobsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
-  const { data: applications = MOCK_APPLICATIONS, isLoading } = useQuery<typeof MOCK_APPLICATIONS>({
-    queryKey: ["/api/applications/worker"],
+  const { data: applications = [], isLoading } = useQuery<Application[]>({
+    queryKey: ['applications'],
+    queryFn: applicationsApi.getAll
   });
 
   const filteredApplications = applications.filter(application => {
     const matchesSearch = 
       application.job.title.toLowerCase().includes(search.toLowerCase()) ||
-      application.job.company.toLowerCase().includes(search.toLowerCase()) ||
+      application.job.companyName.toLowerCase().includes(search.toLowerCase()) ||
       application.job.location.toLowerCase().includes(search.toLowerCase());
     
     const matchesStatus = 
@@ -102,7 +74,7 @@ export default function AppliedJobsPage() {
   });
 
   const getDaysAgo = (date: Date) => {
-    const days = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24));
+    const days = Math.floor((Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24));
     if (days === 0) return t('common.today');
     if (days === 1) return t('common.yesterday');
     return t('common.daysAgo', { days });
@@ -179,7 +151,7 @@ export default function AppliedJobsPage() {
                         <div className="w-full sm:w-[180px] h-[120px] bg-muted rounded-lg overflow-hidden">
                           <img
                             src={application.job.image}
-                            alt={application.job.company}
+                            alt={application.job.companyName}
                             className="w-full h-full object-cover"
                           />
                         </div>
@@ -188,7 +160,7 @@ export default function AppliedJobsPage() {
                         <div className="flex-1 space-y-4">
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <div>
-                              <h3 className="text-lg font-semibold">{application.job.company}</h3>
+                              <h3 className="text-lg font-semibold">{application.job.companyName}</h3>
                               <p className="text-muted-foreground">{application.job.title}</p>
                             </div>
                             <Badge 

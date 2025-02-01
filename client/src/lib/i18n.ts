@@ -41,6 +41,21 @@ const enTranslations = {
     home: "Home",
     jobApplication: "Job Application",
     applicationProgress: "Application Progress",
+    appliedJobs: "Applied Jobs",
+    acceptedJobs: "Accepted Jobs",
+    trackApplications: "Track your job applications",
+    applications: "Applications",
+    searchApplications: "Search applications",
+    all: "All",
+    pending: "Pending",
+    shortlisted: "Shortlisted",
+    rejected: "Rejected",
+    accepted: "Accepted",
+    startDate: "Start Date",
+    noApplications: "No applications found",
+    noApplicationsDesc: "You haven't applied to any jobs yet",
+    noAcceptedJobs: "No accepted jobs found",
+    noAcceptedJobsDesc: "You don't have any accepted jobs yet",
     gender: {
       label: "Gender",
       male: "Male",
@@ -60,23 +75,23 @@ const enTranslations = {
       afternoon: "Afternoon",
       night: "Night",
       flexible: "Flexible"
+    },
+    categories: {
+      driver: "Driver",
+      deliverydriver: "Delivery Driver",
+      guard: "Guard",
+      gardener: "Gardener",
+      cook: "Cook",
+      maid: "Maid",
+      sweeper: "Sweeper",
+      securityguard: "Security Guard"
+    },
+    locations: {
+      mumbai: "Mumbai",
+      delhi: "Delhi",
+      bangalore: "Bangalore",
+      mumbaicentral: "Mumbai Central"
     }
-  },
-  categories: {
-    driver: "Driver",
-    deliverydriver: "Delivery Driver",
-    guard: "Guard",
-    gardener: "Gardener",
-    cook: "Cook",
-    maid: "Maid",
-    sweeper: "Sweeper",
-    securityguard: "Security Guard"
-  },
-  locations: {
-    mumbai: "Mumbai",
-    delhi: "Delhi",
-    bangalore: "Bangalore",
-    mumbaicentral: "Mumbai Central"
   }
 };
 
@@ -86,10 +101,10 @@ const hiTranslations = {
     search: "उद्योग खोजें",
     filter: "फ़िल्टर",
     apply: "आवेदन करने के लिए यहां क्लिक करें",
-    jobsAround: "आस-पास की नौकरियां",
-    login: "लॉग इन",
-    register: "पंजीकरण",
-    username: "उपयोगकर्ता नाम",
+    jobsAround: "आपके आस-पास की नौकरियां",
+    login: "लॉगिन",
+    register: "रजिस्टर",
+    username: "यूजरनेम",
     password: "पासवर्ड",
     worker: "कर्मचारी",
     employer: "नियोक्ता",
@@ -100,25 +115,40 @@ const hiTranslations = {
     location: "स्थान",
     company: "कंपनी",
     clickToApply: "आवेदन करने के लिए यहां क्लिक करें",
-    applying: "आवेदन किया जा रहा है...",
+    applying: "आवेदन कर रहे हैं...",
     requirements: "आवश्यकताएं",
     posted: "पोस्ट किया गया",
-    open: "खुला हुआ",
+    open: "खुला",
     draft: "ड्राफ्ट",
     fulltime: "पूर्णकालिक",
     parttime: "अंशकालिक",
     selectJobType: "नौकरी का प्रकार चुनें",
     regularJob: "नियमित नौकरी",
-    gigWork: "गिग वर्क",
+    gigWork: "अस्थायी काम",
     filter: "फ़िल्टर",
     featuredJobs: "विशेष नौकरियां",
     viewDetails: "विवरण देखें",
     quickApply: "त्वरित आवेदन",
-    quickApplyDesc: "अपने सहेजे गए प्रोफाइल के साथ कई नौकरियों के लिए त्वरित आवेदन करें",
+    quickApplyDesc: "सेव की गई प्रोफाइल से कई नौकरियों के लिए जल्दी से आवेदन करें",
     browseJobs: "नौकरियां ब्राउज़ करें",
     home: "होम",
     jobApplication: "नौकरी आवेदन",
-    applicationProgress: "आवेदन प्रगति",
+    applicationProgress: "आवेदन की प्रगति",
+    appliedJobs: "आवेदित नौकरियां",
+    acceptedJobs: "स्वीकृत नौकरियां",
+    trackApplications: "अपने आवेदनों को ट्रैक करें",
+    applications: "आवेदन",
+    searchApplications: "आवेदन खोजें",
+    all: "सभी",
+    pending: "लंबित",
+    shortlisted: "शॉर्टलिस्ट",
+    rejected: "अस्वीकृत",
+    accepted: "स्वीकृत",
+    startDate: "आरंभ तिथि",
+    noApplications: "कोई आवेदन नहीं मिला",
+    noApplicationsDesc: "आपने अभी तक किसी नौकरी के लिए आवेदन नहीं किया है",
+    noAcceptedJobs: "कोई स्वीकृत नौकरी नहीं मिली",
+    noAcceptedJobsDesc: "आपकी कोई स्वीकृत नौकरी नहीं है",
     gender: {
       label: "लिंग",
       male: "पुरुष",
@@ -138,23 +168,23 @@ const hiTranslations = {
       afternoon: "दोपहर",
       night: "रात",
       flexible: "लचीला"
+    },
+    categories: {
+      driver: "ड्राइवर",
+      deliverydriver: "डिलीवरी ड्राइवर",
+      guard: "गार्ड",
+      gardener: "माली",
+      cook: "रसोइया",
+      maid: "घरेलू सहायक",
+      sweeper: "सफाई कर्मचारी",
+      securityguard: "सुरक्षा गार्ड"
+    },
+    locations: {
+      mumbai: "मुंबई",
+      delhi: "दिल्ली",
+      bangalore: "बैंगलोर",
+      mumbaicentral: "मुंबई सेंट्रल"
     }
-  },
-  categories: {
-    driver: "ड्राइवर",
-    deliverydriver: "डिलीवरी ड्राइवर",
-    guard: "गार्ड",
-    gardener: "माली",
-    cook: "रसोइया",
-    maid: "घरेलू सहायक",
-    sweeper: "सफाई कर्मचारी",
-    securityguard: "सुरक्षा गार्ड"
-  },
-  locations: {
-    mumbai: "मुंबई",
-    delhi: "दिल्ली",
-    bangalore: "बैंगलोर",
-    mumbaicentral: "मुंबई सेंट्रल"
   }
 };
 
