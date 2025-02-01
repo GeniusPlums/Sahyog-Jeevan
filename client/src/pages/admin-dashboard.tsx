@@ -11,8 +11,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, UserX, AlertTriangle } from "lucide-react";
+import { Loader2, UserX, Briefcase, Users, FileText } from "lucide-react";
 import type { User, Job, Application } from "@db/schema";
+import { motion } from "framer-motion";
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -59,119 +60,179 @@ export default function AdminDashboard() {
 
   if (isUsersLoading || isJobsLoading || isStatsLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUsers}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalJobs}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalApplications}</div>
-          </CardContent>
-        </Card>
+    <div className="space-y-8 p-6 md:p-8">
+      <div className="grid gap-6 md:grid-cols-3">
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.3 }}
+        >
+          <Card className="relative overflow-hidden">
+            <div className="absolute right-4 top-4 text-primary/10">
+              <Users className="h-24 w-24" />
+            </div>
+            <CardHeader className="space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{stats.totalUsers}</div>
+              <p className="mt-2 text-xs text-muted-foreground">Active members in the platform</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <Card className="relative overflow-hidden">
+            <div className="absolute right-4 top-4 text-primary/10">
+              <Briefcase className="h-24 w-24" />
+            </div>
+            <CardHeader className="space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Active Jobs</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{stats.totalJobs}</div>
+              <p className="mt-2 text-xs text-muted-foreground">Open positions available</p>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <motion.div
+          variants={cardVariants}
+          initial="hidden"
+          animate="visible"
+          transition={{ duration: 0.3, delay: 0.2 }}
+        >
+          <Card className="relative overflow-hidden">
+            <div className="absolute right-4 top-4 text-primary/10">
+              <FileText className="h-24 w-24" />
+            </div>
+            <CardHeader className="space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-foreground">{stats.totalApplications}</div>
+              <p className="mt-2 text-xs text-muted-foreground">Submitted job applications</p>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Users</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Username</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Created At</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell>
-                    <Badge variant={user.role === "worker" ? "default" : "secondary"}>
-                      {user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt!).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeactivateUser(user.id)}
-                    >
-                      <UserX className="h-4 w-4 mr-2" />
-                      Deactivate
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.3, delay: 0.3 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">Recent Users</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Username</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Created At</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {users.map((user) => (
+                    <TableRow key={user.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{user.username}</TableCell>
+                      <TableCell>
+                        <Badge variant={user.role === "worker" ? "default" : "secondary"} className="capitalize">
+                          {user.role}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(user.createdAt!).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeactivateUser(user.id)}
+                          className="hover:bg-destructive/90"
+                        >
+                          <UserX className="h-4 w-4 mr-2" />
+                          Deactivate
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Jobs</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Employer</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Posted At</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentJobs.map((job) => (
-                <TableRow key={job.id}>
-                  <TableCell>{job.title}</TableCell>
-                  <TableCell>{job.employerId}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={job.status === "open" ? "default" : "secondary"}
-                    >
-                      {job.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {new Date(job.createdAt!).toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <motion.div
+        variants={cardVariants}
+        initial="hidden"
+        animate="visible"
+        transition={{ duration: 0.3, delay: 0.4 }}
+      >
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">Recent Jobs</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Employer</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Posted At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentJobs.map((job) => (
+                    <TableRow key={job.id} className="hover:bg-muted/50">
+                      <TableCell className="font-medium">{job.title}</TableCell>
+                      <TableCell>{job.employerId}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={job.status === "open" ? "default" : "secondary"}
+                          className="capitalize"
+                        >
+                          {job.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-muted-foreground">
+                        {new Date(job.createdAt!).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
