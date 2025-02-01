@@ -28,6 +28,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import { jobsApi, type Job } from "@/lib/api";
 
 const JOB_CATEGORIES = [
   { id: 'driver', label: 'categories.driver', icon: '🚗' },
@@ -36,29 +38,6 @@ const JOB_CATEGORIES = [
   { id: 'cook', label: 'categories.cook', icon: '👨‍🍳' },
   { id: 'maid', label: 'categories.maid', icon: '🧹' },
   { id: 'carpenter', label: 'categories.carpenter', icon: '🔨' },
-];
-
-const FEATURED_JOBS = [
-  {
-    id: 1,
-    title: 'driver',
-    company: 'Company A',
-    salary: '25,000',
-    location: 'mumbai',
-    type: 'Full-time',
-    shift: 'Day',
-    image: '/path/to/driver-job.jpg'
-  },
-  {
-    id: 2,
-    title: 'securityguard',
-    company: 'Company B',
-    salary: '30,000',
-    location: 'delhi',
-    type: 'Part-time',
-    shift: 'Night',
-    image: '/path/to/security-job.jpg'
-  },
 ];
 
 const fadeInUp = {
@@ -76,13 +55,23 @@ const stagger = {
 };
 
 export default function HomePage() {
-  const [_, navigate] = useLocation();
   const { t } = useTranslation();
-  const [isLoading] = useState(false);
+  const [, navigate] = useLocation();
   const [jobType, setJobType] = useState("job");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const { data: jobs = [], isLoading } = useQuery({
+    queryKey: ['jobs'],
+    queryFn: jobsApi.getAll
+  });
+
+  const filteredJobs = jobs.filter(job => 
+    job.status === 'active' && 
+    (!selectedCategory || job.title.toLowerCase().includes(selectedCategory.toLowerCase()))
+  );
 
   const handleCategoryClick = (categoryId: string) => {
-    navigate(`/jobs/category/${encodeURIComponent(categoryId)}`);
+    setSelectedCategory(categoryId);
   };
 
   return (
@@ -218,7 +207,7 @@ export default function HomePage() {
                 ))
               ) : (
                 // Job cards
-                FEATURED_JOBS.map((job) => (
+                filteredJobs.map((job) => (
                   <motion.div
                     key={job.id}
                     variants={fadeInUp}

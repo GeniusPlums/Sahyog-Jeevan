@@ -28,35 +28,7 @@ import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import RootLayout from "@/components/layouts/RootLayout";
-import type { Job } from "@db/schema";
-
-// Mock data - will be replaced with API call
-const MOCK_JOBS = [
-  {
-    id: 1,
-    title: "Delivery Driver",
-    status: "active",
-    applications: 5,
-    postedDate: "2025-01-20",
-    location: "Mumbai Central",
-    salary: "₹25,000/month",
-    type: "full-time",
-    views: 120,
-    applicationsToday: 2
-  },
-  {
-    id: 2,
-    title: "Security Guard",
-    status: "draft",
-    applications: 0,
-    postedDate: "2025-01-25",
-    location: "Delhi NCR",
-    salary: "₹30,000/month",
-    type: "part-time",
-    views: 0,
-    applicationsToday: 0
-  },
-];
+import { jobsApi, type Job } from "@/lib/api";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -81,14 +53,15 @@ const statusColors = {
 
 export default function EmployerDashboard() {
   const { t } = useTranslation();
-  const [_, navigate] = useLocation();
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [, navigate] = useLocation();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "applications">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   
-  const { data: jobs = MOCK_JOBS, isLoading } = useQuery<typeof MOCK_JOBS>({
-    queryKey: ["/api/employer/jobs"],
+  const { data: jobs = [], isLoading } = useQuery({
+    queryKey: ['employer-jobs'],
+    queryFn: jobsApi.getEmployerJobs
   });
 
   const stats = {
@@ -102,10 +75,10 @@ export default function EmployerDashboard() {
   const filteredJobs = jobs
     .filter(job => {
       const matchesSearch = 
-        job.title.toLowerCase().includes(search.toLowerCase()) ||
-        job.location.toLowerCase().includes(search.toLowerCase());
+        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = 
-        statusFilter === "all" || 
+        !statusFilter || 
         job.status === statusFilter;
       return matchesSearch && matchesStatus;
     })
@@ -260,8 +233,8 @@ export default function EmployerDashboard() {
                 <div className="relative flex-1">
                   <Input
                     placeholder={t('common.searchJobs')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 pr-4"
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -272,7 +245,7 @@ export default function EmployerDashboard() {
                       <SelectValue placeholder={t('common.filterByStatus')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('common.allStatus')}</SelectItem>
+                      <SelectItem value={null}>{t('common.allStatus')}</SelectItem>
                       <SelectItem value="active">{t('common.active')}</SelectItem>
                       <SelectItem value="draft">{t('common.draft')}</SelectItem>
                       <SelectItem value="closed">{t('common.closed')}</SelectItem>
@@ -371,16 +344,16 @@ export default function EmployerDashboard() {
                     <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
                     <h3 className="text-lg font-medium mb-2">{t('common.noJobsFound')}</h3>
                     <p className="text-sm text-muted-foreground max-w-md">
-                      {search || statusFilter !== "all" 
+                      {searchQuery || statusFilter 
                         ? t('common.noJobsMatchFilter')
                         : t('common.noJobsPosted')}
                     </p>
-                    {search || statusFilter !== "all" ? (
+                    {searchQuery || statusFilter ? (
                       <Button 
                         variant="outline"
                         onClick={() => {
-                          setSearch("");
-                          setStatusFilter("all");
+                          setSearchQuery("");
+                          setStatusFilter(null);
                         }}
                         className="mt-4"
                       >
