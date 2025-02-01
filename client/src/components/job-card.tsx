@@ -50,7 +50,18 @@ export default function JobCard({ job }: JobCardProps) {
     },
   });
 
-  const formattedSalary = job.salary ? `${job.salary}${t('common.month')}` : '';
+  // Format salary to include the translated "/month"
+  const formattedSalary = job.salary ? `₹${job.salary}${t('common.month')}` : '';
+
+  // Helper to format location for translation key
+  const getLocationKey = (location: string) => {
+    return location.toLowerCase().replace(/\s+/g, '');
+  };
+
+  // Helper to format category/title for translation key
+  const getTitleKey = (title: string) => {
+    return title.toLowerCase().replace(/\s+/g, '');
+  };
 
   return (
     <motion.div
@@ -66,13 +77,13 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
-                  {t(`categories.${job.title.toLowerCase()}`)}
+                  {t(`categories.${getTitleKey(job.title)}`)}
                 </h3>
                 <Badge 
                   variant={job.status === "open" ? "default" : "secondary"}
                   className="transition-colors"
                 >
-                  {job.status}
+                  {t(`common.${job.status}`)}
                 </Badge>
               </div>
 
@@ -84,7 +95,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2"
                 >
                   <Building className="h-4 w-4 text-primary" />
-                  <span>{t('common.company')} {job.employerId}</span>
+                  <span>{t('common.company')}: {job.employerId}</span>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -93,7 +104,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2"
                 >
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span>{t(`locations.${job.location.toLowerCase().replace(/\s+/g, '')}`)}</span>
+                  <span>{t(`locations.${getLocationKey(job.location)}`)}</span>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -102,7 +113,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2"
                 >
                   <Clock className="h-4 w-4 text-primary" />
-                  <span>{job.type}</span>
+                  <span>{t(`common.${job.type.toLowerCase()}`)}</span>
                 </motion.div>
                 {formattedSalary && (
                   <motion.div 
