@@ -32,7 +32,7 @@ export default function JobApplicationForm() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(applicationSchema),
   });
 
@@ -43,98 +43,125 @@ export default function JobApplicationForm() {
 
   return (
     <RootLayout>
-      <div className="min-h-screen bg-background p-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-md mx-auto space-y-6"
-        >
-          <Card className="border-0 shadow-lg">
-            <CardContent className="p-6">
-              {/* Job Responsibilities Section */}
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold mb-4">Job Responsibilities:</h2>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span>Drive safely and efficiently to deliver packages</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span>Maintain vehicle cleanliness and perform basic checks</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span>Follow traffic rules and company policies</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span>Provide excellent customer service</span>
-                  </li>
-                </ul>
+      <div className="min-h-screen bg-background">
+        {/* Job Details */}
+        <div className="px-4 py-6 space-y-4">
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">SALARY</div>
               </div>
-
-              {/* Application Form */}
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {[
-                  { label: "GENDER", options: GENDER_OPTIONS, field: "gender" },
-                  { label: "EXPERIENCE", options: EXPERIENCE_OPTIONS, field: "experience" },
-                  { label: "SHIFT", options: SHIFT_OPTIONS, field: "shift" },
-                ].map(({ label, options, field }) => (
-                  <div key={field} className="space-y-2">
-                    <Select 
-                      onValueChange={(value) => setValue(field as "gender" | "experience" | "shift", value)}
-                    >
-                      <SelectTrigger className="w-full bg-white border-gray-200">
-                        <SelectValue placeholder={label} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {options.map((option) => (
-                          <SelectItem key={option} value={option.toLowerCase()}>
-                            {option}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors[field as keyof FormData] && (
-                      <p className="text-sm text-destructive">
-                        {errors[field as keyof FormData]?.message as string}
-                      </p>
-                    )}
-                  </div>
-                ))}
-
-                {/* Upload Section */}
-                <div 
-                  className="bg-white border border-gray-200 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => document.getElementById('profile-upload')?.click()}
-                >
-                  <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p className="text-gray-600">Upload Profile</p>
-                  <input
-                    type="file"
-                    id="profile-upload"
-                    className="hidden"
-                    accept="image/*"
-                    {...register("profileImage")}
-                  />
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Apply Now Button - Fixed at bottom */}
-          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t">
-            <Button 
-              type="submit"
-              onClick={handleSubmit(onSubmit)}
-              className="w-full bg-black hover:bg-gray-800 text-white h-12 text-lg font-medium"
-            >
-              APPLY NOW
-            </Button>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">25000/month</div>
+              </div>
+            </div>
           </div>
-        </motion.div>
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">JOB TYPE</div>
+              </div>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">FULL TIME</div>
+              </div>
+            </div>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full p-1">
+            <div className="flex items-center rounded-full overflow-hidden">
+              <div className="bg-[#808080] text-white px-6 py-2 flex-1">
+                <div className="text-sm">SHIFT</div>
+              </div>
+              <div className="bg-black text-white px-6 py-2 flex-1 text-right">
+                <div className="font-medium">9 AM - 5 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Job Responsibilities */}
+        <Card className="mx-4 border-0 shadow-sm">
+          <CardContent className="p-6">
+            <h2 className="text-lg font-semibold mb-4">Job Responsibilities:</h2>
+            <ul className="space-y-2 text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span>Drive safely and efficiently to deliver packages</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span>Maintain vehicle cleanliness and perform basic checks</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span>Follow traffic rules and company policies</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                <span>Provide excellent customer service</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Application Form */}
+        <div className="p-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {[
+              { label: "GENDER", options: GENDER_OPTIONS, field: "gender" },
+              { label: "EXPERIENCE", options: EXPERIENCE_OPTIONS, field: "experience" },
+              { label: "SHIFT", options: SHIFT_OPTIONS, field: "shift" },
+            ].map(({ label, options, field }) => (
+              <div key={field} className="space-y-2">
+                <Select 
+                  onValueChange={(value) => form.setValue(field as keyof FormData, value)}
+                >
+                  <SelectTrigger className="w-full bg-white border-gray-200">
+                    <SelectValue placeholder={label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map((option) => (
+                      <SelectItem key={option} value={option.toLowerCase()}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {form.formState.errors[field as keyof FormData] && (
+                  <p className="text-sm text-destructive">
+                    {form.formState.errors[field as keyof FormData]?.message as string}
+                  </p>
+                )}
+              </div>
+            ))}
+
+            {/* Upload Section */}
+            <div 
+              className="bg-white border border-gray-200 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors"
+              onClick={() => document.getElementById('profile-upload')?.click()}
+            >
+              <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+              <p className="text-gray-600">Upload Profile</p>
+              <input
+                type="file"
+                id="profile-upload"
+                className="hidden"
+                accept="image/*"
+                {...form.register("profileImage")}
+              />
+            </div>
+          </form>
+        </div>
+
+        {/* Apply Now Button */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t">
+          <Button 
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
+            className="w-full bg-black hover:bg-gray-800 text-white h-12 text-lg font-medium"
+          >
+            APPLY NOW
+          </Button>
+        </div>
       </div>
     </RootLayout>
   );
