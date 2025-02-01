@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
 
-
 const JOB_CATEGORIES = [
   { id: 'driver', label: 'categories.driver' },
   { id: 'guard', label: 'categories.guard' },
@@ -24,18 +23,18 @@ const JOB_CATEGORIES = [
 const FEATURED_JOBS = [
   {
     id: 1,
-    title: 'Driver',
+    title: 'driver',
     company: 'Company A',
-    salary: '25,000/month',
-    location: 'Mumbai',
+    salary: '25,000',
+    location: 'mumbai',
     image: '/path/to/driver-job.jpg'
   },
   {
     id: 2,
-    title: 'Security Guard',
+    title: 'securityguard',
     company: 'Company B',
-    salary: '30,000/month',
-    location: 'Delhi',
+    salary: '30,000',
+    location: 'delhi',
     image: '/path/to/security-job.jpg'
   },
 ];
@@ -66,7 +65,7 @@ export default function HomePage() {
           {/* Search Bar with Internal Filter */}
           <div className="relative mb-4">
             <Input
-              placeholder="SEARCH INDUSTRY"
+              placeholder={t('common.search')}
               className="pl-9 pr-12"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
@@ -118,20 +117,20 @@ export default function HomePage() {
               {/* Job Type Selector */}
               <Select defaultValue="job">
                 <SelectTrigger>
-                  <SelectValue placeholder="Select job type" />
+                  <SelectValue placeholder={t('common.selectJobType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="job">Regular Job</SelectItem>
-                  <SelectItem value="gig">Gig Work</SelectItem>
+                  <SelectItem value="job">{t('common.regularJob')}</SelectItem>
+                  <SelectItem value="gig">{t('common.gigWork')}</SelectItem>
                 </SelectContent>
               </Select>
 
               {/* Jobs Header with Filter */}
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Jobs around you</h2>
+                <h2 className="text-lg font-semibold">{t('common.jobsAround')}</h2>
                 <Button variant="outline" size="sm">
                   <Filter className="h-4 w-4 mr-2" />
-                  Filter
+                  {t('common.filter')}
                 </Button>
               </div>
 
@@ -145,19 +144,18 @@ export default function HomePage() {
                   >
                     <CardContent className="p-4">
                       <div className="aspect-video bg-muted rounded-lg mb-3">
-                        {/* Job Image */}
                         <img
                           src={job.image}
-                          alt={`${job.title} preview`}
+                          alt={t(`categories.${job.title}`)}
                           className="w-full h-full object-cover rounded-lg"
                         />
                       </div>
                       <div className="flex items-start justify-between">
                         <div>
-                          <h3 className="font-medium">{job.title}</h3>
+                          <h3 className="font-medium">{t(`categories.${job.title}`)}</h3>
                           <p className="text-sm text-muted-foreground">{job.company}</p>
-                          <p className="text-sm">{job.location}</p>
-                          <p className="text-sm font-medium">{job.salary}</p>
+                          <p className="text-sm">{t(`locations.${job.location}`)}</p>
+                          <p className="text-sm font-medium">₹{job.salary}{t('common.month')}</p>
                         </div>
                         <Button
                           onClick={(e) => {
@@ -166,7 +164,7 @@ export default function HomePage() {
                           }}
                           className="whitespace-nowrap"
                         >
-                          CLICK HERE TO APPLY
+                          {t('common.apply')}
                         </Button>
                       </div>
                     </CardContent>
