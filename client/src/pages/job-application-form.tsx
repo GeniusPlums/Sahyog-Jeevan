@@ -12,7 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Upload } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 const applicationSchema = z.object({
   gender: z.string().min(1, "Please select your gender"),
@@ -30,7 +31,6 @@ const SHIFT_OPTIONS = ["Morning", "Afternoon", "Night", "Flexible"];
 export default function JobApplicationForm() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
-  const { toast } = useToast();
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(applicationSchema),
@@ -43,35 +43,40 @@ export default function JobApplicationForm() {
 
   return (
     <RootLayout>
-      <div className="flex min-h-screen bg-background">
-        <div className="flex-1 flex flex-col">
-          <main className="flex-1 py-8 px-4 md:px-6 lg:px-8 overflow-y-auto">
-            <div className="max-w-md mx-auto">
-              {/* Logo */}
-              <div className="flex justify-center mb-8">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                  <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 80 80"
-                    className="text-primary"
-                  >
-                    {[0, 60, 120, 180, 240, 300].map((rotation) => (
-                      <path
-                        key={rotation}
-                        d="M40 40 C40 25, 45 15, 40 0 C35 15, 40 25, 40 40"
-                        transform={`rotate(${rotation} 40 40)`}
-                        fill="currentColor"
-                        opacity="0.8"
-                      />
-                    ))}
-                  </svg>
-                </div>
+      <div className="min-h-screen bg-background p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="max-w-md mx-auto space-y-6"
+        >
+          <Card className="border-0 shadow-lg">
+            <CardContent className="p-6">
+              {/* Job Responsibilities Section */}
+              <div className="mb-8">
+                <h2 className="text-lg font-semibold mb-4">Job Responsibilities:</h2>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span>Drive safely and efficiently to deliver packages</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span>Maintain vehicle cleanliness and perform basic checks</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span>Follow traffic rules and company policies</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span>Provide excellent customer service</span>
+                  </li>
+                </ul>
               </div>
 
-              {/* Form */}
+              {/* Application Form */}
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Dropdowns */}
                 {[
                   { label: "GENDER", options: GENDER_OPTIONS, field: "gender" },
                   { label: "EXPERIENCE", options: EXPERIENCE_OPTIONS, field: "experience" },
@@ -81,9 +86,7 @@ export default function JobApplicationForm() {
                     <Select 
                       onValueChange={(value) => setValue(field as "gender" | "experience" | "shift", value)}
                     >
-                      <SelectTrigger
-                        className="w-full bg-gradient-to-r from-muted/50 to-muted border-primary/10 hover:border-primary/20 transition-colors"
-                      >
+                      <SelectTrigger className="w-full bg-white border-gray-200">
                         <SelectValue placeholder={label} />
                       </SelectTrigger>
                       <SelectContent>
@@ -104,11 +107,11 @@ export default function JobApplicationForm() {
 
                 {/* Upload Section */}
                 <div 
-                  className="bg-muted/50 rounded-lg p-6 text-center cursor-pointer hover:bg-muted/70 transition-colors"
+                  className="bg-white border border-gray-200 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => document.getElementById('profile-upload')?.click()}
                 >
-                  <Upload className="w-8 h-8 mx-auto mb-2 text-primary" />
-                  <p className="text-muted-foreground">Upload Profile</p>
+                  <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                  <p className="text-gray-600">Upload Profile</p>
                   <input
                     type="file"
                     id="profile-upload"
@@ -117,19 +120,21 @@ export default function JobApplicationForm() {
                     {...register("profileImage")}
                   />
                 </div>
-
-                {/* Continue Button */}
-                <Button 
-                  type="submit"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  size="lg"
-                >
-                  CONTINUE
-                </Button>
               </form>
-            </div>
-          </main>
-        </div>
+            </CardContent>
+          </Card>
+
+          {/* Apply Now Button - Fixed at bottom */}
+          <div className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-sm border-t">
+            <Button 
+              type="submit"
+              onClick={handleSubmit(onSubmit)}
+              className="w-full bg-black hover:bg-gray-800 text-white h-12 text-lg font-medium"
+            >
+              APPLY NOW
+            </Button>
+          </div>
+        </motion.div>
       </div>
     </RootLayout>
   );
