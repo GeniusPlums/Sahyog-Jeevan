@@ -32,7 +32,35 @@ const enTranslations = {
     selectJobType: "Select job type",
     regularJob: "Regular Job",
     gigWork: "Gig Work",
-    filter: "Filter"
+    filter: "Filter",
+    featuredJobs: "Featured Jobs",
+    viewDetails: "View Details",
+    quickApply: "Quick Apply",
+    quickApplyDesc: "Apply quickly to multiple jobs with your saved profile",
+    browseJobs: "Browse Jobs",
+    home: "Home",
+    jobApplication: "Job Application",
+    applicationProgress: "Application Progress",
+    gender: {
+      label: "Gender",
+      male: "Male",
+      female: "Female",
+      other: "Other"
+    },
+    experience: {
+      label: "Experience",
+      zeroToOne: "0-1 years",
+      oneToThree: "1-3 years",
+      threeToFive: "3-5 years",
+      fivePlus: "5+ years"
+    },
+    shift: {
+      label: "Shift",
+      morning: "Morning",
+      afternoon: "Afternoon",
+      night: "Night",
+      flexible: "Flexible"
+    }
   },
   categories: {
     driver: "Driver",
@@ -82,7 +110,35 @@ const hiTranslations = {
     selectJobType: "नौकरी का प्रकार चुनें",
     regularJob: "नियमित नौकरी",
     gigWork: "गिग वर्क",
-    filter: "फ़िल्टर"
+    filter: "फ़िल्टर",
+    featuredJobs: "विशेष नौकरियां",
+    viewDetails: "विवरण देखें",
+    quickApply: "त्वरित आवेदन",
+    quickApplyDesc: "अपने सहेजे गए प्रोफाइल के साथ कई नौकरियों के लिए त्वरित आवेदन करें",
+    browseJobs: "नौकरियां ब्राउज़ करें",
+    home: "होम",
+    jobApplication: "नौकरी आवेदन",
+    applicationProgress: "आवेदन प्रगति",
+    gender: {
+      label: "लिंग",
+      male: "पुरुष",
+      female: "महिला",
+      other: "अन्य"
+    },
+    experience: {
+      label: "अनुभव",
+      zeroToOne: "0-1 वर्ष",
+      oneToThree: "1-3 वर्ष",
+      threeToFive: "3-5 वर्ष",
+      fivePlus: "5+ वर्ष"
+    },
+    shift: {
+      label: "शिफ्ट",
+      morning: "सुबह",
+      afternoon: "दोपहर",
+      night: "रात",
+      flexible: "लचीला"
+    }
   },
   categories: {
     driver: "ड्राइवर",
@@ -103,7 +159,7 @@ const hiTranslations = {
 };
 
 // Initialize i18next
-i18n
+const i18nInstance = i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
@@ -125,4 +181,4 @@ i18n
     }
   });
 
-export default i18n;
+export default i18nInstance;

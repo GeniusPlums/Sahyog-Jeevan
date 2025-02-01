@@ -38,9 +38,9 @@ const applicationSchema = z.object({
 
 type FormData = z.infer<typeof applicationSchema>;
 
-const GENDER_OPTIONS = ["Male", "Female", "Other"];
-const EXPERIENCE_OPTIONS = ["0-1 years", "1-3 years", "3-5 years", "5+ years"];
-const SHIFT_OPTIONS = ["Morning", "Afternoon", "Night", "Flexible"];
+const GENDER_OPTIONS = ["male", "female", "other"];
+const EXPERIENCE_OPTIONS = ["zeroToOne", "oneToThree", "threeToFive", "fivePlus"];
+const SHIFT_OPTIONS = ["morning", "afternoon", "night", "flexible"];
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -227,9 +227,9 @@ export default function JobApplicationForm() {
           >
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {[
-                { label: t('common.gender'), options: GENDER_OPTIONS, field: "gender", icon: User2 },
-                { label: t('common.experience'), options: EXPERIENCE_OPTIONS, field: "experience", icon: CalendarDays },
-                { label: t('common.shift'), options: SHIFT_OPTIONS, field: "shift", icon: Clock4 },
+                { label: t('common.gender.label'), options: GENDER_OPTIONS, field: "gender", icon: User2 },
+                { label: t('common.experience.label'), options: EXPERIENCE_OPTIONS, field: "experience", icon: CalendarDays },
+                { label: t('common.shift.label'), options: SHIFT_OPTIONS, field: "shift", icon: Clock4 },
               ].map(({ label, options, field, icon: Icon }) => (
                 <motion.div key={field} variants={fadeInUp} className="space-y-2">
                   <div className="flex items-center gap-2 mb-2">
@@ -239,17 +239,17 @@ export default function JobApplicationForm() {
                   <Select 
                     onValueChange={(value) => form.setValue(field as keyof FormData, value)}
                   >
-                    <SelectTrigger className="w-full bg-primary/5 border-0 hover:bg-primary/10 transition-colors">
+                    <SelectTrigger>
                       <SelectValue placeholder={label} />
                     </SelectTrigger>
                     <SelectContent>
                       {options.map((option) => (
                         <SelectItem 
                           key={option} 
-                          value={option.toLowerCase()}
+                          value={option}
                           className="cursor-pointer"
                         >
-                          {option}
+                          {t(`common.${field}.${option}`)}
                         </SelectItem>
                       ))}
                     </SelectContent>
