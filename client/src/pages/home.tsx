@@ -12,11 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTranslation } from "react-i18next";
+
 
 const JOB_CATEGORIES = [
-  { id: 'driver', label: 'DRIVER' },
-  { id: 'guard', label: 'GUARD' },
-  { id: 'gardener', label: 'GARDENER' },
+  { id: 'driver', label: 'categories.driver' },
+  { id: 'guard', label: 'categories.guard' },
+  { id: 'gardener', label: 'categories.gardener' },
 ];
 
 const FEATURED_JOBS = [
@@ -40,6 +42,7 @@ const FEATURED_JOBS = [
 
 export default function HomePage() {
   const [_, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/jobs/category/${encodeURIComponent(categoryId)}`);
@@ -85,7 +88,7 @@ export default function HomePage() {
                 className="w-full"
                 onClick={() => handleCategoryClick(category.id)}
               >
-                {category.label}
+                {t(category.label)}
               </Button>
             ))}
           </div>

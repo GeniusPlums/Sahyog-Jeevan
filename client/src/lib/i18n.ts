@@ -40,7 +40,14 @@ const enTranslations = {
     month: "/month",
     location: "Location",
     company: "Company",
-    clickToApply: "CLICK HERE TO APPLY"
+    clickToApply: "CLICK HERE TO APPLY",
+    applying: "Applying...",
+    requirements: "Requirements",
+    posted: "Posted",
+    open: "Open",
+    draft: "Draft",
+    fulltime: "Full Time",
+    parttime: "Part Time"
   },
   categories: {
     driver: "Driver",
@@ -98,7 +105,14 @@ const hiTranslations = {
     month: "/महीना",
     location: "स्थान",
     company: "कंपनी",
-    clickToApply: "आवेदन करने के लिए यहां क्लिक करें"
+    clickToApply: "आवेदन करने के लिए यहां क्लिक करें",
+    applying: "आवेदन किया जा रहा है...",
+    requirements: "आवश्यकताएं",
+    posted: "पोस्ट किया गया",
+    open: "खुला हुआ",
+    draft: "ड्राफ्ट",
+    fulltime: "पूर्णकालिक",
+    parttime: "अंशकालिक"
   },
   categories: {
     driver: "ड्राइवर",
