@@ -29,7 +29,14 @@ const enTranslations = {
     postJob: "Post Job",
     appliedJobs: "Applied Jobs",
     signedInAs: "Signed in as",
-    logout: "Logout"
+    logout: "Logout",
+    iAmA: "I am a",
+    preferredLanguage: "Preferred Language",
+    region: "Region",
+    loginFailed: "Login failed",
+    registrationFailed: "Registration failed",
+    tryAgain: "Please try again",
+    accepted: "Accepted"
   },
   categories: {
     driver: "DRIVER",
@@ -65,7 +72,14 @@ const hiTranslations = {
     postJob: "नौकरी पोस्ट करें",
     appliedJobs: "आवेदित नौकरियां",
     signedInAs: "इस रूप में साइन इन",
-    logout: "लॉग आउट"
+    logout: "लॉग आउट",
+    iAmA: "मैं हूं",
+    preferredLanguage: "पसंदीदा भाषा",
+    region: "क्षेत्र",
+    loginFailed: "लॉगिन विफल",
+    registrationFailed: "पंजीकरण विफल",
+    tryAgain: "कृपया पुनः प्रयास करें",
+    accepted: "स्वीकृत"
   },
   categories: {
     driver: "ड्राइवर",

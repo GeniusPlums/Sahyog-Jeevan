@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
+import { useTranslation } from "react-i18next";
 import type { Application } from "@db/schema";
 
 const MOCK_APPLICATIONS = [
@@ -35,6 +36,7 @@ const MOCK_APPLICATIONS = [
 ];
 
 export default function AcceptedJobsPage() {
+  const { t } = useTranslation();
   const { data: applications = MOCK_APPLICATIONS, isLoading } = useQuery<typeof MOCK_APPLICATIONS>({
     queryKey: ["/api/applications/accepted"],
   });
@@ -49,7 +51,7 @@ export default function AcceptedJobsPage() {
               <Menu className="h-6 w-6" />
             </Button>
             <div className="flex items-center justify-center flex-1">
-              <h1 className="text-xl font-bold text-primary">Accepted Jobs</h1>
+              <h1 className="text-xl font-bold text-primary">{t('common.acceptedJobs')}</h1>
             </div>
             <div className="w-6" /> {/* Spacer for alignment */}
           </div>
@@ -69,18 +71,18 @@ export default function AcceptedJobsPage() {
                   </div>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-medium">{application.job.title}</h3>
+                      <h3 className="font-medium">{t(`categories.${application.job.title.toLowerCase()}`)}</h3>
                       <p className="text-sm text-muted-foreground">{application.job.company}</p>
                       <p className="text-sm">{application.job.location}</p>
                       <p className="text-sm font-medium">{application.job.salary}</p>
                       <div className="mt-2">
                         <span className="text-sm px-2 py-1 rounded-full bg-green-100 text-green-800">
-                          Accepted - Start Date: {application.job.startDate}
+                          {t('common.accepted')} - {t('common.startDate')}: {application.job.startDate}
                         </span>
                       </div>
                     </div>
                     <Button variant="outline">
-                      View Details
+                      {t('common.viewDetails')}
                     </Button>
                   </div>
                 </CardContent>
@@ -89,9 +91,9 @@ export default function AcceptedJobsPage() {
 
             {applications.length === 0 && (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">No accepted jobs found</p>
+                <p className="text-muted-foreground">{t('common.noJobsFound')}</p>
                 <Button className="mt-4" onClick={() => window.location.href = "/"}>
-                  Browse Jobs
+                  {t('common.browseJobs')}
                 </Button>
               </div>
             )}

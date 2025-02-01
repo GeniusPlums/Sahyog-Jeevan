@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
 import LanguageSelector from "@/components/language-selector";
 import RegionSelector from "@/components/region-selector";
+import { useTranslation } from "react-i18next";
 
 type FormData = {
   username: string;
@@ -25,6 +26,7 @@ export default function AuthPage() {
   const [userRole, setUserRole] = useState<"worker" | "employer">("worker");
   const { login, register, isLoginLoading, isRegisterLoading } = useUser();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const loginForm = useForm<FormData>();
   const registerForm = useForm<FormData>({
@@ -42,8 +44,8 @@ export default function AuthPage() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Login failed",
-        description: error instanceof Error ? error.message : "Please try again"
+        title: t('common.loginFailed'),
+        description: error instanceof Error ? error.message : t('common.tryAgain')
       });
     }
   };
@@ -54,8 +56,8 @@ export default function AuthPage() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Registration failed",
-        description: error instanceof Error ? error.message : "Please try again"
+        title: t('common.registrationFailed'),
+        description: error instanceof Error ? error.message : t('common.tryAgain')
       });
     }
   };
@@ -64,36 +66,36 @@ export default function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-muted/50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome to SahyogJeevan</CardTitle>
+          <CardTitle className="text-2xl text-center">{t('common.welcome')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Login</TabsTrigger>
-              <TabsTrigger value="register">Register</TabsTrigger>
+              <TabsTrigger value="login">{t('common.login')}</TabsTrigger>
+              <TabsTrigger value="register">{t('common.register')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="login">
               <form onSubmit={loginForm.handleSubmit(onLogin)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>I am a</Label>
+                  <Label>{t('common.iAmA')}</Label>
                   <RadioGroup
                     defaultValue="worker"
                     onValueChange={(value) => setUserRole(value as "worker" | "employer")}
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="worker" id="login-worker" />
-                      <Label htmlFor="login-worker">Worker</Label>
+                      <Label htmlFor="login-worker">{t('common.worker')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="employer" id="login-employer" />
-                      <Label htmlFor="login-employer">Employer</Label>
+                      <Label htmlFor="login-employer">{t('common.employer')}</Label>
                     </div>
                   </RadioGroup>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="login-username">Username</Label>
+                  <Label htmlFor="login-username">{t('common.username')}</Label>
                   <Input
                     id="login-username"
                     {...loginForm.register("username")}
@@ -101,7 +103,7 @@ export default function AuthPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
+                  <Label htmlFor="login-password">{t('common.password')}</Label>
                   <Input
                     id="login-password"
                     type="password"
@@ -113,7 +115,7 @@ export default function AuthPage() {
                   {isLoginLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Login"
+                    t('common.login')
                   )}
                 </Button>
               </form>
@@ -122,7 +124,7 @@ export default function AuthPage() {
             <TabsContent value="register">
               <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
                 <div className="space-y-2">
-                  <Label>I am a</Label>
+                  <Label>{t('common.iAmA')}</Label>
                   <RadioGroup
                     defaultValue="worker"
                     onValueChange={(value) =>
@@ -131,17 +133,17 @@ export default function AuthPage() {
                   >
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="worker" id="register-worker" />
-                      <Label htmlFor="register-worker">Worker</Label>
+                      <Label htmlFor="register-worker">{t('common.worker')}</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="employer" id="register-employer" />
-                      <Label htmlFor="register-employer">Employer</Label>
+                      <Label htmlFor="register-employer">{t('common.employer')}</Label>
                     </div>
                   </RadioGroup>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="register-username">Username</Label>
+                  <Label htmlFor="register-username">{t('common.username')}</Label>
                   <Input
                     id="register-username"
                     {...registerForm.register("username")}
@@ -149,7 +151,7 @@ export default function AuthPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
+                  <Label htmlFor="register-password">{t('common.password')}</Label>
                   <Input
                     id="register-password"
                     type="password"
@@ -159,7 +161,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Preferred Language</Label>
+                  <Label>{t('common.preferredLanguage')}</Label>
                   <LanguageSelector
                     value={selectedLanguage || "en"}
                     onValueChange={(value) => registerForm.setValue("preferredLanguage", value)}
@@ -167,7 +169,7 @@ export default function AuthPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Region</Label>
+                  <Label>{t('common.region')}</Label>
                   <RegionSelector
                     value={registerForm.watch("region") || ""}
                     onValueChange={(value) => registerForm.setValue("region", value)}
@@ -179,7 +181,7 @@ export default function AuthPage() {
                   {isRegisterLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Register"
+                    t('common.register')
                   )}
                 </Button>
               </form>
