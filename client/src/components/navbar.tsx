@@ -61,6 +61,19 @@ export default function Navbar() {
             </>
           )}
 
+          {/* Language toggle button */}
+          <Button 
+            variant="outline" 
+            size="icon"
+            onClick={toggleLanguage}
+            className="w-9 px-0"
+          >
+            <Globe className="h-4 w-4" />
+            <span className="ml-2 text-xs font-medium">
+              {i18n.language === 'en' ? 'हिं' : 'EN'}
+            </span>
+          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -72,10 +85,6 @@ export default function Navbar() {
                 {t('common.signedInAs')} {user?.username}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={toggleLanguage}>
-                <Globe className="mr-2 h-4 w-4" />
-                {i18n.language === 'en' ? 'हिंदी में देखें' : 'View in English'}
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
                 {t('common.logout')}
@@ -127,12 +136,15 @@ export default function Navbar() {
               )}
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-sm text-muted-foreground">
-                {t('common.signedInAs')} {user?.username}
-              </DropdownMenuItem>
+
+              {/* Language toggle menu item */}
               <DropdownMenuItem onClick={toggleLanguage}>
                 <Globe className="mr-2 h-4 w-4" />
                 {i18n.language === 'en' ? 'हिंदी में देखें' : 'View in English'}
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className="text-sm text-muted-foreground">
+                {t('common.signedInAs')} {user?.username}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
