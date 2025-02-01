@@ -88,6 +88,7 @@ const hiTranslations = {
   }
 };
 
+// Initialize i18next
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -103,6 +104,10 @@ i18n
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage']
     }
   });
 
