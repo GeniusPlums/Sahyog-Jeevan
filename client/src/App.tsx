@@ -16,6 +16,7 @@ import ApplicationFinishPage from "@/pages/application-finish";
 import EmployerDashboard from "@/pages/employer-dashboard";
 import JobPost from "@/pages/job-post";
 import Navbar from "@/components/navbar";
+import "./lib/i18n"; // Import i18n initialization
 
 function Router() {
   const { user, isLoading } = useUser();

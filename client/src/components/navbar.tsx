@@ -6,11 +6,14 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { BriefcaseIcon, UserCircle, LogOut, Menu } from "lucide-react";
+import { BriefcaseIcon, UserCircle, LogOut, Menu, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Navbar() {
   const { user, logout } = useUser();
+  const { t, i18n } = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -18,6 +21,11 @@ export default function Navbar() {
     } catch (error) {
       console.error("Logout failed:", error);
     }
+  };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'en' ? 'hi' : 'en';
+    i18n.changeLanguage(newLang);
   };
 
   return (
@@ -34,10 +42,10 @@ export default function Navbar() {
           {user?.role === "worker" && (
             <>
               <Link href="/">
-                <Button variant="ghost">Home</Button>
+                <Button variant="ghost">{t('common.home')}</Button>
               </Link>
               <Link href="/applied">
-                <Button variant="ghost">Applied Jobs</Button>
+                <Button variant="ghost">{t('common.appliedJobs')}</Button>
               </Link>
             </>
           )}
@@ -45,10 +53,10 @@ export default function Navbar() {
           {user?.role === "employer" && (
             <>
               <Link href="/">
-                <Button variant="ghost">Dashboard</Button>
+                <Button variant="ghost">{t('common.dashboard')}</Button>
               </Link>
               <Link href="/employer/jobs/new">
-                <Button variant="ghost">Post Job</Button>
+                <Button variant="ghost">{t('common.postJob')}</Button>
               </Link>
             </>
           )}
@@ -61,11 +69,16 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem className="text-sm text-muted-foreground">
-                Signed in as {user?.username}
+                {t('common.signedInAs')} {user?.username}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={toggleLanguage}>
+                <Globe className="mr-2 h-4 w-4" />
+                {i18n.language === 'en' ? 'हिंदी में देखें' : 'View in English'}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t('common.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -84,13 +97,13 @@ export default function Navbar() {
                   <Link href="/">
                     <DropdownMenuItem>
                       <BriefcaseIcon className="mr-2 h-4 w-4" />
-                      Home
+                      {t('common.home')}
                     </DropdownMenuItem>
                   </Link>
                   <Link href="/applied">
                     <DropdownMenuItem>
                       <BriefcaseIcon className="mr-2 h-4 w-4" />
-                      Applied Jobs
+                      {t('common.appliedJobs')}
                     </DropdownMenuItem>
                   </Link>
                 </>
@@ -101,25 +114,29 @@ export default function Navbar() {
                   <Link href="/">
                     <DropdownMenuItem>
                       <BriefcaseIcon className="mr-2 h-4 w-4" />
-                      Dashboard
+                      {t('common.dashboard')}
                     </DropdownMenuItem>
                   </Link>
                   <Link href="/employer/jobs/new">
                     <DropdownMenuItem>
                       <BriefcaseIcon className="mr-2 h-4 w-4" />
-                      Post Job
+                      {t('common.postJob')}
                     </DropdownMenuItem>
                   </Link>
                 </>
               )}
 
+              <DropdownMenuSeparator />
               <DropdownMenuItem className="text-sm text-muted-foreground">
-                Signed in as {user?.username}
+                {t('common.signedInAs')} {user?.username}
               </DropdownMenuItem>
-
+              <DropdownMenuItem onClick={toggleLanguage}>
+                <Globe className="mr-2 h-4 w-4" />
+                {i18n.language === 'en' ? 'हिंदी में देखें' : 'View in English'}
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t('common.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
