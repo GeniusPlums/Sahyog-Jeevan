@@ -11,7 +11,8 @@ import {
   Briefcase, 
   CheckCircle2,
   ArrowLeft,
-  Building2
+  Building2,
+  XCircle
 } from "lucide-react";
 import {
   Select,
