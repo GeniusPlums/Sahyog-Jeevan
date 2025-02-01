@@ -36,12 +36,27 @@ const enTranslations = {
     loginFailed: "Login failed",
     registrationFailed: "Registration failed",
     tryAgain: "Please try again",
-    accepted: "Accepted"
+    accepted: "Accepted",
+    month: "/month",
+    location: "Location",
+    company: "Company",
+    clickToApply: "CLICK HERE TO APPLY"
   },
   categories: {
-    driver: "DRIVER",
-    guard: "GUARD",
-    gardener: "GARDENER"
+    driver: "Driver",
+    deliverydriver: "Delivery Driver",
+    guard: "Guard",
+    gardener: "Gardener",
+    cook: "Cook",
+    maid: "Maid",
+    sweeper: "Sweeper",
+    securityguard: "Security Guard"
+  },
+  locations: {
+    mumbai: "Mumbai",
+    delhi: "Delhi",
+    bangalore: "Bangalore",
+    mumbaicentral: "Mumbai Central"
   }
 };
 
@@ -79,12 +94,27 @@ const hiTranslations = {
     loginFailed: "लॉगिन विफल",
     registrationFailed: "पंजीकरण विफल",
     tryAgain: "कृपया पुनः प्रयास करें",
-    accepted: "स्वीकृत"
+    accepted: "स्वीकृत",
+    month: "/महीना",
+    location: "स्थान",
+    company: "कंपनी",
+    clickToApply: "आवेदन करने के लिए यहां क्लिक करें"
   },
   categories: {
     driver: "ड्राइवर",
+    deliverydriver: "डिलीवरी ड्राइवर",
     guard: "गार्ड",
-    gardener: "माली"
+    gardener: "माली",
+    cook: "रसोइया",
+    maid: "घरेलू सहायक",
+    sweeper: "सफाई कर्मचारी",
+    securityguard: "सुरक्षा गार्ड"
+  },
+  locations: {
+    mumbai: "मुंबई",
+    delhi: "दिल्ली",
+    bangalore: "बैंगलोर",
+    mumbaicentral: "मुंबई सेंट्रल"
   }
 };
 

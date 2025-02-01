@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Building, Clock, DollarSign, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { Job } from "@db/schema";
 
 type JobCardProps = {
@@ -16,6 +17,7 @@ export default function JobCard({ job }: JobCardProps) {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const applyMutation = useMutation({
     mutationFn: async () => {
@@ -48,6 +50,8 @@ export default function JobCard({ job }: JobCardProps) {
     },
   });
 
+  const formattedSalary = job.salary ? `${job.salary}${t('common.month')}` : '';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -62,7 +66,7 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
-                  {job.title}
+                  {t(`categories.${job.title.toLowerCase()}`)}
                 </h3>
                 <Badge 
                   variant={job.status === "open" ? "default" : "secondary"}
@@ -80,7 +84,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2"
                 >
                   <Building className="h-4 w-4 text-primary" />
-                  <span>Company {job.employerId}</span>
+                  <span>{t('common.company')} {job.employerId}</span>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -89,7 +93,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2"
                 >
                   <MapPin className="h-4 w-4 text-primary" />
-                  <span>{job.location}</span>
+                  <span>{t(`locations.${job.location.toLowerCase().replace(/\s+/g, '')}`)}</span>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0 }}
@@ -100,7 +104,7 @@ export default function JobCard({ job }: JobCardProps) {
                   <Clock className="h-4 w-4 text-primary" />
                   <span>{job.type}</span>
                 </motion.div>
-                {job.salary && (
+                {formattedSalary && (
                   <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -108,7 +112,7 @@ export default function JobCard({ job }: JobCardProps) {
                     className="flex items-center gap-2"
                   >
                     <DollarSign className="h-4 w-4 text-primary" />
-                    <span>{job.salary}</span>
+                    <span>{formattedSalary}</span>
                   </motion.div>
                 )}
               </div>
@@ -126,11 +130,11 @@ export default function JobCard({ job }: JobCardProps) {
                   className="relative overflow-hidden"
                 >
                   {applyMutation.isPending ? (
-                    "Applying..."
+                    t('common.applying')
                   ) : (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
-                      Quick Apply
+                      {t('common.clickToApply')}
                     </>
                   )}
                 </Button>
@@ -154,7 +158,7 @@ export default function JobCard({ job }: JobCardProps) {
               transition={{ delay: 0.4 }}
               className="mt-4"
             >
-              <h4 className="text-sm font-semibold mb-2">Requirements:</h4>
+              <h4 className="text-sm font-semibold mb-2">{t('common.requirements')}:</h4>
               <ul className="list-disc list-inside space-y-1 text-sm">
                 {job.requirements.map((req, index) => (
                   <motion.li 
@@ -171,7 +175,7 @@ export default function JobCard({ job }: JobCardProps) {
           )}
         </CardContent>
         <CardFooter className="text-sm text-muted-foreground border-t border-primary/10">
-          Posted {new Date(job.createdAt!).toLocaleDateString()}
+          {t('common.posted')} {new Date(job.createdAt!).toLocaleDateString()}
         </CardFooter>
       </Card>
     </motion.div>
