@@ -67,127 +67,114 @@ export default function JobCard({ job }: JobCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      whileHover={{ scale: 1.02 }}
-      className="group"
+      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      whileHover={{ scale: 1.02, y: -4 }}
+      className="group relative"
     >
-      <Card className="overflow-hidden border-primary/10 bg-gradient-to-br from-background to-primary/5 transition-colors hover:border-primary/20">
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
+      <Card className="relative overflow-hidden border-primary/10 bg-gradient-to-br from-background via-background/80 to-primary/5 backdrop-blur-sm transition-all duration-500 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10">
         <CardContent className="pt-6">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <h3 className="text-xl font-semibold tracking-tight text-foreground/90 group-hover:text-primary transition-colors duration-300">
                   {t(`categories.${getTitleKey(job.title)}`)}
                 </h3>
                 <Badge 
                   variant={job.status === "open" ? "default" : "secondary"}
-                  className="transition-colors"
+                  className="transition-all animate-in fade-in duration-300 hover:scale-105"
                 >
                   {t(`common.${job.status}`)}
                 </Badge>
               </div>
 
-              <div className="space-y-1 text-sm text-muted-foreground">
+              <div className="space-y-3 text-sm text-muted-foreground/90">
                 <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1, duration: 0.4 }}
+                  className="flex items-center gap-3 hover:text-foreground transition-all duration-300 group/item"
                 >
-                  <Building className="h-4 w-4 text-primary" />
-                  <span>{t('common.company')}: {job.employerId}</span>
+                  <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
+                    <Building className="h-4 w-4 text-primary" />
+                  </div>
+                  <span className="font-medium">{job.employerId}</span>
                 </motion.div>
+
                 <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
+                  className="flex items-center gap-3 hover:text-foreground transition-all duration-300 group/item"
                 >
-                  <MapPin className="h-4 w-4 text-primary" />
+                  <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
+                    <MapPin className="h-4 w-4 text-primary" />
+                  </div>
                   <span>{t(`locations.${getLocationKey(job.location)}`)}</span>
                 </motion.div>
+
                 <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className="flex items-center gap-3 hover:text-foreground transition-all duration-300 group/item"
                 >
-                  <Clock className="h-4 w-4 text-primary" />
+                  <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
+                    <Clock className="h-4 w-4 text-primary" />
+                  </div>
                   <span>{t(`common.${job.type.toLowerCase()}`)}</span>
                 </motion.div>
+
                 {formattedSalary && (
                   <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="flex items-center gap-2"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, duration: 0.4 }}
+                    className="flex items-center gap-3 hover:text-foreground transition-all duration-300 group/item"
                   >
-                    <DollarSign className="h-4 w-4 text-primary" />
+                    <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
+                      <DollarSign className="h-4 w-4 text-primary" />
+                    </div>
                     <span>{formattedSalary}</span>
                   </motion.div>
                 )}
               </div>
             </div>
 
-            {user?.role === "worker" && job.status === "open" && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <Button
-                  onClick={() => applyMutation.mutate()}
-                  disabled={applyMutation.isPending}
-                  className="relative overflow-hidden"
+            <div className="flex flex-col gap-3">
+              {job.applied && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex items-center gap-2 text-sm text-primary bg-primary/10 px-3 py-2 rounded-md"
                 >
-                  {applyMutation.isPending ? (
-                    t('common.applying')
-                  ) : (
-                    <>
-                      <CheckCircle2 className="mr-2 h-4 w-4" />
-                      {t('common.clickToApply')}
-                    </>
-                  )}
-                </Button>
-              </motion.div>
-            )}
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span className="font-medium">{t('common.applied')}</span>
+                </motion.div>
+              )}
+              <Button
+                variant={job.applied ? "secondary" : "default"}
+                size="lg"
+                disabled={job.applied || applyMutation.isPending}
+                onClick={() => applyMutation.mutate()}
+                className={`w-full min-w-[140px] shadow-sm transition-all duration-500 ${
+                  job.applied 
+                    ? 'hover:shadow-md hover:bg-secondary/90'
+                    : 'hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]'
+                }`}
+              >
+                {applyMutation.isPending ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"
+                  />
+                ) : null}
+                {job.applied ? t('common.applied') : t('common.apply')}
+              </Button>
+            </div>
           </div>
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-4"
-          >
-            <p className="text-sm">{job.description}</p>
-          </motion.div>
-
-          {job.requirements && job.requirements.length > 0 && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4"
-            >
-              <h4 className="text-sm font-semibold mb-2">{t('common.requirements')}:</h4>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                {job.requirements.map((req, index) => (
-                  <motion.li 
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + index * 0.1 }}
-                  >
-                    {req}
-                  </motion.li>
-                ))}
-              </ul>
-            </motion.div>
-          )}
         </CardContent>
-        <CardFooter className="text-sm text-muted-foreground border-t border-primary/10">
-          {t('common.posted')} {new Date(job.createdAt!).toLocaleDateString()}
-        </CardFooter>
       </Card>
     </motion.div>
   );

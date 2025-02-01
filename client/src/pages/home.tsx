@@ -3,7 +3,18 @@ import { useLocation } from "wouter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Menu, Search, Filter } from "lucide-react";
+import { 
+  Menu, 
+  Search, 
+  Filter, 
+  MapPin, 
+  Building2, 
+  DollarSign,
+  ArrowRight,
+  BriefcaseIcon,
+  Clock,
+  Sparkles
+} from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
 import {
   Select,
@@ -13,11 +24,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useTranslation } from "react-i18next";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const JOB_CATEGORIES = [
-  { id: 'driver', label: 'categories.driver' },
-  { id: 'guard', label: 'categories.guard' },
-  { id: 'gardener', label: 'categories.gardener' },
+  { id: 'driver', label: 'categories.driver', icon: '🚗' },
+  { id: 'guard', label: 'categories.guard', icon: '🛡️' },
+  { id: 'gardener', label: 'categories.gardener', icon: '🌿' },
+  { id: 'cook', label: 'categories.cook', icon: '👨‍🍳' },
+  { id: 'maid', label: 'categories.maid', icon: '🧹' },
+  { id: 'carpenter', label: 'categories.carpenter', icon: '🔨' },
 ];
 
 const FEATURED_JOBS = [
@@ -27,6 +45,8 @@ const FEATURED_JOBS = [
     company: 'Company A',
     salary: '25,000',
     location: 'mumbai',
+    type: 'Full-time',
+    shift: 'Day',
     image: '/path/to/driver-job.jpg'
   },
   {
@@ -35,13 +55,31 @@ const FEATURED_JOBS = [
     company: 'Company B',
     salary: '30,000',
     location: 'delhi',
+    type: 'Part-time',
+    shift: 'Night',
     image: '/path/to/security-job.jpg'
   },
 ];
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+};
+
+const stagger = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 export default function HomePage() {
   const [_, navigate] = useLocation();
   const { t } = useTranslation();
+  const [isLoading] = useState(false);
+  const [jobType, setJobType] = useState("job");
 
   const handleCategoryClick = (categoryId: string) => {
     navigate(`/jobs/category/${encodeURIComponent(categoryId)}`);
@@ -49,132 +87,217 @@ export default function HomePage() {
 
   return (
     <RootLayout>
-      <div className="min-h-screen bg-background">
-        {/* Top Header with Menu and Logo */}
-        <header className="sticky top-0 bg-background border-b p-4">
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" size="icon" className="hover:bg-transparent">
-              <Menu className="h-6 w-6" />
-            </Button>
-            <div className="flex items-center justify-center flex-1">
-              <h1 className="text-xl font-bold text-primary">SahyogJeevan</h1>
-            </div>
-            <div className="w-6" /> {/* Spacer for alignment */}
-          </div>
+      <motion.div 
+        className="min-h-screen bg-background"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        {/* Header with Search */}
+        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-primary/10">
+          <div className="container mx-auto max-w-7xl">
+            <div className="flex flex-col space-y-4 p-4">
+              {/* Logo and Menu */}
+              <div className="flex items-center justify-between">
+                <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="flex items-center space-x-2"
+                >
+                  <BriefcaseIcon className="h-6 w-6 text-primary" />
+                  <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                    SahyogJeevan
+                  </span>
+                </motion.div>
+                <div className="w-10" />
+              </div>
 
-          {/* Search Bar with Internal Filter */}
-          <div className="relative mb-4">
-            <Input
-              placeholder={t('common.search')}
-              className="pl-9 pr-12"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Button
-              variant="ghost"
-              size="sm"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-transparent"
-            >
-              <Filter className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Job Categories */}
-          <div className="grid grid-cols-3 gap-2">
-            {JOB_CATEGORIES.map((category) => (
-              <Button
-                key={category.id}
-                variant="outline"
-                className="w-full"
-                onClick={() => handleCategoryClick(category.id)}
+              {/* Search Bar */}
+              <motion.div 
+                variants={fadeInUp}
+                initial="initial"
+                animate="animate"
+                className="relative"
               >
-                {t(category.label)}
-              </Button>
-            ))}
+                <Input
+                  placeholder={t('common.searchJobs')}
+                  className="pl-10 pr-12 h-12 bg-background border-primary/20 hover:border-primary/40 focus:border-primary transition-colors duration-300"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 hover:bg-primary/10"
+                >
+                  <Filter className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            </div>
           </div>
         </header>
 
-        <main className="p-4 space-y-6">
-          {/* Advertisement Boxes */}
-          <section className="grid grid-cols-2 gap-4">
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <span className="text-muted-foreground">Ad Space 1</span>
-            </div>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <span className="text-muted-foreground">Ad Space 2</span>
-            </div>
-          </section>
+        <main className="container mx-auto max-w-7xl p-4 space-y-8">
+          {/* Categories */}
+          <motion.section 
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+            className="space-y-4"
+          >
+            <motion.div variants={fadeInUp} className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">{t('common.categories')}</h2>
+              <Button variant="link" className="text-primary hover:text-primary/80">
+                {t('common.viewAll')} <ArrowRight className="ml-1 h-4 w-4" />
+              </Button>
+            </motion.div>
 
-          {/* Video Section */}
-          <section>
-            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-              <span className="text-muted-foreground">Job Preview Video</span>
-            </div>
-          </section>
+            <motion.div 
+              variants={stagger}
+              className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3"
+            >
+              {JOB_CATEGORIES.map((category, index) => (
+                <motion.button
+                  key={category.id}
+                  variants={fadeInUp}
+                  onClick={() => handleCategoryClick(category.id)}
+                  className="group relative flex flex-col items-center p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all duration-300"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="text-2xl mb-2">{category.icon}</div>
+                  <span className="text-sm font-medium text-foreground/80 group-hover:text-primary transition-colors duration-300">
+                    {t(category.label)}
+                  </span>
+                </motion.button>
+              ))}
+            </motion.div>
+          </motion.section>
 
-          {/* Jobs Section with Type Selection and Filter */}
-          <section>
-            <div className="space-y-4">
-              {/* Job Type Selector */}
-              <Select defaultValue="job">
-                <SelectTrigger>
-                  <SelectValue placeholder={t('common.selectJobType')} />
+          {/* Featured Section */}
+          <motion.section 
+            variants={stagger}
+            initial="initial"
+            animate="animate"
+            className="space-y-6"
+          >
+            <motion.div variants={fadeInUp} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <h2 className="text-lg font-semibold">{t('common.featuredJobs')}</h2>
+              </div>
+              <Select value={jobType} onValueChange={setJobType}>
+                <SelectTrigger className="w-[160px]">
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="job">{t('common.regularJob')}</SelectItem>
                   <SelectItem value="gig">{t('common.gigWork')}</SelectItem>
                 </SelectContent>
               </Select>
+            </motion.div>
 
-              {/* Jobs Header with Filter */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">{t('common.jobsAround')}</h2>
-                <Button variant="outline" size="sm">
-                  <Filter className="h-4 w-4 mr-2" />
-                  {t('common.filter')}
-                </Button>
-              </div>
-
-              {/* Job Cards */}
-              <div className="space-y-4">
-                {FEATURED_JOBS.map((job) => (
-                  <Card
-                    key={job.id}
-                    onClick={() => navigate(`/jobs/${job.id}`)}
-                    className="cursor-pointer hover:shadow-md transition-shadow"
-                  >
-                    <CardContent className="p-4">
-                      <div className="aspect-video bg-muted rounded-lg mb-3">
-                        <img
-                          src={job.image}
-                          alt={t(`categories.${job.title}`)}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      </div>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-medium">{t(`categories.${job.title}`)}</h3>
-                          <p className="text-sm text-muted-foreground">{job.company}</p>
-                          <p className="text-sm">{t(`locations.${job.location}`)}</p>
-                          <p className="text-sm font-medium">₹{job.salary}{t('common.month')}</p>
+            <motion.div variants={stagger} className="grid gap-4">
+              {isLoading ? (
+                // Loading skeletons
+                Array.from({ length: 2 }).map((_, i) => (
+                  <Card key={i} className="overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="p-4 space-y-4">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                        <div className="flex gap-4">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="h-4 w-24" />
                         </div>
-                        <Button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/jobs/${job.id}`);
-                          }}
-                          className="whitespace-nowrap"
-                        >
-                          {t('common.apply')}
-                        </Button>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                ))
+              ) : (
+                // Job cards
+                FEATURED_JOBS.map((job) => (
+                  <motion.div
+                    key={job.id}
+                    variants={fadeInUp}
+                    whileHover={{ y: -2 }}
+                    className="group"
+                  >
+                    <Card className="overflow-hidden border-primary/10 hover:border-primary/20 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+                      <CardContent className="p-6">
+                        <div className="flex flex-col md:flex-row gap-6">
+                          <div className="space-y-4 flex-1">
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-lg font-semibold group-hover:text-primary transition-colors duration-300">
+                                {t(`categories.${job.title}`)}
+                              </h3>
+                              <Badge variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
+                                {job.type}
+                              </Badge>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Building2 className="h-4 w-4" />
+                                <span>{job.company}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <MapPin className="h-4 w-4" />
+                                <span>{t(`locations.${job.location}`)}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <DollarSign className="h-4 w-4" />
+                                <span>₹{job.salary}{t('common.month')}</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-muted-foreground">
+                                <Clock className="h-4 w-4" />
+                                <span>{job.shift}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center">
+                            <Button
+                              onClick={() => navigate(`/jobs/${job.id}`)}
+                              className="w-full md:w-auto shadow-sm hover:shadow-md transition-all duration-300"
+                            >
+                              {t('common.viewDetails')}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))
+              )}
+            </motion.div>
+          </motion.section>
+
+          {/* Quick Apply Section */}
+          <motion.section
+            variants={fadeInUp}
+            initial="initial"
+            animate="animate"
+            className="rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 md:p-8"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-2">
+                <h2 className="text-xl font-semibold">{t('common.quickApply')}</h2>
+                <p className="text-muted-foreground">{t('common.quickApplyDesc')}</p>
               </div>
+              <Button 
+                size="lg"
+                onClick={() => navigate('/jobs')}
+                className="shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              >
+                {t('common.browseJobs')}
+              </Button>
             </div>
-          </section>
+          </motion.section>
         </main>
-      </div>
+      </motion.div>
     </RootLayout>
   );
 }

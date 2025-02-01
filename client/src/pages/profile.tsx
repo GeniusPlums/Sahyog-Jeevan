@@ -7,10 +7,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useUser } from "@/hooks/use-user";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import ApplicationCard from "@/components/application-card";
-import { Loader2 } from "lucide-react";
+import { Loader2, User2, Building2, FileText, MapPin, Phone, Briefcase, Award } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { Profile, Application } from "@db/schema";
+import { useTranslation } from "react-i18next";
 
 type ProfileFormData = {
   name: string;
@@ -22,10 +24,17 @@ type ProfileFormData = {
   companyDescription?: string;
 };
 
+const formVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+};
+
 export default function ProfilePage() {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
 
   const { register, handleSubmit, reset } = useForm<ProfileFormData>();
 
@@ -88,108 +97,248 @@ export default function ProfilePage() {
 
   if (isProfileLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin" />
+      <div className="flex justify-center items-center h-[80vh]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl animate-pulse" />
+            <Loader2 className="h-12 w-12 animate-spin text-primary relative" />
+          </div>
+          <p className="text-muted-foreground animate-pulse">Loading profile...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{user?.role === "employer" ? "Company Profile" : "Worker Profile"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="name">
-                {user?.role === "employer" ? "Contact Name" : "Full Name"}
-              </Label>
-              <Input id="name" {...register("name")} required />
-            </div>
+    <div className="relative space-y-8 max-w-4xl mx-auto px-4 py-8">
+      {/* Background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl animate-pulse" />
+        <div className="absolute -right-1/4 bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl animate-pulse" />
+      </div>
 
-            {user?.role === "employer" ? (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Company Name</Label>
-                  <Input id="companyName" {...register("companyName")} required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="companyDescription">Company Description</Label>
-                  <Textarea
-                    id="companyDescription"
-                    {...register("companyDescription")}
-                    rows={4}
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="space-y-2">
-                <Label htmlFor="skills">Skills (one per line)</Label>
-                <Textarea
-                  id="skills"
-                  {...register("skills")}
-                  rows={4}
-                  placeholder="Forklift operation&#10;HVAC maintenance&#10;Electrical work"
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={formVariants}
+        className="relative"
+      >
+        <Card className="backdrop-blur-sm border-primary/10 shadow-2xl shadow-primary/5">
+          <CardHeader className="space-y-2">
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4"
+            >
+              {user?.role === "employer" ? (
+                <Building2 className="h-8 w-8 text-primary" />
+              ) : (
+                <User2 className="h-8 w-8 text-primary" />
+              )}
+            </motion.div>
+            <CardTitle className="text-2xl text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              {user?.role === "employer" ? t('profile.companyProfile') : t('profile.workerProfile')}
+            </CardTitle>
+            <CardDescription className="text-center text-muted-foreground">
+              {user?.role === "employer" 
+                ? t('profile.companyProfileDesc')
+                : t('profile.workerProfileDesc')
+              }
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit((data) => mutation.mutate(data))} className="space-y-6">
+              <motion.div 
+                className="space-y-2"
+                variants={formVariants}
+                transition={{ delay: 0.1 }}
+              >
+                <Label htmlFor="name" className="flex items-center gap-2">
+                  <User2 className="h-4 w-4" />
+                  {user?.role === "employer" ? t('profile.contactName') : t('profile.fullName')}
+                </Label>
+                <Input 
+                  id="name" 
+                  {...register("name")} 
+                  required
+                  className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors"
                 />
-              </div>
-            )}
+              </motion.div>
 
-            <div className="space-y-2">
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea
-                id="bio"
-                {...register("bio")}
-                rows={4}
-                placeholder="Tell us about yourself..."
-              />
-            </div>
+              {user?.role === "employer" ? (
+                <>
+                  <motion.div 
+                    className="space-y-2"
+                    variants={formVariants}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <Label htmlFor="companyName" className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      {t('profile.companyName')}
+                    </Label>
+                    <Input 
+                      id="companyName" 
+                      {...register("companyName")} 
+                      required
+                      className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors"
+                    />
+                  </motion.div>
+                  <motion.div 
+                    className="space-y-2"
+                    variants={formVariants}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <Label htmlFor="companyDescription" className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      {t('profile.companyDescription')}
+                    </Label>
+                    <Textarea
+                      id="companyDescription"
+                      {...register("companyDescription")}
+                      rows={4}
+                      className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors resize-none"
+                    />
+                  </motion.div>
+                </>
+              ) : (
+                <motion.div 
+                  className="space-y-2"
+                  variants={formVariants}
+                  transition={{ delay: 0.2 }}
+                >
+                  <Label htmlFor="skills" className="flex items-center gap-2">
+                    <Award className="h-4 w-4" />
+                    {t('profile.skills')}
+                  </Label>
+                  <Textarea
+                    id="skills"
+                    {...register("skills")}
+                    rows={4}
+                    placeholder="Forklift operation&#10;HVAC maintenance&#10;Electrical work"
+                    className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors resize-none"
+                  />
+                </motion.div>
+              )}
 
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input id="location" {...register("location")} />
-            </div>
+              <motion.div 
+                className="space-y-2"
+                variants={formVariants}
+                transition={{ delay: 0.3 }}
+              >
+                <Label htmlFor="bio" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  {t('profile.bio')}
+                </Label>
+                <Textarea
+                  id="bio"
+                  {...register("bio")}
+                  rows={4}
+                  placeholder={t('profile.bioPlaceholder')}
+                  className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors resize-none"
+                />
+              </motion.div>
 
-            <div className="space-y-2">
-              <Label htmlFor="contact">Contact Information</Label>
-              <Input
-                id="contact"
-                {...register("contact")}
-                placeholder="Phone number or email"
-              />
-            </div>
+              <motion.div 
+                className="space-y-2"
+                variants={formVariants}
+                transition={{ delay: 0.4 }}
+              >
+                <Label htmlFor="location" className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  {t('profile.location')}
+                </Label>
+                <Input 
+                  id="location" 
+                  {...register("location")}
+                  className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors"
+                />
+              </motion.div>
 
-            <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : null}
-              Save Profile
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <motion.div 
+                className="space-y-2"
+                variants={formVariants}
+                transition={{ delay: 0.5 }}
+              >
+                <Label htmlFor="contact" className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  {t('profile.contact')}
+                </Label>
+                <Input
+                  id="contact"
+                  {...register("contact")}
+                  placeholder={t('profile.contactPlaceholder')}
+                  className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors"
+                />
+              </motion.div>
+
+              <motion.div
+                variants={formVariants}
+                transition={{ delay: 0.6 }}
+              >
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary/90 hover:bg-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+                  disabled={mutation.isPending}
+                >
+                  {mutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <Briefcase className="h-4 w-4 mr-2" />
+                  )}
+                  {t('profile.saveProfile')}
+                </Button>
+              </motion.div>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
 
       {user?.role === "worker" && (
-        <div className="space-y-4">
-          <h2 className="text-2xl font-bold">My Applications</h2>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+          className="space-y-4"
+        >
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            {t('profile.myApplications')}
+          </h2>
+          
           {isApplicationsLoading ? (
-            <div className="flex justify-center">
-              <Loader2 className="h-8 w-8 animate-spin" />
+            <div className="flex justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <div className="grid gap-4">
-              {applications.map((application) => (
-                <ApplicationCard key={application.id} application={application} />
-              ))}
-              {applications.length === 0 && (
-                <p className="text-center text-muted-foreground py-8">
-                  No applications yet
-                </p>
-              )}
-            </div>
+            <AnimatePresence mode="popLayout">
+              <div className="grid gap-4">
+                {applications.map((application, index) => (
+                  <motion.div
+                    key={application.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <ApplicationCard application={application} />
+                  </motion.div>
+                ))}
+                {applications.length === 0 && (
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-center text-muted-foreground py-8"
+                  >
+                    {t('profile.noApplications')}
+                  </motion.p>
+                )}
+              </div>
+            </AnimatePresence>
           )}
-        </div>
+        </motion.div>
       )}
     </div>
   );
