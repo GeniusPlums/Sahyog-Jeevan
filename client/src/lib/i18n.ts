@@ -23,7 +23,13 @@ const enTranslations = {
     viewDetails: "View Details",
     noJobsFound: "No accepted jobs found",
     browseJobs: "Browse Jobs",
-    welcome: "Welcome to SahyogJeevan"
+    welcome: "Welcome to SahyogJeevan",
+    home: "Home",
+    dashboard: "Dashboard",
+    postJob: "Post Job",
+    appliedJobs: "Applied Jobs",
+    signedInAs: "Signed in as",
+    logout: "Logout"
   },
   categories: {
     driver: "DRIVER",
@@ -53,7 +59,13 @@ const hiTranslations = {
     viewDetails: "विवरण देखें",
     noJobsFound: "कोई स्वीकृत नौकरी नहीं मिली",
     browseJobs: "नौकरियां ब्राउज़ करें",
-    welcome: "सह्योगजीवन में आपका स्वागत है"
+    welcome: "सह्योगजीवन में आपका स्वागत है",
+    home: "होम",
+    dashboard: "डैशबोर्ड",
+    postJob: "नौकरी पोस्ट करें",
+    appliedJobs: "आवेदित नौकरियां",
+    signedInAs: "इस रूप में साइन इन",
+    logout: "लॉग आउट"
   },
   categories: {
     driver: "ड्राइवर",
