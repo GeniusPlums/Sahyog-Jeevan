@@ -257,7 +257,7 @@ export default function JobDetailsPage() {
         {/* Apply Button */}
         <div className="fixed bottom-20 left-0 right-0 p-4 bg-background border-t">
           <Button
-            className="w-full bg-gray-900 hover:bg-gray-800 text-white"
+            className="w-full bg-black hover:bg-gray-800 text-white"
             size="lg"
             onClick={() => navigate(`/jobs/${jobId}/apply`)}
           >
