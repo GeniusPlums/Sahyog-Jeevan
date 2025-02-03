@@ -56,6 +56,16 @@ const enTranslations = {
     noApplicationsDesc: "You haven't applied to any jobs yet",
     noAcceptedJobs: "No accepted jobs found",
     noAcceptedJobsDesc: "You don't have any accepted jobs yet",
+    noJobsFound: "No jobs found",
+    viewAll: "View All",
+    categories: {
+      driver: "Driver",
+      guard: "Guard",
+      gardener: "Gardener",
+      cook: "Cook",
+      maid: "Maid",
+      carpenter: "Carpenter"
+    },
     gender: {
       label: "Gender",
       male: "Male",
@@ -76,16 +86,6 @@ const enTranslations = {
       night: "Night",
       flexible: "Flexible"
     },
-    categories: {
-      driver: "Driver",
-      deliverydriver: "Delivery Driver",
-      guard: "Guard",
-      gardener: "Gardener",
-      cook: "Cook",
-      maid: "Maid",
-      sweeper: "Sweeper",
-      securityguard: "Security Guard"
-    },
     locations: {
       mumbai: "Mumbai",
       delhi: "Delhi",
@@ -98,13 +98,13 @@ const enTranslations = {
 // Hindi translations
 const hiTranslations = {
   common: {
-    search: "उद्योग खोजें",
+    search: "नौकरी खोजें",
     filter: "फ़िल्टर",
     apply: "आवेदन करने के लिए यहां क्लिक करें",
     jobsAround: "आपके आस-पास की नौकरियां",
     login: "लॉगिन",
     register: "रजिस्टर",
-    username: "यूजरनेम",
+    username: "उपयोगकर्ता नाम",
     password: "पासवर्ड",
     worker: "कर्मचारी",
     employer: "नियोक्ता",
@@ -115,7 +115,7 @@ const hiTranslations = {
     location: "स्थान",
     company: "कंपनी",
     clickToApply: "आवेदन करने के लिए यहां क्लिक करें",
-    applying: "आवेदन कर रहे हैं...",
+    applying: "आवेदन किया जा रहा है...",
     requirements: "आवश्यकताएं",
     posted: "पोस्ट किया गया",
     open: "खुला",
@@ -124,19 +124,19 @@ const hiTranslations = {
     parttime: "अंशकालिक",
     selectJobType: "नौकरी का प्रकार चुनें",
     regularJob: "नियमित नौकरी",
-    gigWork: "अस्थायी काम",
+    gigWork: "गिग वर्क",
     filter: "फ़िल्टर",
     featuredJobs: "विशेष नौकरियां",
     viewDetails: "विवरण देखें",
     quickApply: "त्वरित आवेदन",
-    quickApplyDesc: "सेव की गई प्रोफाइल से कई नौकरियों के लिए जल्दी से आवेदन करें",
+    quickApplyDesc: "अपनी सहेजी गई प्रोफ़ाइल के साथ कई नौकरियों के लिए जल्दी से आवेदन करें",
     browseJobs: "नौकरियां ब्राउज़ करें",
     home: "होम",
     jobApplication: "नौकरी आवेदन",
     applicationProgress: "आवेदन की प्रगति",
     appliedJobs: "आवेदित नौकरियां",
     acceptedJobs: "स्वीकृत नौकरियां",
-    trackApplications: "अपने आवेदनों को ट्रैक करें",
+    trackApplications: "अपने नौकरी आवेदनों को ट्रैक करें",
     applications: "आवेदन",
     searchApplications: "आवेदन खोजें",
     all: "सभी",
@@ -148,7 +148,17 @@ const hiTranslations = {
     noApplications: "कोई आवेदन नहीं मिला",
     noApplicationsDesc: "आपने अभी तक किसी नौकरी के लिए आवेदन नहीं किया है",
     noAcceptedJobs: "कोई स्वीकृत नौकरी नहीं मिली",
-    noAcceptedJobsDesc: "आपकी कोई स्वीकृत नौकरी नहीं है",
+    noAcceptedJobsDesc: "आपके पास अभी तक कोई स्वीकृत नौकरी नहीं है",
+    noJobsFound: "कोई नौकरी नहीं मिली",
+    viewAll: "सभी देखें",
+    categories: {
+      driver: "ड्राइवर",
+      guard: "गार्ड",
+      gardener: "माली",
+      cook: "रसोइया",
+      maid: "घरेलू सहायक",
+      carpenter: "बढ़ई"
+    },
     gender: {
       label: "लिंग",
       male: "पुरुष",
@@ -169,16 +179,6 @@ const hiTranslations = {
       night: "रात",
       flexible: "लचीला"
     },
-    categories: {
-      driver: "ड्राइवर",
-      deliverydriver: "डिलीवरी ड्राइवर",
-      guard: "गार्ड",
-      gardener: "माली",
-      cook: "रसोइया",
-      maid: "घरेलू सहायक",
-      sweeper: "सफाई कर्मचारी",
-      securityguard: "सुरक्षा गार्ड"
-    },
     locations: {
       mumbai: "मुंबई",
       delhi: "दिल्ली",
@@ -189,24 +189,17 @@ const hiTranslations = {
 };
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
+  .use(LanguageDetector)
   .init({
     resources: {
-      en: {
-        translation: enTranslations
-      },
-      hi: {
-        translation: hiTranslations
-      }
+      en: enTranslations,
+      hi: hiTranslations
     },
     fallbackLng: 'en',
+    debug: true,
     interpolation: {
       escapeValue: false
-    },
-    detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage']
     }
   });
 
