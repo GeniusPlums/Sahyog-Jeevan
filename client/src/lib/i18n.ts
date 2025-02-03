@@ -6,6 +6,14 @@ const resources = {
   en: {
     translation: {
       common: {
+        welcome: "Welcome to Sahyog Jeevan",
+        login: "Login",
+        register: "Register",
+        iAmA: "I am a",
+        worker: "Worker",
+        employer: "Employer",
+        username: "Username",
+        password: "Password",
         search: "Search jobs",
         filter: "Filter",
         searchJobs: "Search jobs",
@@ -49,6 +57,14 @@ const resources = {
   hi: {
     translation: {
       common: {
+        welcome: "सह्योग जीवन में आपका स्वागत है",
+        login: "लॉगिन",
+        register: "पंजीकरण",
+        iAmA: "मैं हूँ",
+        worker: "कर्मचारी",
+        employer: "नियोक्ता",
+        username: "उपयोगकर्ता नाम",
+        password: "पासवर्ड",
         search: "नौकरी खोजें",
         filter: "फ़िल्टर",
         searchJobs: "नौकरी खोजें",
