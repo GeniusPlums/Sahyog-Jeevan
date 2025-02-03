@@ -56,196 +56,139 @@ const stagger = {
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const [, navigate] = useLocation();
-  const [jobType, setJobType] = useState("regular");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  const { data: jobs = [], isLoading } = useQuery({
+  const [, setLocation] = useLocation();
+  const [jobType, setJobType] = useState<string>("");
+  const { data: jobs, isLoading } = useQuery({
     queryKey: ['jobs'],
-    queryFn: jobsApi.getAll
+    queryFn: jobsApi.getFeaturedJobs
   });
-
-  const filteredJobs = jobs.filter(job => 
-    job.status === 'active' && 
-    (!selectedCategory || job.title.toLowerCase().includes(selectedCategory.toLowerCase()))
-  );
-
-  const handleCategoryClick = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-  };
 
   return (
     <RootLayout>
-      <motion.div 
-        className="min-h-screen bg-background"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {/* Header with Search */}
-        <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-lg border-b border-primary/10">
-          <div className="container mx-auto max-w-7xl">
-            <div className="flex flex-col space-y-4 p-4">
-              {/* Logo and Menu */}
-              <div className="flex items-center justify-between">
-                <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex items-center space-x-2"
-                >
-                  <BriefcaseIcon className="h-6 w-6 text-primary" />
-                  <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                    SahyogJeevan
-                  </span>
-                </motion.div>
-                <div className="w-5" /> {/* Spacer */}
-              </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center gap-2 mb-6">
+          <Input
+            placeholder={t('common.search')}
+            className="flex-1"
+            startContent={<Search className="w-4 h-4 text-gray-500" />}
+          />
+          <Button variant="outline" size="icon">
+            <Filter className="w-4 h-4" />
+          </Button>
+        </div>
 
-              {/* Search Bar */}
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder={t('common.search')}
-                    className="pl-9 bg-muted/50"
-                  />
-                </div>
-                <Button variant="outline" size="icon">
-                  <Filter className="h-4 w-4" />
-                </Button>
-              </div>
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          {JOB_CATEGORIES.map((category) => (
+            <motion.div
+              key={category.id}
+              variants={fadeInUp}
+              className="flex flex-col items-center justify-center p-4 rounded-lg bg-white shadow-sm"
+            >
+              <span className="text-2xl mb-2">{category.icon}</span>
+              <span className="text-sm text-gray-600">
+                {t(`common.categories.${category.id}`)}
+              </span>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="mb-8">
+          <Select value={jobType} onValueChange={setJobType}>
+            <SelectTrigger>
+              <SelectValue placeholder={t('common.selectJobType')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="regular">{t('common.regularJob')}</SelectItem>
+              <SelectItem value="gig">{t('common.gigWork')}</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-blue-500" />
+              <h2 className="text-lg font-semibold">{t('common.featuredJobs')}</h2>
             </div>
+            <Button variant="ghost" className="text-blue-500">
+              {t('common.viewAll')} <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
           </div>
-        </header>
 
-        <main className="container mx-auto max-w-7xl p-4">
-          {/* Categories */}
-          <motion.section 
-            variants={stagger}
-            initial="initial"
-            animate="animate"
-            className="space-y-6"
-          >
-            <motion.div variants={fadeInUp}>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-4">
-                {JOB_CATEGORIES.map((category) => (
-                  <motion.div
-                    key={category.id}
-                    variants={fadeInUp}
-                    onClick={() => handleCategoryClick(category.id)}
-                    className={`cursor-pointer text-center p-3 rounded-lg transition-colors ${
-                      selectedCategory === category.id
-                        ? 'bg-primary/10 text-primary'
-                        : 'hover:bg-primary/5'
-                    }`}
-                  >
-                    <div className="text-2xl mb-1">{category.icon}</div>
-                    <div className="text-xs font-medium">
-                      {t(`common.categories.${category.id}`)}
+          {isLoading ? (
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <Card key={i}>
+                  <CardContent className="p-4">
+                    <Skeleton className="h-6 w-1/3 mb-2" />
+                    <Skeleton className="h-4 w-1/4 mb-4" />
+                    <div className="flex gap-4">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Featured Jobs Section */}
-            <motion.div variants={fadeInUp}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">{t('common.featuredJobs')}</h2>
-                </div>
-                <Select value={jobType} onValueChange={setJobType}>
-                  <SelectTrigger className="w-[160px]">
-                    <SelectValue placeholder={t('common.selectJobType')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="regular">{t('common.regularJob')}</SelectItem>
-                    <SelectItem value="gig">{t('common.gigWork')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Job Cards */}
-              <div className="grid gap-4">
-                {isLoading ? (
-                  // Loading skeletons
-                  Array(3).fill(null).map((_, i) => (
-                    <Card key={i}>
-                      <CardContent className="p-4">
-                        <div className="space-y-3">
-                          <Skeleton className="h-4 w-1/4" />
-                          <Skeleton className="h-4 w-1/2" />
-                          <div className="flex gap-2">
-                            <Skeleton className="h-4 w-20" />
-                            <Skeleton className="h-4 w-20" />
-                          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : jobs?.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">{t('common.noJobsFound')}</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {jobs?.map((job: Job) => (
+                <Card key={job.id} className="cursor-pointer hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="font-semibold">{job.title}</h3>
+                      <Badge variant="secondary">{job.type}</Badge>
+                    </div>
+                    <div className="text-sm text-gray-500 mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1">
+                          <Building2 className="w-4 h-4" />
+                          <span>{job.company}</span>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : filteredJobs.length > 0 ? (
-                  filteredJobs.map((job) => (
-                    <Card key={job.id} className="overflow-hidden hover:border-primary/50 transition-colors">
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-3">
-                            <div className="space-y-1">
-                              <h3 className="text-lg font-semibold">{job.title}</h3>
-                              <div className="flex items-center text-sm text-muted-foreground">
-                                <Building2 className="mr-1 h-4 w-4" />
-                                {job.companyName}
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <div className="flex items-center">
-                                <MapPin className="mr-1 h-4 w-4" />
-                                {job.location}
-                              </div>
-                              <div className="flex items-center">
-                                <DollarSign className="mr-1 h-4 w-4" />
-                                {job.salary}
-                              </div>
-                            </div>
-                          </div>
-                          <Button variant="outline" onClick={() => navigate(`/jobs/${job.id}`)}>
-                            {t('common.viewDetails')}
-                          </Button>
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4" />
+                          <span>{job.location}</span>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">{t('common.noJobsFound')}</p>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.section>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          <span>{job.salary}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLocation(`/jobs/${job.id}`)}
+                      >
+                        {t('common.quickApply')}
+                      </Button>
+                      <span className="text-sm text-gray-500 flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        {job.postedAt}
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
 
-          {/* Quick Apply Section */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8"
-          >
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-2">{t('common.quickApply')}</h3>
-                <p className="text-muted-foreground mb-4">{t('common.quickApplyDesc')}</p>
-                <Button onClick={() => navigate('/jobs')}>
-                  {t('common.browseJobs')}
-                </Button>
-              </CardContent>
-            </Card>
-          </motion.section>
-        </main>
-      </motion.div>
+        <Card className="bg-blue-50 border-blue-100">
+          <CardContent className="p-6">
+            <h3 className="font-semibold mb-2">{t('common.quickApply')}</h3>
+            <p className="text-sm text-gray-600 mb-4">{t('common.quickApplyDesc')}</p>
+            <Button className="w-full">
+              {t('common.browseJobs')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </RootLayout>
   );
 }
