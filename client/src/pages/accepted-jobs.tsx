@@ -10,10 +10,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AcceptedJobsPage() {
   const { t } = useTranslation();
   
-  const { data: applications = [], isLoading } = useQuery<Application[]>({
+  const { data, isLoading } = useQuery<Application[]>({
     queryKey: ['accepted-applications'],
-    queryFn: applicationsApi.getAccepted
+    queryFn: applicationsApi.getAccepted,
+    initialData: [] // Set initial data to empty array
   });
+
+  const applications = data || []; // Ensure applications is always an array
 
   return (
     <RootLayout>
@@ -64,9 +67,9 @@ export default function AcceptedJobsPage() {
                   <div className="flex gap-4">
                     {/* Company Logo */}
                     <div className="h-16 w-16 rounded bg-gray-100 flex items-center justify-center">
-                      {application.job.image ? (
+                      {application.job.companyLogo ? (
                         <img
-                          src={application.job.image}
+                          src={application.job.companyLogo}
                           alt={application.job.companyName}
                           className="h-12 w-12 object-contain"
                         />
