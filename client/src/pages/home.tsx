@@ -32,12 +32,12 @@ import { useQuery } from "@tanstack/react-query";
 import { jobsApi, type Job } from "@/lib/api";
 
 const JOB_CATEGORIES = [
-  { id: 'driver', label: 'categories.driver', icon: '🚗' },
-  { id: 'guard', label: 'categories.guard', icon: '🛡️' },
-  { id: 'gardener', label: 'categories.gardener', icon: '🌿' },
-  { id: 'cook', label: 'categories.cook', icon: '👨‍🍳' },
-  { id: 'maid', label: 'categories.maid', icon: '🧹' },
-  { id: 'carpenter', label: 'categories.carpenter', icon: '🔨' },
+  { id: 'driver', label: 'driver', icon: '🚗' },
+  { id: 'guard', label: 'guard', icon: '🛡️' },
+  { id: 'gardener', label: 'gardener', icon: '🌿' },
+  { id: 'cook', label: 'cook', icon: '👨‍🍳' },
+  { id: 'maid', label: 'maid', icon: '🧹' },
+  { id: 'carpenter', label: 'carpenter', icon: '🔨' },
 ];
 
 const fadeInUp = {
@@ -145,22 +145,24 @@ export default function HomePage() {
 
             <motion.div 
               variants={stagger}
-              className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3"
+              className="grid grid-cols-3 sm:grid-cols-6 gap-4"
             >
-              {JOB_CATEGORIES.map((category, index) => (
-                <motion.button
+              {JOB_CATEGORIES.map((category) => (
+                <motion.div
                   key={category.id}
                   variants={fadeInUp}
                   onClick={() => handleCategoryClick(category.id)}
-                  className="group relative flex flex-col items-center p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition-all duration-300"
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                  className={`cursor-pointer text-center p-3 rounded-lg transition-colors ${
+                    selectedCategory === category.id
+                      ? 'bg-primary/10 text-primary'
+                      : 'hover:bg-primary/5'
+                  }`}
                 >
-                  <div className="text-2xl mb-2">{category.icon}</div>
-                  <span className="text-sm font-medium text-foreground/80 group-hover:text-primary transition-colors duration-300">
-                    {t(category.label)}
-                  </span>
-                </motion.button>
+                  <div className="text-2xl mb-1">{category.icon}</div>
+                  <div className="text-xs font-medium">
+                    {t(`common.categories.${category.label}`)}
+                  </div>
+                </motion.div>
               ))}
             </motion.div>
           </motion.section>

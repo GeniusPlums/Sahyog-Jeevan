@@ -1,15 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Building2, MapPin, DollarSign, Clock } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
 import { useTranslation } from "react-i18next";
 import { applicationsApi, type Application } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AcceptedJobsPage() {
   const { t } = useTranslation();
   
-  const { data: applications = [], isLoading } = useQuery<Application[]>({
+  const { data: applications, isLoading, isError } = useQuery<Application[]>({
     queryKey: ['accepted-applications'],
     queryFn: applicationsApi.getAccepted
   });
@@ -30,48 +31,88 @@ export default function AcceptedJobsPage() {
           </div>
         </header>
 
-        <main className="p-4">
-          <div className="space-y-4">
-            {applications.map((application) => (
-              <Card key={application.id}>
-                <CardContent className="p-4">
-                  <div className="aspect-video bg-muted rounded-lg mb-3">
-                    <img
-                      src={application.job.previewImage}
-                      alt={`${application.job.title} preview`}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium">{t(`categories.${application.job.title.toLowerCase()}`)}</h3>
-                      <p className="text-sm text-muted-foreground">{application.job.companyName}</p>
-                      <p className="text-sm">{application.job.location}</p>
-                      <p className="text-sm font-medium">{application.job.salary}</p>
-                      <div className="mt-2">
-                        <span className="text-sm px-2 py-1 rounded-full bg-green-100 text-green-800">
-                          {t('common.accepted')} - {t('common.startDate')}: {application.startDate}
-                        </span>
-                      </div>
+        <main className="container mx-auto max-w-4xl p-4">
+          {isLoading ? (
+            // Loading state
+            <div className="space-y-4">
+              {[1, 2, 3].map((i) => (
+                <Card key={i}>
+                  <CardContent className="p-4">
+                    <Skeleton className="h-48 w-full rounded-lg mb-3" />
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-1/3" />
+                      <Skeleton className="h-4 w-1/2" />
+                      <Skeleton className="h-4 w-1/4" />
                     </div>
-                    <Button variant="outline">
-                      {t('common.viewDetails')}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {applications.length === 0 && (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">{t('common.noAcceptedJobs')}</p>
-                <p className="text-sm text-muted-foreground mt-1">{t('common.noAcceptedJobsDesc')}</p>
-                <Button className="mt-4" onClick={() => window.location.href = "/"}>
-                  {t('common.browseJobs')}
-                </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : isError ? (
+            // Error state
+            <div className="text-center py-8">
+              <p className="text-red-500 font-medium">{t('common.errorLoading')}</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={() => window.location.reload()}
+              >
+                {t('common.tryAgain')}
+              </Button>
+            </div>
+          ) : applications && applications.length > 0 ? (
+            // Applications list
+            <div className="space-y-4">
+              {applications.map((application) => (
+                <Card key={application.id} className="overflow-hidden hover:border-primary/50 transition-colors">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <h3 className="text-lg font-semibold">{application.job.title}</h3>
+                          <div className="flex items-center text-sm text-muted-foreground">
+                            <Building2 className="mr-1 h-4 w-4" />
+                            {application.job.companyName}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center">
+                            <MapPin className="mr-1 h-4 w-4" />
+                            {application.job.location}
+                          </div>
+                          <div className="flex items-center">
+                            <DollarSign className="mr-1 h-4 w-4" />
+                            {application.job.salary}
+                          </div>
+                          {application.startDate && (
+                            <div className="flex items-center">
+                              <Clock className="mr-1 h-4 w-4" />
+                              {t('common.startDate')}: {application.startDate}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <Button variant="outline" onClick={() => window.location.href = `/jobs/${application.jobId}`}>
+                        {t('common.viewDetails')}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            // Empty state
+            <div className="text-center py-12">
+              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <Building2 className="h-8 w-8 text-primary" />
               </div>
-            )}
-          </div>
+              <h3 className="text-lg font-semibold mb-2">{t('common.noAcceptedJobs')}</h3>
+              <p className="text-muted-foreground mb-6">{t('common.noAcceptedJobsDesc')}</p>
+              <Button onClick={() => window.location.href = '/'}>
+                {t('common.browseJobs')}
+              </Button>
+            </div>
+          )}
         </main>
       </div>
     </RootLayout>
