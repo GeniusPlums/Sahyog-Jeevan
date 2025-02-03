@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Menu, Building2, MapPin, DollarSign, Clock } from "lucide-react";
+import { Building2, MapPin, DollarSign, Clock, BriefcaseIcon } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
 import { useTranslation } from "react-i18next";
 import { applicationsApi, type Application } from "@/lib/api";
@@ -10,110 +10,120 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function AcceptedJobsPage() {
   const { t } = useTranslation();
   
-  const { data: applications, isLoading, isError } = useQuery<Application[]>({
+  const { data: applications = [], isLoading } = useQuery<Application[]>({
     queryKey: ['accepted-applications'],
     queryFn: applicationsApi.getAccepted
   });
 
   return (
     <RootLayout>
-      <div className="min-h-screen bg-background">
-        {/* Top Header */}
-        <header className="sticky top-0 bg-background border-b p-4">
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="ghost" size="icon" className="hover:bg-transparent">
-              <Menu className="h-6 w-6" />
-            </Button>
-            <div className="flex items-center justify-center flex-1">
-              <h1 className="text-xl font-bold text-primary">{t('common.acceptedJobs')}</h1>
-            </div>
-            <div className="w-6" /> {/* Spacer for alignment */}
-          </div>
-        </header>
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-2">{t('common.acceptedJobs')}</h1>
+          <p className="text-gray-600">{t('common.acceptedJobsDesc')}</p>
+        </div>
 
-        <main className="container mx-auto max-w-4xl p-4">
-          {isLoading ? (
-            // Loading state
-            <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <Card key={i}>
-                  <CardContent className="p-4">
-                    <Skeleton className="h-48 w-full rounded-lg mb-3" />
-                    <div className="space-y-2">
-                      <Skeleton className="h-4 w-1/3" />
-                      <Skeleton className="h-4 w-1/2" />
+        {/* Content */}
+        {isLoading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    <Skeleton className="h-16 w-16 rounded" />
+                    <div className="flex-1 space-y-2">
                       <Skeleton className="h-4 w-1/4" />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : isError ? (
-            // Error state
-            <div className="text-center py-8">
-              <p className="text-red-500 font-medium">{t('common.errorLoading')}</p>
-              <Button 
-                variant="outline" 
-                className="mt-4"
-                onClick={() => window.location.reload()}
-              >
-                {t('common.tryAgain')}
-              </Button>
-            </div>
-          ) : applications && applications.length > 0 ? (
-            // Applications list
-            <div className="space-y-4">
-              {applications.map((application) => (
-                <Card key={application.id} className="overflow-hidden hover:border-primary/50 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-3">
-                        <div className="space-y-1">
-                          <h3 className="text-lg font-semibold">{application.job.title}</h3>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Building2 className="mr-1 h-4 w-4" />
-                            {application.job.companyName}
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <MapPin className="mr-1 h-4 w-4" />
-                            {application.job.location}
-                          </div>
-                          <div className="flex items-center">
-                            <DollarSign className="mr-1 h-4 w-4" />
-                            {application.job.salary}
-                          </div>
-                          {application.startDate && (
-                            <div className="flex items-center">
-                              <Clock className="mr-1 h-4 w-4" />
-                              {t('common.startDate')}: {application.startDate}
-                            </div>
-                          )}
-                        </div>
+                      <Skeleton className="h-4 w-1/2" />
+                      <div className="flex gap-4">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-20" />
                       </div>
-                      <Button variant="outline" onClick={() => window.location.href = `/jobs/${application.jobId}`}>
-                        {t('common.viewDetails')}
-                      </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : (
-            // Empty state
-            <div className="text-center py-12">
-              <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Building2 className="h-8 w-8 text-primary" />
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : applications.length === 0 ? (
+          <Card className="bg-gray-50">
+            <CardContent className="p-8 text-center">
+              <BriefcaseIcon className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">{t('common.noAcceptedJobs')}</h3>
-              <p className="text-muted-foreground mb-6">{t('common.noAcceptedJobsDesc')}</p>
-              <Button onClick={() => window.location.href = '/'}>
+              <p className="text-gray-600 mb-4">{t('common.noAcceptedJobsDesc')}</p>
+              <Button onClick={() => window.location.href = '/jobs'}>
                 {t('common.browseJobs')}
               </Button>
-            </div>
-          )}
-        </main>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {applications.map((application) => (
+              <Card key={application.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex gap-4">
+                    {/* Company Logo */}
+                    <div className="h-16 w-16 rounded bg-gray-100 flex items-center justify-center">
+                      {application.job.image ? (
+                        <img
+                          src={application.job.image}
+                          alt={application.job.companyName}
+                          className="h-12 w-12 object-contain"
+                        />
+                      ) : (
+                        <Building2 className="h-8 w-8 text-gray-400" />
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-semibold">{application.job.title}</h3>
+                          <p className="text-sm text-gray-600">{application.job.companyName}</p>
+                        </div>
+                        {application.startDate && (
+                          <div className="text-sm text-gray-600 flex items-center gap-1">
+                            <Clock className="h-4 w-4" />
+                            <span>{t('common.startDate')}: {new Date(application.startDate).toLocaleDateString()}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-4 w-4" />
+                          <span>{application.job.location}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="h-4 w-4" />
+                          <span>{application.job.salary}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 mt-4">
+                        <Button 
+                          variant="default" 
+                          size="sm"
+                          onClick={() => window.location.href = `/applications/${application.id}`}
+                        >
+                          {t('common.viewDetails')}
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => window.location.href = `/jobs/${application.jobId}`}
+                        >
+                          {t('common.viewJob')}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </RootLayout>
   );
