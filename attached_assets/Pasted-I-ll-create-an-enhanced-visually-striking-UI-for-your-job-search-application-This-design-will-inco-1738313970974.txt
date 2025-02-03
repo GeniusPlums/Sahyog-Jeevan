@@ -1,0 +1,21 @@
+I'll create an enhanced, visually striking UI for your job search application. This design will incorporate a dark theme with neon accents, dynamic animations, and an immersive user experience. Here's the updated code:
+
+```typescriptreact project="FuturisticJobSearch"
+...
+```
+
+This enhanced UI incorporates several improvements and new features:
+
+1. Dark theme with neon accents: The design now uses a dark color scheme with vibrant purple and indigo accents for a futuristic look.
+2. Hero section with dynamic background: A new hero section has been added at the top of the page, featuring a gradient background that moves slightly as the user scrolls, creating a parallax effect.
+3. Animated job category selector: The job category buttons now have icons and subtle hover animations, making them more engaging and visually appealing.
+4. Redesigned job cards: Job cards now feature a gradient background, hover effects, and a view details button that appears on hover.
+5. Floating action button: A floating action button has been added to the bottom right corner, which could be used for quick job posting or other primary actions.
+6. Subtle animations: Various elements now have entrance animations using Framer Motion, creating a more dynamic and engaging user experience.
+7. Reorganized layout: The content has been reorganized for better visual hierarchy, with the search bar and job categories more prominently displayed.
+8. Responsive design: The layout is now more responsive and should work well on various screen sizes.
+9. Improved typography: Font sizes and weights have been adjusted for better readability and visual hierarchy.
+10. Custom scrollbar: A custom scrollbar has been added to match the dark theme (in the globals.css file).
+
+
+This design creates a more immersive and engaging experience for job seekers, with a modern and futuristic aesthetic that sets it apart from typical job search interfaces. The dark theme with neon accents gives it a unique and memorable look, while the animations and interactive elements make the interface feel more alive and responsive to user actions.

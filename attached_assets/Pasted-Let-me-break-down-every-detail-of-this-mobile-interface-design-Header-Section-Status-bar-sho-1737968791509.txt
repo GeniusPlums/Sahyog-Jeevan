@@ -1,0 +1,65 @@
+Let me break down every detail of this mobile interface design:
+
+Header Section:
+- Status bar shows "9:27" in the top-left corner
+- Professional blue snowflake-like logo in the top-left corner of the main header
+- "JOBS" text with a dropdown arrow indicator
+- Filter icon in the top-right corner
+
+Top Paying Companies Section:
+- Section header "Top Paying Companies" in a standard font
+- 6 company logos arranged in two rows of 3
+- Companies featured:
+  * "comdata" in red circular logo
+  * "cdrex" logo in white circle
+  * "eKrew" logo in white circle
+  * "CRED" logo with text
+  * "cepto" in purple circular background
+  * Orange circular logo at the bottom right
+
+Recommended Jobs Section:
+- Section header "RECOMMENDED FOR YOU" in caps
+- 5 job listing cards stacked vertically
+- Each card contains:
+  * Full-width perspective images showing different driving scenarios:
+    - Street view with cars
+    - Dashboard/windshield view
+    - Interior car view
+    - Night time driving scene
+    - Driver perspective shot
+  * "Company A" text consistently placed on each card
+  * Job details including "Job - Driver" and location info
+  * Black "CLICK HERE TO APPLY" button on the right side of each card
+  * White background for the text area
+  * Rounded corners on the cards
+
+Bottom Navigation Bar:
+- 5 icons evenly spaced
+- Translucent/frosted glass effect
+- Icons appear to be:
+  * Home/building icon
+  * User/profile icon
+  * Central circular icon
+  * Document/list icon
+  * Additional menu icon
+- Icons are in a light gray color
+- Navigation bar has a subtle border or shadow separation
+
+Visual Style:
+- Clean, minimalist design
+- Predominantly white background
+- Consistent spacing between elements
+- Professional and modern look
+- High contrast between text and backgrounds
+- Shadow effects for depth on cards
+- Clear visual hierarchy
+
+UI Elements:
+- All interactive elements appear tappable
+- Appropriate spacing for touch targets
+- Clear visual feedback for interactive elements
+- Consistent font usage throughout
+- Professional color scheme focusing on blues, whites, and grays
+- Proper alignment of all elements
+
+The overall design follows mobile-first principles with a focus on easy navigation and clear visual hierarchy, making it accessible for blue-collar job seekers. The imagery focuses on driving-related positions, suggesting this particular view is filtered or targeted toward driver positions.
