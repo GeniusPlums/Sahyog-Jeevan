@@ -36,6 +36,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Add health check endpoint
+app.get("/health", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "healthy" });
+});
+
 (async () => {
   const server = registerRoutes(app);
 
