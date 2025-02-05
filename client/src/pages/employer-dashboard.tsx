@@ -45,10 +45,8 @@ const stagger = {
 };
 
 const statusColors = {
-  active: "bg-green-100 text-green-800",
-  draft: "bg-gray-100 text-gray-800",
-  closed: "bg-red-100 text-red-800",
-  paused: "bg-yellow-100 text-yellow-800"
+  open: "bg-green-100 text-green-800",
+  closed: "bg-red-100 text-red-800"
 };
 
 export default function EmployerDashboard() {
@@ -66,7 +64,7 @@ export default function EmployerDashboard() {
 
   const stats = {
     totalJobs: jobs.length,
-    activeJobs: jobs.filter(job => job.status === "active").length,
+    activeJobs: jobs.filter(job => job.status === "open").length,
     totalApplications: jobs.reduce((acc, job) => acc + job.applications, 0),
     totalViews: jobs.reduce((acc, job) => acc + job.views, 0),
     applicationsToday: jobs.reduce((acc, job) => acc + job.applicationsToday, 0)
@@ -250,10 +248,8 @@ export default function EmployerDashboard() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{t('common.all')}</SelectItem>
-                      <SelectItem value="active">{t('common.active')}</SelectItem>
-                      <SelectItem value="draft">{t('common.draft')}</SelectItem>
+                      <SelectItem value="open">{t('common.open')}</SelectItem>
                       <SelectItem value="closed">{t('common.closed')}</SelectItem>
-                      <SelectItem value="paused">{t('common.paused')}</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select

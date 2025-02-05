@@ -29,6 +29,8 @@ const resources = {
         noJobsFound: "No jobs found",
         appliedJobs: "Applied Jobs",
         acceptedJobs: "Accepted Jobs",
+        open: "Open",
+        closed: "Closed",
         acceptedJobsDesc: "View and manage your accepted job applications here",
         trackApplications: "Track your job applications",
         searchApplications: "Search applications",
@@ -102,7 +104,6 @@ const resources = {
         clearFilters: "Clear Filters",
         active: "Active",
         draft: "Draft",
-        closed: "Closed",
         paused: "Paused",
         postJob: "Post Job",
         locations: {
@@ -141,6 +142,8 @@ const resources = {
         noJobsFound: "कोई नौकरी नहीं मिली",
         appliedJobs: "आवेदित नौकरियां",
         acceptedJobs: "स्वीकृत नौकरियां",
+        open: "खुला",
+        closed: "बंद",
         acceptedJobsDesc: "अपने स्वीकृत नौकरी आवेदनों को यहां देखें और प्रबंधित करें",
         trackApplications: "अपने नौकरी आवेदनों को ट्रैक करें",
         searchApplications: "आवेदन खोजें",
@@ -214,7 +217,6 @@ const resources = {
         clearFilters: "फ़िल्टर साफ़ करें",
         active: "सक्रिय",
         draft: "ड्राफ्ट",
-        closed: "बंद",
         paused: "रुका हुआ",
         postJob: "नौकरी पोस्ट करें",
         locations: {
