@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { jobsApi, type Job } from "@/lib/api";
 import JobCard from "@/components/job-card";
 import RootLayout from "@/components/layouts/RootLayout";
 import { motion, AnimatePresence } from "framer-motion";
@@ -29,7 +29,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import type { Job } from "@db/schema";
 
 const LOCATIONS = ["mumbai", "delhi", "bangalore", "hyderabad", "chennai"];
 const JOB_TYPES = ["full-time", "part-time", "contract"];
@@ -61,7 +60,8 @@ export default function JobListing() {
   });
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
-    queryKey: ["/api/jobs"],
+    queryKey: ['jobs'],
+    queryFn: jobsApi.getAll
   });
 
   const filteredJobs = jobs.filter(job => {
