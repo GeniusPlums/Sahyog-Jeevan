@@ -112,7 +112,8 @@ export function registerRoutes(app: Express): Server {
       const allJobs = await db
         .select()
         .from(jobs)
-        .orderBy(jobs.createdAt);
+        .where(eq(jobs.status, 'active'))
+        .orderBy(jobs.createdAt, 'desc');
       res.json(allJobs);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch jobs" });

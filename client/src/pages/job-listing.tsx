@@ -31,7 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 
 const LOCATIONS = ["mumbai", "delhi", "bangalore", "hyderabad", "chennai"];
-const JOB_TYPES = ["full-time", "part-time", "contract"];
+const JOB_TYPES = ["FULL TIME", "PART TIME", "CONTRACT"];
 const SHIFTS = ["day", "night", "flexible"];
 
 const fadeInUp = {
@@ -72,15 +72,15 @@ export default function JobListing() {
     
     const matchesType = 
       filters.type === "all" || 
-      job.type === filters.type;
+      job.type.toLowerCase() === filters.type.toLowerCase();
 
     const matchesLocation =
       filters.location === "all" ||
-      job.location === filters.location;
+      job.location.toLowerCase() === filters.location.toLowerCase();
 
     const matchesShift =
       filters.shift === "all" ||
-      job.shift === filters.shift;
+      job.shift.toLowerCase() === filters.shift.toLowerCase();
 
     const matchesSalary =
       parseInt(job.salary) >= filters.salary[0] &&
@@ -151,7 +151,7 @@ export default function JobListing() {
                                 className="justify-start"
                               >
                                 <Briefcase className="mr-2 h-4 w-4" />
-                                {t(`common.${type}`)}
+                                {t(`common.${type.toLowerCase()}`)}
                               </Button>
                             ))}
                           </div>
