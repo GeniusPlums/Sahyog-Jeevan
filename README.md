@@ -1,58 +1,88 @@
-# BlueCollarConnect
+# Sahyog Jeevan (BlueCollarConnect)
 
-BlueCollarConnect is a modern job platform specifically designed for blue-collar workers and employers. It bridges the gap between skilled workers and job opportunities, providing an intuitive and accessible interface for both job seekers and employers.
+Sahyog Jeevan is a modern job platform specifically designed for blue-collar workers and employers in India. It bridges the gap between skilled workers and job opportunities, providing an intuitive and accessible interface in multiple Indian languages.
 
-![BlueCollarConnect Logo](./client/public/logo.png)
+![Sahyog Jeevan Logo](./client/public/logo.png)
 
 ## 🚀 Features
 
 ### For Job Seekers
 - 📱 Mobile-first, responsive design
-- 🔍 Advanced job search with filters
-- 📝 Easy job application process
+- 🔍 Advanced job search with filters (location, job type, salary)
+- 📝 Easy job application process with profile builder
 - 📊 Application tracking dashboard
-- 👤 Professional profile builder
-- 🌐 Multi-language support
+- 🌐 Multi-language support (English, Hindi)
+- 💼 Quick apply with saved profiles
+- 📍 Location-based job search
+- 🕒 Flexible work type options (Regular, Gig)
 
 ### For Employers
-- ⚡ Quick job posting
+- ⚡ Quick job posting with detailed descriptions
 - 📈 Detailed analytics dashboard
 - 👥 Applicant management system
 - 🎯 Targeted job promotions
 - 📱 Mobile app for on-the-go management
+- 📊 Application tracking and status updates
+- 🔍 Advanced candidate filtering
+- 📅 Interview scheduling system
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: React with TypeScript
-- **Styling**: TailwindCSS
+- **Framework**: React 18 with TypeScript
+- **Styling**: TailwindCSS + Shadcn UI
 - **State Management**: TanStack Query
 - **Forms**: React Hook Form + Zod
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
 - **i18n**: react-i18next
+- **Maps**: Mapbox for location services
+- **Charts**: Recharts for analytics
 
 ### Backend
-- **Runtime**: Node.js
+- **Runtime**: Node.js 18+
 - **Framework**: Express
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL 14+
 - **ORM**: Prisma
-- **Authentication**: JWT
+- **Authentication**: JWT + Cookie Sessions
 - **File Storage**: AWS S3
+- **Caching**: Redis
+- **Search**: Elasticsearch
+- **Job Queue**: Bull
+
+## 🌐 Internationalization
+
+Sahyog Jeevan currently supports:
+- English (en)
+- Hindi (hi)
+
+Key internationalization features:
+- Complete UI translation
+- RTL support ready
+- Language detection
+- Locale-specific formatting
+- Easy language switching
+- Fallback handling
+
+To add a new language:
+1. Add translations in `client/src/lib/i18n.ts`
+2. Update language selector in `client/src/components/LanguageSelector.tsx`
+3. Add locale-specific formatting in `client/src/utils/format.ts`
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 - Node.js 18+
 - PostgreSQL 14+
+- Redis 6+
 - pnpm (recommended) or npm
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/BlueCollarConnect.git
-cd BlueCollarConnect
+git clone https://github.com/GeniusPlums/sahyog_jeevan.git
+cd sahyog_jeevan
 ```
 
 2. Install dependencies:
@@ -92,8 +122,8 @@ The application will be available at `http://localhost:5173`
 ## 📱 Mobile App
 
 Download our mobile app from:
-- [Google Play Store](https://play.google.com/store/apps/bluecollarconnect)
-- [Apple App Store](https://apps.apple.com/app/bluecollarconnect)
+- [Google Play Store](https://play.google.com/store/apps/sahyogjeevan)
+- [Apple App Store](https://apps.apple.com/app/sahyogjeevan)
 
 ## 🤝 Contributing
 
@@ -101,7 +131,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your changes (`git commit -m 'feat: add some amazing feature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
@@ -118,11 +148,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email support@bluecollarconnect.com or join our Slack channel.
+For support:
+- Email: support@sahyogjeevan.com
+- Discord: [Join our server](https://discord.gg/sahyogjeevan)
+- GitHub Issues: [Report bugs](https://github.com/GeniusPlums/sahyog_jeevan/issues)
 
 ## 🔗 Links
 
-- [Website](https://bluecollarconnect.com)
-- [Documentation](https://docs.bluecollarconnect.com)
-- [Blog](https://blog.bluecollarconnect.com)
-- [Community Forum](https://community.bluecollarconnect.com)
+- [Website](https://sahyogjeevan.com)
+- [Documentation](https://docs.sahyogjeevan.com)
+- [Blog](https://blog.sahyogjeevan.com)
+- [Community Forum](https://community.sahyogjeevan.com)
