@@ -7,6 +7,7 @@ const resources = {
     translation: {
       common: {
         welcome: "Welcome to Sahyog Jeevan",
+        home: "Home",
         login: "Login",
         register: "Register",
         iAmA: "I am a",
@@ -28,6 +29,7 @@ const resources = {
         noJobsFound: "No jobs found",
         appliedJobs: "Applied Jobs",
         acceptedJobs: "Accepted Jobs",
+        acceptedJobsDesc: "View and manage your accepted job applications here",
         trackApplications: "Track your job applications",
         searchApplications: "Search applications",
         all: "All",
@@ -58,6 +60,7 @@ const resources = {
     translation: {
       common: {
         welcome: "सह्योग जीवन में आपका स्वागत है",
+        home: "होम",
         login: "लॉगिन",
         register: "पंजीकरण",
         iAmA: "मैं हूँ",
@@ -79,6 +82,7 @@ const resources = {
         noJobsFound: "कोई नौकरी नहीं मिली",
         appliedJobs: "आवेदित नौकरियां",
         acceptedJobs: "स्वीकृत नौकरियां",
+        acceptedJobsDesc: "अपने स्वीकृत नौकरी आवेदनों को यहां देखें और प्रबंधित करें",
         trackApplications: "अपने नौकरी आवेदनों को ट्रैक करें",
         searchApplications: "आवेदन खोजें",
         all: "सभी",
@@ -92,7 +96,7 @@ const resources = {
         startDate: "आरंभ तिथि",
         noApplications: "कोई आवेदन नहीं मिला",
         noApplicationsDesc: "आपने अभी तक किसी नौकरी के लिए आवेदन नहीं किया है। नौकरियां खोजें और आवेदन करना शुरू करें!",
-        noAcceptedJobs: "कोई स्वीकृत नौकरी नहीं मिली",
+        noAcceptedJobs: "कोई स्वीकृत नौकरी नहीं",
         noAcceptedJobsDesc: "आपके पास अभी तक कोई स्वीकृत नौकरी नहीं है। आवेदन करना जारी रखें और अपनी योग्यताएं दिखाएं!",
         categories: {
           driver: "ड्राइवर",
