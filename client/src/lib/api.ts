@@ -15,7 +15,7 @@ export interface Job {
   salary: string;
   type: string;
   shift: string;
-  status: 'active' | 'draft';
+  status: 'open' | 'closed';
   employerId: number;
   companyName: string;
   companyLogo?: string;
