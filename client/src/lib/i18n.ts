@@ -76,7 +76,11 @@ const resources = {
           cook: "Cook",
           maid: "Maid",
           carpenter: "Carpenter"
-        }
+        },
+        edit: "Edit",
+        delete: "Delete",
+        dashboard: "Dashboard",
+        postJob: "Post Job"
       }
     }
   },
@@ -124,7 +128,7 @@ const resources = {
         noAcceptedJobsDesc: "आपके पास अभी तक कोई स्वीकृत नौकरी नहीं है। आवेदन करना जारी रखें और अपनी योग्यताएं दिखाएं!",
         employerDashboard: "नियोक्ता डैशबोर्ड",
         manageJobListings: "अपनी नौकरी सूचियों को प्रबंधित करें और आवेदन देखें",
-        postNewJob: "नई नौकरी पोस्ट करें",
+        postNewJob: "नौकरी पोस्ट करें",
         activeJobs: "सक्रिय नौकरियां",
         totalJobs: "कुल नौकरियां",
         totalApplications: "कुल आवेदन",
@@ -153,7 +157,11 @@ const resources = {
           cook: "रसोइया",
           maid: "घरेलू सहायक",
           carpenter: "बढ़ई"
-        }
+        },
+        edit: "संपादित करें",
+        delete: "हटाएं",
+        dashboard: "डैशबोर्ड",
+        postJob: "नौकरी पोस्ट करें"
       }
     }
   }
