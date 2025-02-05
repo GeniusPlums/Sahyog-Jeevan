@@ -17,6 +17,7 @@ import ApplicationFinishPage from "@/pages/application-finish";
 import EmployerDashboard from "@/pages/employer-dashboard";
 import JobPost from "@/pages/job-post";
 import Navbar from "@/components/navbar";
+import { ErrorBoundary } from "@/components/error-boundary";
 import "./lib/i18n"; // Import i18n initialization
 
 function LoadingScreen() {
@@ -104,26 +105,28 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative"
-      >
-        {/* Background gradient effects */}
-        <div className="pointer-events-none fixed inset-0 overflow-hidden">
-          <div className="absolute -left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
-          <div className="absolute -right-1/4 bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
-        </div>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative"
+        >
+          {/* Background gradient effects */}
+          <div className="pointer-events-none fixed inset-0 overflow-hidden">
+            <div className="absolute -left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
+            <div className="absolute -right-1/4 bottom-0 h-[500px] w-[500px] rounded-full bg-primary/5 blur-3xl" />
+          </div>
 
-        {/* Main content */}
-        <div className="relative">
-          <Router />
-          <Toaster />
-        </div>
-      </motion.div>
-    </QueryClientProvider>
+          {/* Main content */}
+          <div className="relative">
+            <Router />
+            <Toaster />
+          </div>
+        </motion.div>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -37,8 +37,23 @@ async function handleRequest(
 
 async function fetchUser(): Promise<User | null> {
   try {
-    return await handleRequest('/api/user', 'GET');
+    const response = await fetch('/api/user', {
+      credentials: "include",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
+      throw new Error(`Failed to fetch user: ${response.status}`);
+    }
+
+    return await response.json();
   } catch (error) {
+    console.error('Error fetching user:', error);
     return null;
   }
 }

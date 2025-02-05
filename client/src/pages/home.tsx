@@ -30,7 +30,7 @@ export default function HomePage() {
   const [jobType, setJobType] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   
-  const { data: jobs = [] } = useQuery({
+  const { data: jobs = [], isError, error, isLoading } = useQuery({
     queryKey: ['jobs'],
     queryFn: async () => {
       console.log('Fetching jobs...');
@@ -39,6 +39,36 @@ export default function HomePage() {
       return jobs;
     }
   });
+
+  if (isLoading) {
+    return (
+      <RootLayout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </RootLayout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <RootLayout>
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
+            <p className="text-destructive">Error loading jobs. Please try again later.</p>
+            <Button 
+              variant="outline"
+              onClick={() => window.location.reload()}
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      </RootLayout>
+    );
+  }
 
   // Filter jobs based on search and job type
   const filteredJobs = jobs.filter(job => {

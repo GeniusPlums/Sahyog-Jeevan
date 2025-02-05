@@ -35,22 +35,24 @@ export interface Application {
 export const jobsApi = {
   getAll: async () => {
     try {
-      const response = await api.get<Job[]>('/api/jobs');
+      const response = await api.get<Job[]>('/jobs');
       return response.data;
     } catch (error) {
+      console.error('Error fetching jobs:', error);
       throw error;
     }
   },
   getById: async (id: number) => {
     try {
-      const response = await api.get<Job>(`/api/jobs/${id}`);
+      const response = await api.get<Job>(`/jobs/${id}`);
       return response.data;
     } catch (error) {
+      console.error('Error fetching job:', error);
       throw error;
     }
   },
-  create: (data: FormData) => api.post<Job>('/api/jobs', data).then(res => res.data),
-  getEmployerJobs: () => api.get<Job[]>('/api/employer/jobs').then(res => res.data),
+  create: (data: FormData) => api.post<Job>('/jobs', data).then(res => res.data),
+  getEmployerJobs: () => api.get<Job[]>('/employer/jobs').then(res => res.data),
 };
 
 export const applicationsApi = {
