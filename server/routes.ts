@@ -112,7 +112,6 @@ export function registerRoutes(app: Express): Server {
       const allJobs = await db
         .select()
         .from(jobs)
-        .where(eq(jobs.status, 'open'))
         .orderBy(jobs.createdAt, 'desc');
       res.json(allJobs);
     } catch (error) {
