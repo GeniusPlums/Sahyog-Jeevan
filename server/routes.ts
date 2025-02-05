@@ -109,12 +109,15 @@ export function registerRoutes(app: Express): Server {
 
   app.get("/api/jobs", async (req, res) => {
     try {
+      console.log('Fetching all jobs from database...');
       const allJobs = await db
         .select()
         .from(jobs)
         .orderBy(jobs.createdAt, 'desc');
+      console.log('Found jobs:', allJobs);
       res.json(allJobs);
     } catch (error) {
+      console.error('Error fetching jobs:', error);
       res.status(500).json({ error: "Failed to fetch jobs" });
     }
   });

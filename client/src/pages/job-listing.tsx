@@ -61,10 +61,16 @@ export default function JobListing() {
 
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
     queryKey: ['jobs'],
-    queryFn: jobsApi.getAll
+    queryFn: async () => {
+      console.log('Fetching jobs...');
+      const result = await jobsApi.getAll();
+      console.log('Fetched jobs:', result);
+      return result;
+    }
   });
 
   const filteredJobs = jobs.filter(job => {
+    console.log('Filtering job:', job);
     const matchesSearch = 
       job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.description.toLowerCase().includes(search.toLowerCase()) ||
