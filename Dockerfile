@@ -22,5 +22,9 @@ EXPOSE 5000
 # Set environment variables
 ENV NODE_ENV=production
 
-# Start the application
-CMD ["npm", "start"]
+# Create a script to run migrations and start the app
+RUN echo '#!/bin/sh\nnpm run migrate && npm start' > /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Start the application with migrations
+CMD ["/app/start.sh"]
