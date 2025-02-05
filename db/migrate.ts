@@ -1,28 +1,25 @@
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { migrate } from "drizzle-orm/neon-serverless/migrator";
-import ws from "ws";
-import * as schema from "./schema";
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
+import { migrate } from 'drizzle-orm/neon-http/migrator';
+import * as schema from './schema';
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL must be set");
 }
 
 const runMigration = async () => {
-  const db = drizzle({
-    connection: process.env.DATABASE_URL,
-    schema,
-    ws: ws,
-  });
+  try {
+    console.log('Initializing database connection...');
+    const sql = neon(process.env.DATABASE_URL!);
+    const db = drizzle(sql, { schema });
 
-  console.log("Running migrations...");
-
-  await migrate(db, { migrationsFolder: "./migrations" });
-
-  console.log("Migrations completed!");
-  process.exit(0);
+    console.log('Running migrations...');
+    await migrate(db, { migrationsFolder: './drizzle' });
+    console.log('Migrations completed successfully!');
+  } catch (error) {
+    console.error('Migration failed!', error);
+    process.exit(1);
+  }
 };
 
-runMigration().catch((err) => {
-  console.error("Migration failed!", err);
-  process.exit(1);
-});
+runMigration();

@@ -1,12 +1,13 @@
-import type { Express } from "express";
+import express from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
-import { db } from "@db";
-import { jobs, type Job, profiles, applications } from "@db/schema";
+import db from "../db";
+import { users, jobs, applications, profiles } from "../db/schema";
 import { eq } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
-import fs from 'fs'; // Added fs import
+import fs from 'fs'; 
+import bcrypt from 'bcryptjs'; 
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -29,7 +30,7 @@ const upload = multer({
   }
 });
 
-export function registerRoutes(app: Express): Server {
+export function registerRoutes(app: express.Express): Server {
   setupAuth(app);
 
   // Ensure uploads directory exists
@@ -77,7 +78,7 @@ export function registerRoutes(app: Express): Server {
     }
 
     try {
-      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const files = req.files as { [fieldname: string]: express.Multer.File[] };
 
       // Process files
       const companyLogo = files?.companyLogo?.[0]?.filename;
@@ -107,36 +108,45 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Get all jobs
   app.get("/api/jobs", async (req, res) => {
     try {
-      console.log('Fetching all jobs from database...');
-      const allJobs = await db
-        .select()
-        .from(jobs)
-        .orderBy(jobs.createdAt, 'desc');
-      console.log('Found jobs:', allJobs);
+      const allJobs = await db.query.jobs.findMany({
+        where: eq(jobs.status, "open"),
+      });
       res.json(allJobs);
     } catch (error) {
-      console.error('Error fetching jobs:', error);
-      res.status(500).json({ error: "Failed to fetch jobs" });
+      console.error("Error fetching jobs:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 
+  // Get job by ID
   app.get("/api/jobs/:id", async (req, res) => {
     try {
-      const [job] = await db
-        .select()
-        .from(jobs)
-        .where(eq(jobs.id, parseInt(req.params.id)))
-        .limit(1);
+      const jobId = parseInt(req.params.id);
+      const job = await db.query.jobs.findFirst({
+        where: eq(jobs.id, jobId),
+      });
 
       if (!job) {
         return res.status(404).json({ error: "Job not found" });
       }
 
-      res.json(job);
+      const employer = await db.query.users.findFirst({
+        where: eq(users.id, job.employerId),
+        columns: {
+          companyName: true,
+        },
+      });
+
+      return res.json({
+        ...job,
+        companyName: employer?.companyName || 'Company Name'
+      });
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch job" });
+      console.error("Error fetching job:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 
@@ -159,6 +169,141 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Test endpoint to create a job
+  app.post("/api/test/create-job", async (req, res) => {
+    try {
+      console.log('Creating test job...');
+      const job = await db.insert(jobs).values({
+        employerId: 1,
+        title: "Test Job",
+        category: "Construction",
+        description: "This is a test job",
+        location: "mumbai",
+        salary: "30000",
+        requirements: ["test requirement"],
+        type: "FULL TIME",
+        shift: "day",
+        workingDays: "Monday-Friday",
+        status: "open",
+        benefits: { "health": true, "insurance": true },
+      }).returning();
+      console.log('Created test job:', job);
+      res.json(job);
+    } catch (error) {
+      console.error('Error creating test job:', error);
+      res.status(500).json({ error: "Failed to create test job" });
+    }
+  });
+
+  // Test endpoint to create jobs
+  app.post("/api/test/create-jobs", async (req, res) => {
+    try {
+      console.log('Creating test jobs...');
+      
+      // First, create a test employer
+      const employer = await db.insert(users).values({
+        username: "testemployer",
+        password: "password123",
+        role: "employer"
+      }).returning();
+
+      // Create multiple test jobs
+      const testJobs = [
+        {
+          employerId: employer[0].id,
+          title: "Driver Required",
+          category: "Driver",
+          description: "Looking for experienced drivers",
+          location: "Mumbai",
+          salary: "25000",
+          requirements: ["Valid license", "2 years experience"],
+          type: "FULL TIME",
+          shift: "day",
+          workingDays: "Monday-Friday",
+          status: "open",
+          benefits: { health: true, insurance: true }
+        },
+        {
+          employerId: employer[0].id,
+          title: "Security Guard",
+          category: "Security",
+          description: "Night shift security guard needed",
+          location: "Delhi",
+          salary: "20000",
+          requirements: ["Security certification", "Physical fitness"],
+          type: "FULL TIME",
+          shift: "night",
+          workingDays: "Monday-Sunday",
+          status: "open",
+          benefits: { health: true, insurance: true }
+        },
+        {
+          employerId: employer[0].id,
+          title: "Construction Worker",
+          category: "Construction",
+          description: "Experienced construction workers needed",
+          location: "Bangalore",
+          salary: "30000",
+          requirements: ["Physical fitness", "Construction experience"],
+          type: "FULL TIME",
+          shift: "day",
+          workingDays: "Monday-Saturday",
+          status: "open",
+          benefits: { health: true, insurance: true }
+        }
+      ];
+
+      const createdJobs = await db.insert(jobs).values(testJobs).returning();
+      console.log('Created jobs:', createdJobs);
+      res.json(createdJobs);
+    } catch (error) {
+      console.error('Error creating test jobs:', error);
+      res.status(500).json({ error: "Failed to create test jobs" });
+    }
+  });
+
+  // Test endpoint to create employer
+  app.post("/api/test/create-employer", async (req, res) => {
+    try {
+      console.log('Creating test employer...');
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      
+      const employer = await db.insert(users).values({
+        username: "testemployer",
+        password: hashedPassword,
+        role: "employer"
+      }).returning();
+
+      console.log('Created employer:', employer);
+      res.json(employer);
+    } catch (error) {
+      console.error('Error creating test employer:', error);
+      res.status(500).json({ error: "Failed to create test employer" });
+    }
+  });
+
+  // Test endpoint to create employer profile
+  app.post("/api/test/create-employer-profile", async (req, res) => {
+    try {
+      console.log('Creating test employer profile...');
+      const { employerId, companyName, companyDescription } = req.body;
+      
+      const profile = await db.insert(profiles).values({
+        userId: employerId,
+        name: "Test Employer",
+        companyName,
+        companyDescription,
+        location: "Mumbai",
+        contact: "1234567890"
+      }).returning();
+
+      console.log('Created profile:', profile);
+      res.json(profile);
+    } catch (error) {
+      console.error('Error creating test employer profile:', error);
+      res.status(500).json({ error: "Failed to create test employer profile" });
+    }
+  });
 
   // Applications
   app.post("/api/applications", async (req, res) => {

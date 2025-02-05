@@ -1,31 +1,29 @@
-import passport from "passport";
-import { IVerifyOptions, Strategy as LocalStrategy } from "passport-local";
-import { type Express } from "express";
+import express from "express";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcryptjs";
+import { eq } from "drizzle-orm";
+import db from "../db";
+import { users } from "../db/schema";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { users, type User } from "@db/schema";
-import { db } from "@db";
-import { eq } from "drizzle-orm";
+import createMemoryStore from "memorystore";
 
 const scryptAsync = promisify(scrypt);
+
 const crypto = {
   hash: async (password: string) => {
     const salt = randomBytes(16).toString("hex");
-    const buf = (await scryptAsync(password, salt, 64)) as Buffer;
-    return `${buf.toString("hex")}.${salt}`;
+    const derivedKey = await scryptAsync(password, salt, 64) as Buffer;
+    return salt + ":" + derivedKey.toString("hex");
   },
-  compare: async (suppliedPassword: string, storedPassword: string) => {
-    const [hashedPassword, salt] = storedPassword.split(".");
-    const hashedPasswordBuf = Buffer.from(hashedPassword, "hex");
-    const suppliedPasswordBuf = (await scryptAsync(
-      suppliedPassword,
-      salt,
-      64
-    )) as Buffer;
-    return timingSafeEqual(hashedPasswordBuf, suppliedPasswordBuf);
-  },
+  verify: async (password: string, hash: string) => {
+    const [salt, key] = hash.split(":");
+    const keyBuffer = Buffer.from(key, "hex");
+    const derivedKey = await scryptAsync(password, salt, 64) as Buffer;
+    return timingSafeEqual(keyBuffer, derivedKey);
+  }
 };
 
 declare global {
@@ -39,7 +37,7 @@ declare global {
   }
 }
 
-export function setupAuth(app: Express) {
+export function setupAuth(app: express.Express) {
   const MemoryStore = createMemoryStore(session);
   const sessionSettings: session.SessionOptions = {
     secret: process.env.REPL_ID || "blue-collar-jobs",
@@ -78,7 +76,7 @@ export function setupAuth(app: Express) {
         if (!user.password) {
           return done(null, false, { message: "Invalid login method." });
         }
-        const isMatch = await crypto.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
           return done(null, false, { message: "Incorrect password." });
         }
@@ -130,7 +128,7 @@ export function setupAuth(app: Express) {
       }
 
       // Hash the password
-      const hashedPassword = await crypto.hash(password);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       // Create the new user
       const [newUser] = await db
@@ -155,7 +153,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err: any, user: Express.User, info: IVerifyOptions) => {
+    passport.authenticate("local", (err: any, user: express.User, info: any) => {
       if (err) {
         return next(err);
       }

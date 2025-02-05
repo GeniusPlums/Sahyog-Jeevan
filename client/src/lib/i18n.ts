@@ -100,6 +100,9 @@ const resources = {
         clearFilters: "Clear Filters",
         draft: "Draft",
         paused: "Paused",
+        loadingJobs: "Loading Jobs...",
+        noJobsAvailable: "No Jobs Available",
+        noJobsAvailableDesc: "There are currently no jobs available. Please check back later.",
         errorOccurred: "An error occurred",
         errorOccurredDesc: "There was a problem loading the jobs. Please try again later.",
         locations: {
@@ -209,6 +212,9 @@ const resources = {
         clearFilters: "फ़िल्टर साफ़ करें",
         draft: "ड्राफ्ट",
         paused: "रुका हुआ",
+        loadingJobs: "नौकरियां लोड हो रही हैं...",
+        noJobsAvailable: "कोई नौकरी उपलब्ध नहीं है",
+        noJobsAvailableDesc: "वर्तमान में कोई नौकरी उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।",
         errorOccurred: "एक त्रुटि हुई",
         errorOccurredDesc: "नौकरियों को लोड करने में समस्या हुई। कृपया बाद में पुनः प्रयास करें।",
         locations: {

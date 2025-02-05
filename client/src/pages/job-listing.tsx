@@ -80,28 +80,37 @@ export default function JobListing() {
 
   const filteredJobs = jobs.filter(job => {
     console.log('Filtering job:', job);
+    console.log('Current filters:', filters);
+    
     const matchesSearch = 
       job.title.toLowerCase().includes(search.toLowerCase()) ||
       job.description.toLowerCase().includes(search.toLowerCase()) ||
       job.location.toLowerCase().includes(search.toLowerCase());
+    console.log('Matches search:', matchesSearch);
     
     const matchesType = 
       filters.type === "all" || 
-      job.type.toLowerCase() === filters.type.toLowerCase();
+      job.type.toUpperCase() === filters.type.toUpperCase();
+    console.log('Matches type:', matchesType, 'Job type:', job.type, 'Filter type:', filters.type);
 
     const matchesLocation =
       filters.location === "all" ||
       job.location.toLowerCase() === filters.location.toLowerCase();
+    console.log('Matches location:', matchesLocation);
 
     const matchesShift =
       filters.shift === "all" ||
       job.shift.toLowerCase() === filters.shift.toLowerCase();
+    console.log('Matches shift:', matchesShift);
 
     const matchesSalary =
       parseInt(job.salary) >= filters.salary[0] &&
       parseInt(job.salary) <= filters.salary[1];
+    console.log('Matches salary:', matchesSalary);
 
-    return matchesSearch && matchesType && matchesLocation && matchesShift && matchesSalary;
+    const matches = matchesSearch && matchesType && matchesLocation && matchesShift && matchesSalary;
+    console.log('Final match result:', matches);
+    return matches;
   });
 
   return (
