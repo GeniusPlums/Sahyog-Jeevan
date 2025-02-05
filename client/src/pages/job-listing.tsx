@@ -59,15 +59,24 @@ export default function JobListing() {
     salary: [0, 100000]
   });
 
-  const { data: jobs = [], isLoading } = useQuery<Job[]>({
+  const { data: jobs = [], isLoading, error } = useQuery<Job[]>({
     queryKey: ['jobs'],
     queryFn: async () => {
       console.log('Fetching jobs...');
-      const result = await jobsApi.getAll();
-      console.log('Fetched jobs:', result);
-      return result;
+      try {
+        const result = await jobsApi.getAll();
+        console.log('Fetched jobs:', result);
+        return result;
+      } catch (error) {
+        console.error('Error in job listing query:', error);
+        throw error;
+      }
     }
   });
+
+  if (error) {
+    console.error('Job listing error:', error);
+  }
 
   const filteredJobs = jobs.filter(job => {
     console.log('Filtering job:', job);
@@ -253,6 +262,17 @@ export default function JobListing() {
                     <Skeleton className="h-48 w-full rounded-lg" />
                   </motion.div>
                 ))}
+              </motion.div>
+            ) : error ? (
+              <motion.div
+                variants={fadeInUp}
+                className="flex flex-col items-center justify-center py-12 text-center"
+              >
+                <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-medium mb-2">{t('common.errorOccurred')}</h3>
+                <p className="text-sm text-muted-foreground max-w-md">
+                  {t('common.errorOccurredDesc')}
+                </p>
               </motion.div>
             ) : (
               <motion.div 

@@ -100,6 +100,8 @@ const resources = {
         clearFilters: "Clear Filters",
         draft: "Draft",
         paused: "Paused",
+        errorOccurred: "An error occurred",
+        errorOccurredDesc: "There was a problem loading the jobs. Please try again later.",
         locations: {
           mumbai: "Mumbai",
           delhi: "Delhi",
@@ -207,6 +209,8 @@ const resources = {
         clearFilters: "फ़िल्टर साफ़ करें",
         draft: "ड्राफ्ट",
         paused: "रुका हुआ",
+        errorOccurred: "एक त्रुटि हुई",
+        errorOccurredDesc: "नौकरियों को लोड करने में समस्या हुई। कृपया बाद में पुनः प्रयास करें।",
         locations: {
           mumbai: "मुंबई",
           delhi: "दिल्ली",

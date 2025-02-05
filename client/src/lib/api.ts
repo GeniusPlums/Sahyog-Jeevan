@@ -33,7 +33,17 @@ export interface Application {
 }
 
 export const jobsApi = {
-  getAll: () => api.get<Job[]>('/jobs').then(res => res.data),
+  getAll: async () => {
+    try {
+      console.log('Calling /api/jobs endpoint...');
+      const response = await api.get<Job[]>('/jobs');
+      console.log('Response from /api/jobs:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+      throw error;
+    }
+  },
   getById: (id: number) => api.get<Job>(`/jobs/${id}`).then(res => res.data),
   create: (data: FormData) => api.post<Job>('/jobs', data).then(res => res.data),
   getEmployerJobs: () => api.get<Job[]>('/employer/jobs').then(res => res.data),
