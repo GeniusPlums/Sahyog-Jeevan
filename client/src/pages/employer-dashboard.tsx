@@ -230,33 +230,42 @@ export default function EmployerDashboard() {
 
               {/* Filters and Search */}
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Input
-                    placeholder={t('common.searchJobs')}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4"
-                  />
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                </div>
-                <div className="flex gap-2">
-                  <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="w-[140px]">
-                      <SelectValue placeholder={t('common.filterByStatus')} />
+                <div className="flex items-center space-x-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder={t('common.searchJobs')}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <Select
+                    value={statusFilter || "all"}
+                    onValueChange={(value) => setStatusFilter(value === "all" ? null : value)}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <Filter className="mr-2 h-4 w-4" />
+                      {t('common.filterByStatus')}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value={null}>{t('common.allStatus')}</SelectItem>
+                      <SelectItem value="all">{t('common.all')}</SelectItem>
                       <SelectItem value="active">{t('common.active')}</SelectItem>
                       <SelectItem value="draft">{t('common.draft')}</SelectItem>
                       <SelectItem value="closed">{t('common.closed')}</SelectItem>
+                      <SelectItem value="paused">{t('common.paused')}</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Select value={sortBy} onValueChange={(value: "date" | "applications") => setSortBy(value)}>
-                    <SelectTrigger className="w-[140px]">
-                      <SelectValue placeholder={t('common.sortBy')} />
+                  <Select
+                    value={sortBy}
+                    onValueChange={(value) => setSortBy(value as "date" | "applications")}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <ArrowUpRight className="mr-2 h-4 w-4" />
+                      {t('common.sortBy')}
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="date">{t('common.date')}</SelectItem>
+                      <SelectItem value="date">{t('common.datePosted')}</SelectItem>
                       <SelectItem value="applications">{t('common.applications')}</SelectItem>
                     </SelectContent>
                   </Select>
@@ -265,7 +274,11 @@ export default function EmployerDashboard() {
                     size="icon"
                     onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
                   >
-                    {sortOrder === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    {sortOrder === "asc" ? (
+                      <ChevronUp className="h-4 w-4" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </motion.div>
