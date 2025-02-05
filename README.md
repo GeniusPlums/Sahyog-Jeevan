@@ -1,4 +1,4 @@
-# Sahyog Jeevan (BlueCollarConnect)
+# Sahyog Jeevan
 
 Sahyog Jeevan is a modern job platform specifically designed for blue-collar workers and employers in India. It bridges the gap between skilled workers and job opportunities, providing an intuitive and accessible interface in multiple Indian languages.
 
