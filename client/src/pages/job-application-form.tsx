@@ -25,8 +25,6 @@ import {
 import RootLayout from "@/components/layouts/RootLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { applicationsApi } from "@/lib/api";
 
@@ -60,7 +58,6 @@ const stagger = {
 export default function JobApplicationForm() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
-  const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -131,7 +128,7 @@ export default function JobApplicationForm() {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                {t('common.jobApplication')}
+                Job Application
               </h1>
               <div className="w-10" /> {/* Spacer for alignment */}
             </div>
@@ -142,7 +139,7 @@ export default function JobApplicationForm() {
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t('common.applicationProgress')}</span>
+              <span className="text-muted-foreground">Application Progress</span>
               <span className="text-primary font-medium">{Math.round(progress)}%</span>
             </div>
             <Progress value={progress} className="h-2" />
@@ -165,7 +162,7 @@ export default function JobApplicationForm() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.salary')}</span>
+                <span className="text-sm text-muted-foreground">Salary</span>
               </div>
               <p className="font-semibold">25000/month</p>
             </motion.div>
@@ -178,7 +175,7 @@ export default function JobApplicationForm() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <Briefcase className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.jobType')}</span>
+                <span className="text-sm text-muted-foreground">Job Type</span>
               </div>
               <p className="font-semibold">FULL TIME</p>
             </motion.div>
@@ -191,7 +188,7 @@ export default function JobApplicationForm() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <Clock className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.shift')}</span>
+                <span className="text-sm text-muted-foreground">Shift</span>
               </div>
               <p className="font-semibold">9 AM - 5 PM</p>
             </motion.div>
@@ -208,7 +205,7 @@ export default function JobApplicationForm() {
               <CardContent className="p-6">
                 <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Briefcase className="h-5 w-5 text-primary" />
-                  {t('common.jobResponsibilities')}
+                  Job Responsibilities
                 </h2>
                 <motion.ul 
                   className="space-y-3"
@@ -245,9 +242,9 @@ export default function JobApplicationForm() {
           >
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {[
-                { label: t('common.gender.label'), options: GENDER_OPTIONS, field: "gender", icon: User2 },
-                { label: t('common.experience.label'), options: EXPERIENCE_OPTIONS, field: "experience", icon: CalendarDays },
-                { label: t('common.shift.label'), options: SHIFT_OPTIONS, field: "shift", icon: Clock4 },
+                { label: "Gender", options: GENDER_OPTIONS, field: "gender", icon: User2 },
+                { label: "Experience", options: EXPERIENCE_OPTIONS, field: "experience", icon: CalendarDays },
+                { label: "Shift", options: SHIFT_OPTIONS, field: "shift", icon: Clock4 },
               ].map(({ label, options, field, icon: Icon }) => (
                 <motion.div key={field} variants={fadeInUp} className="space-y-2">
                   <div className="flex items-center gap-2 mb-2">
@@ -267,7 +264,7 @@ export default function JobApplicationForm() {
                           value={option}
                           className="cursor-pointer"
                         >
-                          {t(`common.${field}.${option}`)}
+                          {option}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -289,7 +286,7 @@ export default function JobApplicationForm() {
               <motion.div variants={fadeInUp}>
                 <div className="flex items-center gap-2 mb-2">
                   <ImageIcon className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">{t('common.profileImage')}</span>
+                  <span className="text-sm font-medium">Profile Image</span>
                 </div>
                 <div 
                   className={`relative bg-primary/5 border-2 border-dashed border-primary/20 rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 ${
@@ -309,13 +306,13 @@ export default function JobApplicationForm() {
                         className="object-cover w-full h-full"
                       />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                        <p className="text-white text-sm">{t('common.changeImage')}</p>
+                        <p className="text-white text-sm">Change Image</p>
                       </div>
                     </motion.div>
                   ) : (
                     <>
                       <Upload className="w-8 h-8 mx-auto mb-2 text-primary/60" />
-                      <p className="text-muted-foreground">{t('common.uploadProfile')}</p>
+                      <p className="text-muted-foreground">Upload Profile Image</p>
                     </>
                   )}
                   <input
@@ -334,7 +331,7 @@ export default function JobApplicationForm() {
 
         {/* Apply Now Button */}
         <motion.div 
-          className="fixed bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-lg border-t"
+          className="sticky bottom-0 left-0 right-0 p-4 bg-background/80 backdrop-blur-lg border-t w-full z-50"
           initial={{ y: 100 }}
           animate={{ y: 0 }}
           transition={{ delay: 0.5 }}
@@ -345,7 +342,7 @@ export default function JobApplicationForm() {
               onClick={form.handleSubmit(onSubmit)}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              {t('common.applyNow')}
+              Apply Now
             </Button>
           </div>
         </motion.div>

@@ -12,7 +12,6 @@ import ApplicationCard from "@/components/application-card";
 import { Loader2, User2, Building2, FileText, MapPin, Phone, Briefcase, Award } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Profile, Application } from "@db/schema";
-import { useTranslation } from "react-i18next";
 
 type ProfileFormData = {
   name: string;
@@ -34,7 +33,6 @@ export default function ProfilePage() {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   const { register, handleSubmit, reset } = useForm<ProfileFormData>();
 
@@ -141,12 +139,12 @@ export default function ProfilePage() {
               )}
             </motion.div>
             <CardTitle className="text-2xl text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              {user?.role === "employer" ? t('profile.companyProfile') : t('profile.workerProfile')}
+              {user?.role === "employer" ? "Company Profile" : "Worker Profile"}
             </CardTitle>
             <CardDescription className="text-center text-muted-foreground">
               {user?.role === "employer" 
-                ? t('profile.companyProfileDesc')
-                : t('profile.workerProfileDesc')
+                ? "Create a profile for your company to showcase your services and attract workers."
+                : "Create a profile to showcase your skills and experience to potential employers."
               }
             </CardDescription>
           </CardHeader>
@@ -159,7 +157,7 @@ export default function ProfilePage() {
               >
                 <Label htmlFor="name" className="flex items-center gap-2">
                   <User2 className="h-4 w-4" />
-                  {user?.role === "employer" ? t('profile.contactName') : t('profile.fullName')}
+                  {user?.role === "employer" ? "Contact Name" : "Full Name"}
                 </Label>
                 <Input 
                   id="name" 
@@ -178,7 +176,7 @@ export default function ProfilePage() {
                   >
                     <Label htmlFor="companyName" className="flex items-center gap-2">
                       <Building2 className="h-4 w-4" />
-                      {t('profile.companyName')}
+                      Company Name
                     </Label>
                     <Input 
                       id="companyName" 
@@ -194,7 +192,7 @@ export default function ProfilePage() {
                   >
                     <Label htmlFor="companyDescription" className="flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      {t('profile.companyDescription')}
+                      Company Description
                     </Label>
                     <Textarea
                       id="companyDescription"
@@ -212,13 +210,13 @@ export default function ProfilePage() {
                 >
                   <Label htmlFor="skills" className="flex items-center gap-2">
                     <Award className="h-4 w-4" />
-                    {t('profile.skills')}
+                    Skills
                   </Label>
                   <Textarea
                     id="skills"
                     {...register("skills")}
                     rows={4}
-                    placeholder="Forklift operation&#10;HVAC maintenance&#10;Electrical work"
+                    placeholder="Forklift operation\nHVAC maintenance\nElectrical work"
                     className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors resize-none"
                   />
                 </motion.div>
@@ -231,13 +229,13 @@ export default function ProfilePage() {
               >
                 <Label htmlFor="bio" className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  {t('profile.bio')}
+                  Bio
                 </Label>
                 <Textarea
                   id="bio"
                   {...register("bio")}
                   rows={4}
-                  placeholder={t('profile.bioPlaceholder')}
+                  placeholder="Tell us a little bit about yourself..."
                   className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors resize-none"
                 />
               </motion.div>
@@ -249,7 +247,7 @@ export default function ProfilePage() {
               >
                 <Label htmlFor="location" className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />
-                  {t('profile.location')}
+                  Location
                 </Label>
                 <Input 
                   id="location" 
@@ -265,12 +263,12 @@ export default function ProfilePage() {
               >
                 <Label htmlFor="contact" className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
-                  {t('profile.contact')}
+                  Contact
                 </Label>
                 <Input
                   id="contact"
                   {...register("contact")}
-                  placeholder={t('profile.contactPlaceholder')}
+                  placeholder="Phone number or email address"
                   className="bg-background/60 border-primary/20 focus:border-primary/40 transition-colors"
                 />
               </motion.div>
@@ -289,7 +287,7 @@ export default function ProfilePage() {
                   ) : (
                     <Briefcase className="h-4 w-4 mr-2" />
                   )}
-                  {t('profile.saveProfile')}
+                  Save Profile
                 </Button>
               </motion.div>
             </form>
@@ -305,7 +303,7 @@ export default function ProfilePage() {
           className="space-y-4"
         >
           <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            {t('profile.myApplications')}
+            My Applications
           </h2>
           
           {isApplicationsLoading ? (
@@ -332,7 +330,7 @@ export default function ProfilePage() {
                     animate={{ opacity: 1 }}
                     className="text-center text-muted-foreground py-8"
                   >
-                    {t('profile.noApplications')}
+                    You have no applications.
                   </motion.p>
                 )}
               </div>
