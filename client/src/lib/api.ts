@@ -53,6 +53,7 @@ export const jobsApi = {
   },
   create: (data: FormData) => api.post<Job>('/jobs', data).then(res => res.data),
   getEmployerJobs: () => api.get<Job[]>('/employer/jobs').then(res => res.data),
+  delete: (id: number) => api.delete<void>(`/jobs/${id}`).then(res => res.data),
 };
 
 export const applicationsApi = {

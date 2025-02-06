@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,11 +56,29 @@ export default function EmployerDashboard() {
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"date" | "applications">("date");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const queryClient = useQueryClient();
   
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['employer-jobs'],
     queryFn: jobsApi.getEmployerJobs
   });
+
+  const deleteJobMutation = useMutation({
+    mutationFn: jobsApi.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['employer-jobs'] });
+    }
+  });
+
+  const handleDeleteJob = async (jobId: number) => {
+    if (window.confirm(t('common.confirmJobDelete'))) {
+      try {
+        await deleteJobMutation.mutateAsync(jobId);
+      } catch (error) {
+        console.error('Error deleting job:', error);
+      }
+    }
+  };
 
   const stats = {
     totalJobs: jobs.length,
@@ -333,9 +351,13 @@ export default function EmployerDashboard() {
                                 <Edit2 className="h-4 w-4 mr-2" />
                                 {t('common.edit')}
                               </Button>
-                              <Button variant="destructive">
+                              <Button 
+                                variant="destructive"
+                                onClick={() => handleDeleteJob(job.id)}
+                                disabled={deleteJobMutation.isPending}
+                              >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                {t('common.delete')}
+                                {deleteJobMutation.isPending ? t('common.deleting') : t('common.delete')}
                               </Button>
                             </div>
                           </div>
