@@ -12,13 +12,11 @@ import {
   Building2,
 } from "lucide-react";
 import RootLayout from "@/components/layouts/RootLayout";
-import { useTranslation } from "react-i18next";
 import { jobsApi } from "@/lib/api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 export default function JobDetailsPage() {
-  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const { id } = useParams<{ id: string }>();
 

@@ -32,7 +32,6 @@ import {
   Download
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import RootLayout from "@/components/layouts/RootLayout";
 import type { User, Job, Application } from "@db/schema";
 
@@ -51,7 +50,6 @@ const stagger = {
 };
 
 export default function AdminDashboard() {
-  const { t } = useTranslation();
   const { toast } = useToast();
   const [userSearch, setUserSearch] = useState("");
   const [jobSearch, setJobSearch] = useState("");
@@ -160,20 +158,20 @@ export default function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h1 className="text-2xl font-bold tracking-tight">
-                    {t('common.adminDashboard')}
+                    Admin Dashboard
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    {t('common.adminDashboardDesc')}
+                    Manage users and applications
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
                     <RefreshCcw className="h-4 w-4 mr-2" />
-                    {t('common.refresh')}
+                    Refresh
                   </Button>
                   <Button variant="default" size="sm">
                     <Download className="h-4 w-4 mr-2" />
-                    {t('common.exportData')}
+                    Export Data
                   </Button>
                 </div>
               </div>
@@ -197,11 +195,11 @@ export default function AdminDashboard() {
                       <Users className="h-24 w-24" />
                     </div>
                     <CardHeader className="space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">{t('common.totalUsers')}</CardTitle>
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Total Users</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold">{stats.totalUsers}</div>
-                      <p className="mt-2 text-xs text-muted-foreground">{t('common.activeMembers')}</p>
+                      <p className="mt-2 text-xs text-muted-foreground">Active Members</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -212,11 +210,11 @@ export default function AdminDashboard() {
                       <Briefcase className="h-24 w-24" />
                     </div>
                     <CardHeader className="space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">{t('common.activeJobs')}</CardTitle>
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Active Jobs</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold">{stats.totalJobs}</div>
-                      <p className="mt-2 text-xs text-muted-foreground">{t('common.openPositions')}</p>
+                      <p className="mt-2 text-xs text-muted-foreground">Open Positions</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -227,11 +225,11 @@ export default function AdminDashboard() {
                       <FileText className="h-24 w-24" />
                     </div>
                     <CardHeader className="space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium text-muted-foreground">{t('common.totalApplications')}</CardTitle>
+                      <CardTitle className="text-sm font-medium text-muted-foreground">Total Applications</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-3xl font-bold">{stats.totalApplications}</div>
-                      <p className="mt-2 text-xs text-muted-foreground">{t('common.submittedApplications')}</p>
+                      <p className="mt-2 text-xs text-muted-foreground">Submitted Applications</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -242,16 +240,16 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-semibold">{t('common.recentUsers')}</CardTitle>
+                      <CardTitle className="text-xl font-semibold">Recent Users</CardTitle>
                       <Button variant="outline" size="sm">
                         <UserPlus className="h-4 w-4 mr-2" />
-                        {t('common.addUser')}
+                        Add User
                       </Button>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="relative flex-1">
                         <Input
-                          placeholder={t('common.searchUsers')}
+                          placeholder="Search Users"
                           value={userSearch}
                           onChange={(e) => setUserSearch(e.target.value)}
                           className="pl-10 pr-4"
@@ -260,13 +258,13 @@ export default function AdminDashboard() {
                       </div>
                       <Select value={userFilter} onValueChange={setUserFilter}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder={t('common.filterByRole')} />
+                          <SelectValue placeholder="Filter by Role" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">{t('common.allRoles')}</SelectItem>
-                          <SelectItem value="worker">{t('common.worker')}</SelectItem>
-                          <SelectItem value="employer">{t('common.employer')}</SelectItem>
-                          <SelectItem value="admin">{t('common.admin')}</SelectItem>
+                          <SelectItem value="all">All Roles</SelectItem>
+                          <SelectItem value="worker">Worker</SelectItem>
+                          <SelectItem value="employer">Employer</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
                       <Button
@@ -309,7 +307,7 @@ export default function AdminDashboard() {
                                   className="hover:bg-destructive/90"
                                 >
                                   <UserX className="h-4 w-4 mr-2" />
-                                  {t('common.deactivate')}
+                                  Deactivate
                                 </Button>
                               </TableCell>
                             </TableRow>
@@ -326,16 +324,16 @@ export default function AdminDashboard() {
                 <Card>
                   <CardHeader className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-semibold">{t('common.recentJobs')}</CardTitle>
+                      <CardTitle className="text-xl font-semibold">Recent Jobs</CardTitle>
                       <Button variant="outline" size="sm">
                         <Briefcase className="h-4 w-4 mr-2" />
-                        {t('common.addJob')}
+                        Add Job
                       </Button>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
                       <div className="relative flex-1">
                         <Input
-                          placeholder={t('common.searchJobs')}
+                          placeholder="Search Jobs"
                           value={jobSearch}
                           onChange={(e) => setJobSearch(e.target.value)}
                           className="pl-10 pr-4"
@@ -344,13 +342,13 @@ export default function AdminDashboard() {
                       </div>
                       <Select value={jobFilter} onValueChange={setJobFilter}>
                         <SelectTrigger className="w-[180px]">
-                          <SelectValue placeholder={t('common.filterByStatus')} />
+                          <SelectValue placeholder="Filter by Status" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="all">{t('common.allStatus')}</SelectItem>
-                          <SelectItem value="open">{t('common.open')}</SelectItem>
-                          <SelectItem value="closed">{t('common.closed')}</SelectItem>
-                          <SelectItem value="draft">{t('common.draft')}</SelectItem>
+                          <SelectItem value="all">All Status</SelectItem>
+                          <SelectItem value="open">Open</SelectItem>
+                          <SelectItem value="closed">Closed</SelectItem>
+                          <SelectItem value="draft">Draft</SelectItem>
                         </SelectContent>
                       </Select>
                       <Button
@@ -400,7 +398,7 @@ export default function AdminDashboard() {
                                   size="sm"
                                   onClick={() => window.location.href = `/jobs/${job.id}`}
                                 >
-                                  {t('common.view')}
+                                  View
                                 </Button>
                               </TableCell>
                             </TableRow>

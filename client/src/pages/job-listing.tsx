@@ -7,7 +7,6 @@ import { jobsApi, type Job } from "@/lib/api";
 import JobCard from "@/components/job-card";
 import RootLayout from "@/components/layouts/RootLayout";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import { 
   Search, 
   Filter, 
@@ -49,7 +48,6 @@ const stagger = {
 };
 
 export default function JobListing() {
-  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("list");
   const [filters, setFilters] = useState({
@@ -133,10 +131,10 @@ export default function JobListing() {
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
                   <h1 className="text-2xl font-bold tracking-tight">
-                    {t('common.availableJobs')}
+                    Job Listings
                   </h1>
                   <p className="text-sm text-muted-foreground">
-                    {t('common.jobListingDesc')}
+                    Find your next opportunity
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -160,11 +158,11 @@ export default function JobListing() {
                     </SheetTrigger>
                     <SheetContent>
                       <SheetHeader>
-                        <SheetTitle>{t('common.filters')}</SheetTitle>
+                        <SheetTitle>Filters</SheetTitle>
                       </SheetHeader>
                       <div className="py-6 space-y-6">
                         <div className="space-y-4">
-                          <h4 className="text-sm font-medium">{t('common.jobType')}</h4>
+                          <h4 className="text-sm font-medium">Job Type</h4>
                           <div className="grid grid-cols-2 gap-2">
                             {JOB_TYPES.map((type) => (
                               <Button
@@ -175,14 +173,14 @@ export default function JobListing() {
                                 className="justify-start"
                               >
                                 <Briefcase className="mr-2 h-4 w-4" />
-                                {t(`common.${type.toLowerCase()}`)}
+                                {type}
                               </Button>
                             ))}
                           </div>
                         </div>
 
                         <div className="space-y-4">
-                          <h4 className="text-sm font-medium">{t('common.location')}</h4>
+                          <h4 className="text-sm font-medium">Location</h4>
                           <div className="grid grid-cols-2 gap-2">
                             {LOCATIONS.map((location) => (
                               <Button
@@ -193,14 +191,14 @@ export default function JobListing() {
                                 className="justify-start"
                               >
                                 <MapPin className="mr-2 h-4 w-4" />
-                                {t(`locations.${location}`)}
+                                {location}
                               </Button>
                             ))}
                           </div>
                         </div>
 
                         <div className="space-y-4">
-                          <h4 className="text-sm font-medium">{t('common.shift')}</h4>
+                          <h4 className="text-sm font-medium">Shift</h4>
                           <div className="grid grid-cols-2 gap-2">
                             {SHIFTS.map((shift) => (
                               <Button
@@ -211,14 +209,14 @@ export default function JobListing() {
                                 className="justify-start"
                               >
                                 <Clock className="mr-2 h-4 w-4" />
-                                {t(`common.${shift}`)}
+                                {shift}
                               </Button>
                             ))}
                           </div>
                         </div>
 
                         <div className="space-y-4">
-                          <h4 className="text-sm font-medium">{t('common.salaryRange')}</h4>
+                          <h4 className="text-sm font-medium">Salary Range</h4>
                           <Slider
                             defaultValue={[0, 100000]}
                             max={100000}
@@ -240,7 +238,7 @@ export default function JobListing() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
                   <Input
-                    placeholder={t('common.searchJobs')}
+                    placeholder="Search Jobs"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="pl-10 pr-4"
@@ -249,7 +247,7 @@ export default function JobListing() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="bg-primary/10 text-primary">
-                    {filteredJobs.length} {t('common.jobsFound')}
+                    {filteredJobs.length} Jobs Found
                   </Badge>
                 </div>
               </div>
@@ -278,9 +276,9 @@ export default function JobListing() {
                 className="flex flex-col items-center justify-center py-12 text-center"
               >
                 <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">{t('common.errorOccurred')}</h3>
+                <h3 className="text-lg font-medium mb-2">An error occurred</h3>
                 <p className="text-sm text-muted-foreground max-w-md">
-                  {t('common.errorOccurredDesc')}
+                  Please try again later
                 </p>
               </motion.div>
             ) : (
@@ -301,9 +299,9 @@ export default function JobListing() {
                     className="flex flex-col items-center justify-center py-12 text-center"
                   >
                     <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">{t('common.noJobsFound')}</h3>
+                    <h3 className="text-lg font-medium mb-2">No jobs found</h3>
                     <p className="text-sm text-muted-foreground max-w-md">
-                      {t('common.noJobsFoundDesc')}
+                      Try adjusting your filters
                     </p>
                     <Button 
                       variant="outline"
@@ -318,7 +316,7 @@ export default function JobListing() {
                       }}
                       className="mt-4"
                     >
-                      {t('common.clearFilters')}
+                      Clear Filters
                     </Button>
                   </motion.div>
                 )}

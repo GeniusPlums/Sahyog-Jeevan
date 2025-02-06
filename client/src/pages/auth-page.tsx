@@ -12,7 +12,6 @@ import { Loader2, Briefcase, User2, Lock, Globe2, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSelector from "@/components/language-selector";
 import RegionSelector from "@/components/region-selector";
-import { useTranslation } from "react-i18next";
 
 type FormData = {
   username: string;
@@ -33,7 +32,6 @@ export default function AuthPage() {
   const [userRole, setUserRole] = useState<"worker" | "employer">("worker");
   const { login, register, isLoginLoading, isRegisterLoading } = useUser();
   const { toast } = useToast();
-  const { t } = useTranslation();
 
   const loginForm = useForm<FormData>();
   const registerForm = useForm<FormData>({
@@ -51,8 +49,8 @@ export default function AuthPage() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: t('common.loginFailed'),
-        description: error instanceof Error ? error.message : t('common.tryAgain')
+        title: 'Login failed',
+        description: error instanceof Error ? error.message : 'Try again'
       });
     }
   };
@@ -63,8 +61,8 @@ export default function AuthPage() {
     } catch (error) {
       toast({
         variant: "destructive",
-        title: t('common.registrationFailed'),
-        description: error instanceof Error ? error.message : t('common.tryAgain')
+        title: 'Registration failed',
+        description: error instanceof Error ? error.message : 'Try again'
       });
     }
   };
@@ -94,7 +92,7 @@ export default function AuthPage() {
               <Briefcase className="h-8 w-8 text-primary" />
             </motion.div>
             <CardTitle className="text-2xl text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              {t('common.welcome')}
+              Welcome to Sahyog Jeevan
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -108,13 +106,13 @@ export default function AuthPage() {
                   value="login"
                   className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all duration-300"
                 >
-                  {t('common.login')}
+                  Login
                 </TabsTrigger>
                 <TabsTrigger 
                   value="register"
                   className="data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-all duration-300"
                 >
-                  {t('common.register')}
+                  Register
                 </TabsTrigger>
               </TabsList>
 
@@ -133,7 +131,7 @@ export default function AuthPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                       >
-                        <Label>{t('common.iAmA')}</Label>
+                        <Label>I am a</Label>
                         <RadioGroup
                           defaultValue="worker"
                           onValueChange={(value) => setUserRole(value as "worker" | "employer")}
@@ -146,7 +144,7 @@ export default function AuthPage() {
                               className="flex items-center gap-2 cursor-pointer"
                             >
                               <User2 className="h-4 w-4" />
-                              {t('common.worker')}
+                              Worker
                             </Label>
                           </div>
                           <div className="flex items-center space-x-2 flex-1">
@@ -156,7 +154,7 @@ export default function AuthPage() {
                               className="flex items-center gap-2 cursor-pointer"
                             >
                               <Briefcase className="h-4 w-4" />
-                              {t('common.employer')}
+                              Employer
                             </Label>
                           </div>
                         </RadioGroup>
@@ -170,7 +168,7 @@ export default function AuthPage() {
                       >
                         <Label htmlFor="login-username" className="flex items-center gap-2">
                           <User2 className="h-4 w-4" />
-                          {t('common.username')}
+                          Username
                         </Label>
                         <Input
                           id="login-username"
@@ -188,7 +186,7 @@ export default function AuthPage() {
                       >
                         <Label htmlFor="login-password" className="flex items-center gap-2">
                           <Lock className="h-4 w-4" />
-                          {t('common.password')}
+                          Password
                         </Label>
                         <Input
                           id="login-password"
@@ -212,7 +210,7 @@ export default function AuthPage() {
                           {isLoginLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            t('common.login')
+                            Login
                           )}
                         </Button>
                       </motion.div>
@@ -234,7 +232,7 @@ export default function AuthPage() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
                       >
-                        <Label>{t('common.iAmA')}</Label>
+                        <Label>I am a</Label>
                         <RadioGroup
                           defaultValue="worker"
                           onValueChange={(value) =>
@@ -249,7 +247,7 @@ export default function AuthPage() {
                               className="flex items-center gap-2 cursor-pointer"
                             >
                               <User2 className="h-4 w-4" />
-                              {t('common.worker')}
+                              Worker
                             </Label>
                           </div>
                           <div className="flex items-center space-x-2 flex-1">
@@ -259,7 +257,7 @@ export default function AuthPage() {
                               className="flex items-center gap-2 cursor-pointer"
                             >
                               <Briefcase className="h-4 w-4" />
-                              {t('common.employer')}
+                              Employer
                             </Label>
                           </div>
                         </RadioGroup>
@@ -273,7 +271,7 @@ export default function AuthPage() {
                       >
                         <Label htmlFor="register-username" className="flex items-center gap-2">
                           <User2 className="h-4 w-4" />
-                          {t('common.username')}
+                          Username
                         </Label>
                         <Input
                           id="register-username"
@@ -291,7 +289,7 @@ export default function AuthPage() {
                       >
                         <Label htmlFor="register-password" className="flex items-center gap-2">
                           <Lock className="h-4 w-4" />
-                          {t('common.password')}
+                          Password
                         </Label>
                         <Input
                           id="register-password"
@@ -310,7 +308,7 @@ export default function AuthPage() {
                       >
                         <Label className="flex items-center gap-2">
                           <Globe2 className="h-4 w-4" />
-                          {t('common.preferredLanguage')}
+                          Preferred Language
                         </Label>
                         <LanguageSelector
                           value={selectedLanguage || "en"}
@@ -326,7 +324,7 @@ export default function AuthPage() {
                       >
                         <Label className="flex items-center gap-2">
                           <MapPin className="h-4 w-4" />
-                          {t('common.region')}
+                          Region
                         </Label>
                         <RegionSelector
                           value={registerForm.watch("region") || ""}
@@ -348,7 +346,7 @@ export default function AuthPage() {
                           {isRegisterLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            t('common.register')
+                            Register
                           )}
                         </Button>
                       </motion.div>

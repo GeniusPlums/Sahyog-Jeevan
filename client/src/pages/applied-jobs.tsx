@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslation } from "react-i18next";
 import { 
   Search,
   MapPin, 
@@ -34,7 +33,6 @@ const STATUS_ICONS = {
 } as const;
 
 export default function AppliedJobsPage() {
-  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
@@ -61,8 +59,12 @@ export default function AppliedJobsPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold mb-2">{t('common.appliedJobs')}</h1>
-          <p className="text-gray-600">{t('common.trackApplications')}</p>
+          <h1 className="text-3xl font-bold">
+            Applied Jobs
+          </h1>
+          <p className="text-muted-foreground">
+            Track your job applications
+          </p>
         </div>
 
         {/* Search and Filters */}
@@ -70,7 +72,7 @@ export default function AppliedJobsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder={t('common.searchApplications')}
+              placeholder="Search applications"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10"
@@ -79,10 +81,10 @@ export default function AppliedJobsPage() {
 
           <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">{t('common.all')}</TabsTrigger>
-              <TabsTrigger value="pending">{t('common.pending')}</TabsTrigger>
-              <TabsTrigger value="shortlisted">{t('common.shortlisted')}</TabsTrigger>
-              <TabsTrigger value="rejected">{t('common.rejected')}</TabsTrigger>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="shortlisted">Shortlisted</TabsTrigger>
+              <TabsTrigger value="rejected">Rejected</TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -112,10 +114,10 @@ export default function AppliedJobsPage() {
           <Card className="bg-gray-50">
             <CardContent className="p-8 text-center">
               <Building2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{t('common.noApplications')}</h3>
-              <p className="text-gray-600 mb-4">{t('common.noApplicationsDesc')}</p>
+              <h3 className="text-lg font-semibold mb-2">No applications found</h3>
+              <p className="text-gray-600 mb-4">You haven't applied to any jobs yet.</p>
               <Button onClick={() => window.location.href = '/jobs'}>
-                {t('common.browseJobs')}
+                Browse jobs
               </Button>
             </CardContent>
           </Card>
@@ -149,7 +151,7 @@ export default function AppliedJobsPage() {
                           </div>
                           <Badge className={STATUS_COLORS[application.status]}>
                             <StatusIcon className="h-3 w-3 mr-1" />
-                            {t(`common.${application.status}`)}
+                            {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
                           </Badge>
                         </div>
 
@@ -170,13 +172,13 @@ export default function AppliedJobsPage() {
                             size="sm"
                             onClick={() => window.location.href = `/applications/${application.id}`}
                           >
-                            {t('common.viewDetails')}
+                            View Details
                           </Button>
                           <Button 
                             variant="outline" 
                             size="sm"
                           >
-                            {t('common.withdraw')}
+                            Withdraw
                           </Button>
                         </div>
                       </div>

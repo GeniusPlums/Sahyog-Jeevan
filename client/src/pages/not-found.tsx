@@ -3,11 +3,9 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Home, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
-import { useTranslation } from "react-i18next";
 
 export default function NotFound() {
   const [_, navigate] = useLocation();
-  const { t } = useTranslation();
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-background via-background to-background/95">
@@ -46,16 +44,13 @@ export default function NotFound() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                404
+                404 - Page Not Found
               </motion.h1>
               
               <motion.h2 
                 className="text-xl font-semibold text-foreground mb-4"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
               >
-                {t('common.pageNotFound')}
+                The page you are looking for does not exist
               </motion.h2>
 
               <motion.p 
@@ -64,7 +59,7 @@ export default function NotFound() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                {t('common.pageNotFoundMessage')}
+                The page you are looking for does not exist
               </motion.p>
 
               <div className="flex gap-4">
@@ -79,7 +74,7 @@ export default function NotFound() {
                     className="flex items-center gap-2 hover:bg-destructive/10"
                   >
                     <ArrowLeft className="h-4 w-4" />
-                    {t('common.goBack')}
+                    Go Back
                   </Button>
                 </motion.div>
 
@@ -93,7 +88,7 @@ export default function NotFound() {
                     className="flex items-center gap-2 bg-destructive/90 hover:bg-destructive"
                   >
                     <Home className="h-4 w-4" />
-                    {t('common.goHome')}
+                    Go Home
                   </Button>
                 </motion.div>
               </div>

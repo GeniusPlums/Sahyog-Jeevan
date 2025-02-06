@@ -13,7 +13,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import RootLayout from "@/components/layouts/RootLayout";
 import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 
@@ -34,7 +33,6 @@ const stagger = {
 export default function ApplicationFinishPage() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
-  const { t } = useTranslation();
   const [termsAccepted, setTermsAccepted] = useState(false);
 
   const { data: job } = useQuery({
@@ -61,7 +59,7 @@ export default function ApplicationFinishPage() {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <h1 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                {t('common.finishApplication')}
+                Finish Application
               </h1>
               <div className="w-10" /> {/* Spacer for alignment */}
             </div>
@@ -96,9 +94,9 @@ export default function ApplicationFinishPage() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <DollarSign className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.salary')}</span>
+                <span className="text-sm text-muted-foreground">Salary</span>
               </div>
-              <p className="font-semibold">{job?.salary || t('common.notSpecified')}</p>
+              <p className="font-semibold">{job?.salary || 'Not Specified'}</p>
             </motion.div>
 
             <motion.div 
@@ -109,9 +107,9 @@ export default function ApplicationFinishPage() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <Briefcase className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.jobType')}</span>
+                <span className="text-sm text-muted-foreground">Job Type</span>
               </div>
-              <p className="font-semibold">{job?.type || t('common.notSpecified')}</p>
+              <p className="font-semibold">{job?.type || 'Not Specified'}</p>
             </motion.div>
 
             <motion.div 
@@ -122,9 +120,9 @@ export default function ApplicationFinishPage() {
                 <div className="p-2 bg-primary/10 rounded-full">
                   <Clock className="h-4 w-4 text-primary" />
                 </div>
-                <span className="text-sm text-muted-foreground">{t('common.shift')}</span>
+                <span className="text-sm text-muted-foreground">Shift</span>
               </div>
-              <p className="font-semibold">{job?.shift || t('common.notSpecified')}</p>
+              <p className="font-semibold">{job?.shift || 'Not Specified'}</p>
             </motion.div>
           </motion.div>
 
@@ -140,17 +138,17 @@ export default function ApplicationFinishPage() {
                 <div className="flex items-center gap-2">
                   <AlertCircle className="h-5 w-5 text-primary" />
                   <h2 className="text-lg font-semibold text-foreground">
-                    {t('common.termsAndConditions')}
+                    Terms and Conditions
                   </h2>
                 </div>
 
                 <div className="space-y-4 text-muted-foreground">
-                  <p>{t('common.termsDescription')}</p>
+                  <p>Please read and agree to our terms and conditions.</p>
                   <ul className="space-y-2">
                     {[
-                      t('common.term1'),
-                      t('common.term2'),
-                      t('common.term3'),
+                      'Term 1',
+                      'Term 2',
+                      'Term 3',
                     ].map((term, index) => (
                       <motion.li 
                         key={index}
@@ -176,15 +174,15 @@ export default function ApplicationFinishPage() {
                       htmlFor="terms"
                       className="text-sm font-medium leading-none cursor-pointer"
                     >
-                      {t('common.termsAgreement')}
+                      I agree to the terms and conditions.
                     </label>
                     <p className="text-sm text-muted-foreground">
-                      {t('common.termsPolicy')}{" "}
+                      View our policy{" "}
                       <button 
                         className="text-primary hover:underline focus:outline-none"
                         onClick={() => {/* Open policy */}}
                       >
-                        {t('common.policy')}
+                        here
                       </button>
                     </p>
                   </div>
@@ -204,7 +202,7 @@ export default function ApplicationFinishPage() {
               onClick={() => navigate("/applied")}
               disabled={!termsAccepted}
             >
-              {t('common.finishApplication')}
+              Finish Application
             </Button>
           </motion.div>
         </div>
