@@ -210,7 +210,7 @@ export default function AuthPage() {
                           {isLoginLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            Login
+                            "Login"
                           )}
                         </Button>
                       </motion.div>
@@ -346,7 +346,7 @@ export default function AuthPage() {
                           {isRegisterLoading ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
-                            Register
+                            "Register"
                           )}
                         </Button>
                       </motion.div>
