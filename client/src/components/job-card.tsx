@@ -6,8 +6,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MapPin, Building, Clock, DollarSign, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next";
-import type { Job } from "@db/schema";
 
 type JobCardProps = {
   job: Job;
@@ -17,7 +15,6 @@ export default function JobCard({ job }: JobCardProps) {
   const { user } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { t } = useTranslation();
 
   const applyMutation = useMutation({
     mutationFn: async () => {
@@ -51,7 +48,7 @@ export default function JobCard({ job }: JobCardProps) {
   });
 
   // Format salary to include the translated "/month"
-  const formattedSalary = job.salary ? `₹${job.salary}${t('common.month')}` : '';
+  const formattedSalary = job.salary ? `₹${job.salary}/month` : '';
 
   // Helper to format location for translation key
   const getLocationKey = (location: string) => {
@@ -78,13 +75,13 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <h3 className="text-xl font-semibold tracking-tight text-foreground/90 group-hover:text-primary transition-colors duration-300">
-                  {t(`categories.${getTitleKey(job.title)}`)}
+                  {job.title}
                 </h3>
                 <Badge 
                   variant={job.status === "open" ? "default" : "secondary"}
                   className="transition-all animate-in fade-in duration-300 hover:scale-105"
                 >
-                  {t(`common.${job.status}`)}
+                  {job.status}
                 </Badge>
               </div>
 
@@ -110,7 +107,7 @@ export default function JobCard({ job }: JobCardProps) {
                   <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
                     <MapPin className="h-4 w-4 text-primary" />
                   </div>
-                  <span>{t(`locations.${getLocationKey(job.location)}`)}</span>
+                  <span>{job.location}</span>
                 </motion.div>
 
                 <motion.div 
@@ -122,7 +119,7 @@ export default function JobCard({ job }: JobCardProps) {
                   <div className="p-1.5 rounded-md bg-primary/10 group-hover/item:bg-primary/20 transition-colors duration-300">
                     <Clock className="h-4 w-4 text-primary" />
                   </div>
-                  <span>{t(`common.${job.type.toLowerCase()}`)}</span>
+                  <span>{job.type}</span>
                 </motion.div>
 
                 {formattedSalary && (
@@ -149,7 +146,7 @@ export default function JobCard({ job }: JobCardProps) {
                   className="flex items-center gap-2 text-sm text-primary bg-primary/10 px-3 py-2 rounded-md"
                 >
                   <CheckCircle2 className="h-4 w-4" />
-                  <span className="font-medium">{t('common.applied')}</span>
+                  <span className="font-medium">Applied</span>
                 </motion.div>
               )}
               <Button
@@ -170,7 +167,7 @@ export default function JobCard({ job }: JobCardProps) {
                     className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"
                   />
                 ) : null}
-                {job.applied ? t('common.applied') : t('common.apply')}
+                {job.applied ? 'Applied' : 'Apply'}
               </Button>
             </div>
           </div>

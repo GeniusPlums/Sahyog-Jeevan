@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslation } from "react-i18next";
 import RootLayout from "@/components/layouts/RootLayout";
 import { jobsApi, type Job } from "@/lib/api";
 
@@ -50,7 +49,6 @@ const statusColors = {
 };
 
 export default function EmployerDashboard() {
-  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
@@ -71,7 +69,7 @@ export default function EmployerDashboard() {
   });
 
   const handleDeleteJob = async (jobId: number) => {
-    if (window.confirm(t('common.confirmJobDelete'))) {
+    if (window.confirm('Are you sure you want to delete this job?')) {
       try {
         await deleteJobMutation.mutateAsync(jobId);
       } catch (error) {
@@ -128,16 +126,16 @@ export default function EmployerDashboard() {
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <h1 className="text-2xl font-bold tracking-tight">
-                    {t('common.employerDashboard')}
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                    Employer Dashboard
                   </h1>
-                  <p className="text-sm text-muted-foreground">
-                    {t('common.manageJobListings')}
+                  <p className="text-muted-foreground">
+                    Manage your job listings and view applications
                   </p>
                 </div>
                 <Button onClick={() => navigate("/employer/jobs/new")}>
                   <Plus className="mr-2 h-4 w-4" />
-                  {t('common.postNewJob')}
+                  Post New Job
                 </Button>
               </div>
             </motion.div>
@@ -161,13 +159,13 @@ export default function EmployerDashboard() {
                     </div>
                     <CardHeader className="space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium text-muted-foreground">
-                        {t('common.activeJobs')}
+                        Active Jobs
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.activeJobs}</div>
                       <p className="mt-2 text-xs text-muted-foreground">
-                        {t('common.totalJobs')}: {stats.totalJobs}
+                        Total Jobs: {stats.totalJobs}
                       </p>
                     </CardContent>
                   </Card>
@@ -180,14 +178,14 @@ export default function EmployerDashboard() {
                     </div>
                     <CardHeader className="space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium text-muted-foreground">
-                        {t('common.totalApplications')}
+                        Total Applications
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalApplications}</div>
                       <div className="mt-2 flex items-center text-xs text-green-600">
                         <ArrowUpRight className="h-3 w-3 mr-1" />
-                        +{stats.applicationsToday} {t('common.today')}
+                        +{stats.applicationsToday} Today
                       </div>
                     </CardContent>
                   </Card>
@@ -200,14 +198,14 @@ export default function EmployerDashboard() {
                     </div>
                     <CardHeader className="space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium text-muted-foreground">
-                        {t('common.totalViews')}
+                        Total Views
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalViews}</div>
                       <div className="mt-2 flex items-center text-xs text-muted-foreground">
                         <TrendingUp className="h-3 w-3 mr-1" />
-                        {t('common.lastMonth')}
+                        Last Month
                       </div>
                     </CardContent>
                   </Card>
@@ -217,7 +215,7 @@ export default function EmployerDashboard() {
                   <Card className="relative overflow-hidden bg-primary text-primary-foreground">
                     <CardHeader className="space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">
-                        {t('common.quickActions')}
+                        Quick Actions
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -228,7 +226,7 @@ export default function EmployerDashboard() {
                           onClick={() => navigate("/employer/applications")}
                         >
                           <Users className="h-4 w-4 mr-2" />
-                          {t('common.viewApplications')}
+                          View Applications
                         </Button>
                         <Button 
                           variant="secondary" 
@@ -236,7 +234,7 @@ export default function EmployerDashboard() {
                           onClick={() => navigate("/employer/analytics")}
                         >
                           <BarChart3 className="h-4 w-4 mr-2" />
-                          {t('common.viewAnalytics')}
+                          View Analytics
                         </Button>
                       </div>
                     </CardContent>
@@ -250,7 +248,7 @@ export default function EmployerDashboard() {
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
-                      placeholder={t('common.searchJobs')}
+                      placeholder="Search Jobs"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="pl-10"
@@ -262,12 +260,12 @@ export default function EmployerDashboard() {
                   >
                     <SelectTrigger className="w-[180px]">
                       <Filter className="mr-2 h-4 w-4" />
-                      {t('common.filterByStatus')}
+                      Filter by Status
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">{t('common.all')}</SelectItem>
-                      <SelectItem value="open">{t('common.open')}</SelectItem>
-                      <SelectItem value="closed">{t('common.closed')}</SelectItem>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="open">Open</SelectItem>
+                      <SelectItem value="closed">Closed</SelectItem>
                     </SelectContent>
                   </Select>
                   <Select
@@ -276,11 +274,11 @@ export default function EmployerDashboard() {
                   >
                     <SelectTrigger className="w-[180px]">
                       <ArrowUpRight className="mr-2 h-4 w-4" />
-                      {t('common.sortBy')}
+                      Sort By
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="date">{t('common.datePosted')}</SelectItem>
-                      <SelectItem value="applications">{t('common.applications')}</SelectItem>
+                      <SelectItem value="date">Date Posted</SelectItem>
+                      <SelectItem value="applications">Applications</SelectItem>
                     </SelectContent>
                   </Select>
                   <Button
@@ -324,7 +322,7 @@ export default function EmployerDashboard() {
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                               <div className="flex items-center text-sm">
                                 <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                                {job.applications} {t('common.applications')}
+                                {job.applications} Applications
                               </div>
                               <div className="flex items-center text-sm">
                                 <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -332,7 +330,7 @@ export default function EmployerDashboard() {
                               </div>
                               <div className="flex items-center text-sm">
                                 <Eye className="h-4 w-4 mr-2 text-muted-foreground" />
-                                {job.views} {t('common.views')}
+                                {job.views} Views
                               </div>
                             </div>
 
@@ -342,14 +340,14 @@ export default function EmployerDashboard() {
                                 onClick={() => navigate(`/employer/jobs/${job.id}`)}
                               >
                                 <Eye className="h-4 w-4 mr-2" />
-                                {t('common.viewDetails')}
+                                View Details
                               </Button>
                               <Button
                                 variant="outline"
                                 onClick={() => navigate(`/employer/jobs/${job.id}/edit`)}
                               >
                                 <Edit2 className="h-4 w-4 mr-2" />
-                                {t('common.edit')}
+                                Edit
                               </Button>
                               <Button 
                                 variant="destructive"
@@ -357,7 +355,7 @@ export default function EmployerDashboard() {
                                 disabled={deleteJobMutation.isPending}
                               >
                                 <Trash2 className="h-4 w-4 mr-2" />
-                                {deleteJobMutation.isPending ? t('common.deleting') : t('common.delete')}
+                                {deleteJobMutation.isPending ? 'Deleting' : 'Delete'}
                               </Button>
                             </div>
                           </div>
@@ -373,11 +371,11 @@ export default function EmployerDashboard() {
                     className="flex flex-col items-center justify-center py-12 text-center"
                   >
                     <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">{t('common.noJobsFound')}</h3>
+                    <h3 className="text-lg font-medium mb-2">No Jobs Found</h3>
                     <p className="text-sm text-muted-foreground max-w-md">
                       {searchQuery || statusFilter 
-                        ? t('common.noJobsMatchFilter')
-                        : t('common.noJobsPosted')}
+                        ? 'No jobs match the current filter'
+                        : 'No jobs have been posted'}
                     </p>
                     {searchQuery || statusFilter ? (
                       <Button 
@@ -388,7 +386,7 @@ export default function EmployerDashboard() {
                         }}
                         className="mt-4"
                       >
-                        {t('common.clearFilters')}
+                        Clear Filters
                       </Button>
                     ) : (
                       <Button 
@@ -397,7 +395,7 @@ export default function EmployerDashboard() {
                         className="mt-4"
                       >
                         <Plus className="h-4 w-4 mr-2" />
-                        {t('common.postFirstJob')}
+                        Post First Job
                       </Button>
                     )}
                   </motion.div>

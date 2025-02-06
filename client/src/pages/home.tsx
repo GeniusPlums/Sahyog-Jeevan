@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import RootLayout from "@/components/layouts/RootLayout";
 import { jobsApi } from "@/lib/api";
@@ -25,7 +24,6 @@ const fadeInUp = {
 };
 
 export default function HomePage() {
-  const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const [jobType, setJobType] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
@@ -121,14 +119,14 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row gap-4">
             <Input
               type="text"
-              placeholder={t("common.search")}
+              placeholder="Search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1"
             />
             <Select value={jobType} onValueChange={setJobType}>
               <SelectTrigger className="w-full md:w-[200px]">
-                <SelectValue placeholder={t("common.selectJobType")} />
+                <SelectValue placeholder="Select Job Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All Types</SelectItem>
@@ -186,7 +184,7 @@ export default function HomePage() {
                       className="w-full mt-2"
                       onClick={() => setLocation(`/jobs/${job.id}/apply`)}
                     >
-                      {t("common.applyNow")}
+                      Apply Now
                     </Button>
                   </div>
                 </CardContent>

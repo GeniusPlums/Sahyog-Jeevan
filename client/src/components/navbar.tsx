@@ -9,12 +9,10 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { BriefcaseIcon, UserCircle, LogOut, Menu, Globe } from "lucide-react";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
   const { user, logout } = useUser();
-  const { t, i18n } = useTranslation();
 
   const handleLogout = async () => {
     try {
@@ -22,11 +20,6 @@ export default function Navbar() {
     } catch (error) {
       console.error("Logout failed:", error);
     }
-  };
-
-  const toggleLanguage = () => {
-    const newLang = i18n.language === 'en' ? 'hi' : 'en';
-    i18n.changeLanguage(newLang);
   };
 
   const navItemVariants = {
@@ -67,7 +60,7 @@ export default function Navbar() {
                     variant="ghost" 
                     className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
                   >
-                    {t('common.home')}
+                    Home
                   </Button>
                 </Link>
               </motion.div>
@@ -77,7 +70,7 @@ export default function Navbar() {
                     variant="ghost" 
                     className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
                   >
-                    {t('common.appliedJobs')}
+                    Applied Jobs
                   </Button>
                 </Link>
               </motion.div>
@@ -92,7 +85,7 @@ export default function Navbar() {
                     variant="ghost" 
                     className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
                   >
-                    {t('common.dashboard')}
+                    Dashboard
                   </Button>
                 </Link>
               </motion.div>
@@ -102,14 +95,13 @@ export default function Navbar() {
                     variant="ghost" 
                     className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
                   >
-                    {t('common.postJob')}
+                    Post Job
                   </Button>
                 </Link>
               </motion.div>
             </>
           )}
 
-          {/* Language toggle button */}
           <motion.div 
             variants={navItemVariants} 
             initial="hidden" 
@@ -121,12 +113,11 @@ export default function Navbar() {
             <Button 
               variant="outline" 
               size="icon"
-              onClick={toggleLanguage}
               className="w-20 gap-2 rounded-full border-primary/20 transition-all duration-300 hover:bg-primary hover:text-primary-foreground hover:border-primary hover:shadow-md hover:shadow-primary/20"
             >
               <Globe className="h-4 w-4" />
               <span className="text-xs font-medium">
-                {i18n.language === 'en' ? 'हिं' : 'EN'}
+                English
               </span>
             </Button>
           </motion.div>
@@ -151,7 +142,7 @@ export default function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56 animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95">
                 <DropdownMenuItem className="text-sm font-medium text-muted-foreground">
-                  {t('common.signedInAs')} {user?.username}
+                  Signed in as {user?.username}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
@@ -159,7 +150,7 @@ export default function Navbar() {
                   className="text-destructive hover:text-destructive-foreground hover:bg-destructive/10 transition-colors duration-300"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
-                  {t('common.logout')}
+                  Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -186,13 +177,13 @@ export default function Navbar() {
                   <Link href="/">
                     <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
                       <BriefcaseIcon className="mr-2 h-4 w-4 text-primary" />
-                      {t('common.home')}
+                      Home
                     </DropdownMenuItem>
                   </Link>
                   <Link href="/applied">
                     <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
                       <BriefcaseIcon className="mr-2 h-4 w-4 text-primary" />
-                      {t('common.appliedJobs')}
+                      Applied Jobs
                     </DropdownMenuItem>
                   </Link>
                 </>
@@ -203,13 +194,13 @@ export default function Navbar() {
                   <Link href="/">
                     <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
                       <BriefcaseIcon className="mr-2 h-4 w-4 text-primary" />
-                      {t('common.dashboard')}
+                      Dashboard
                     </DropdownMenuItem>
                   </Link>
                   <Link href="/employer/jobs/new">
                     <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
                       <BriefcaseIcon className="mr-2 h-4 w-4 text-primary" />
-                      {t('common.postJob')}
+                      Post Job
                     </DropdownMenuItem>
                   </Link>
                 </>
@@ -218,22 +209,21 @@ export default function Navbar() {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem 
-                onClick={toggleLanguage}
                 className="hover:bg-primary/10 transition-colors duration-300"
               >
                 <Globe className="mr-2 h-4 w-4 text-primary" />
-                {i18n.language === 'en' ? 'हिंदी में देखें' : 'View in English'}
+                English
               </DropdownMenuItem>
 
               <DropdownMenuItem className="text-sm font-medium text-muted-foreground">
-                {t('common.signedInAs')} {user?.username}
+                Signed in as {user?.username}
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={handleLogout} 
                 className="text-destructive hover:text-destructive-foreground hover:bg-destructive/10 transition-colors duration-300"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                {t('common.logout')}
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
