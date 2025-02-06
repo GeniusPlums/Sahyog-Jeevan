@@ -28,6 +28,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { applicationsApi } from "@/lib/api";
 
 const applicationSchema = z.object({
   gender: z.string().min(1, "Please select your gender"),
@@ -67,9 +68,26 @@ export default function JobApplicationForm() {
     resolver: zodResolver(applicationSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log('Application data:', data);
-    navigate(`/jobs/${jobId}/finish`);
+  const onSubmit = async (data: FormData) => {
+    try {
+      // Create FormData object for the API
+      const formData = new FormData();
+      formData.append('gender', data.gender);
+      formData.append('experience', data.experience);
+      formData.append('shift', data.shift);
+      if (data.profileImage?.[0]) {
+        formData.append('profileImage', data.profileImage[0]);
+      }
+
+      // Call the API to create the application
+      await applicationsApi.create(Number(jobId), formData);
+      
+      // Navigate to the applied jobs page on success
+      navigate('/applied-jobs');
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      // You might want to add error handling/notification here
+    }
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +125,7 @@ export default function JobApplicationForm() {
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/")}
                 className="hover:bg-primary/10"
               >
                 <ArrowLeft className="h-5 w-5" />
