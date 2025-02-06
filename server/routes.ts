@@ -38,6 +38,14 @@ export function registerRoutes(app: express.Express): Server {
     fs.mkdirSync('uploads');
   }
 
+  // Get current user
+  app.get("/api/user", (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).send("Not authenticated");
+    }
+    res.json(req.user);
+  });
+
   // Profiles
   app.post("/api/profiles", async (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).send("Not authenticated");
