@@ -18,7 +18,6 @@ import EmployerDashboard from "@/pages/employer-dashboard";
 import JobPost from "@/pages/job-post";
 import Navbar from "@/components/navbar";
 import { ErrorBoundary } from "@/components/error-boundary";
-import "./lib/i18n"; // Import i18n initialization
 
 function LoadingScreen() {
   return (
