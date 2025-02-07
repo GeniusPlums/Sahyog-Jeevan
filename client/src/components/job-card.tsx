@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { MapPin, Building, Clock, DollarSign, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
 
 type JobCardProps = {
   job: Job;
@@ -14,38 +15,12 @@ type JobCardProps = {
 export default function JobCard({ job }: JobCardProps) {
   const { user } = useUser();
   const { toast } = useToast();
+  const [_, navigate] = useLocation();
   const queryClient = useQueryClient();
 
-  const applyMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch("/api/applications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ jobId: job.id }),
-      });
-
-      if (!response.ok) {
-        throw new Error(await response.text());
-      }
-
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/applications/worker"] });
-      toast({
-        title: "Success",
-        description: "Application submitted successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to apply",
-      });
-    },
-  });
+  const handleApply = () => {
+    navigate(`/jobs/${job.id}/apply`);
+  };
 
   // Format salary to include the translated "/month"
   const formattedSalary = job.salary ? `₹${job.salary}/month` : '';
@@ -152,22 +127,15 @@ export default function JobCard({ job }: JobCardProps) {
               <Button
                 variant={job.applied ? "secondary" : "default"}
                 size="lg"
-                disabled={job.applied || applyMutation.isPending}
-                onClick={() => applyMutation.mutate()}
+                disabled={job.applied}
+                onClick={handleApply}
                 className={`w-full min-w-[140px] shadow-sm transition-all duration-500 ${
                   job.applied 
                     ? 'hover:shadow-md hover:bg-secondary/90'
                     : 'hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]'
                 }`}
               >
-                {applyMutation.isPending ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    className="mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full"
-                  />
-                ) : null}
-                {job.applied ? 'Applied' : 'Apply'}
+                {job.applied ? 'Applied' : 'Apply Now'}
               </Button>
             </div>
           </div>
