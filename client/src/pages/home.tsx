@@ -7,7 +7,7 @@ import { Building2, MapPin, Clock, Calendar, Car, Shield, HardHat, Brush } from 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import JobCard from "@/components/job-card";
 import { motion } from "framer-motion";
 
 const JOB_CATEGORIES = [
@@ -142,53 +142,7 @@ export default function HomePage() {
           {/* Jobs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredJobs.map((job) => (
-              <Card key={job.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex flex-col gap-4">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">{job.title}</h3>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {job.description}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-2 text-sm">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
-                          <span>{job.companyName || 'Company Name'}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{job.location}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{job.shift}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>{job.workingDays}</span>
-                        </div>
-                      </div>
-
-                      <div className="mt-2">
-                        <span className="font-semibold">₹{job.salary}</span>
-                      </div>
-                    </div>
-
-                    <Button 
-                      className="w-full mt-2"
-                      onClick={() => setLocation(`/jobs/${job.id}/apply`)}
-                    >
-                      Apply Now
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <JobCard key={job.id} job={job} />
             ))}
 
             {filteredJobs.length === 0 && (
