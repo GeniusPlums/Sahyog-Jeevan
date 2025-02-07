@@ -91,7 +91,7 @@ function Router() {
               <Route path="/accepted" component={AcceptedJobsPage} />
               <Route path="/jobs/category/:category" component={CategoryJobsPage} />
               <Route path="/jobs/:jobId" component={JobDetailsPage} />
-              <Route path="/jobs/:jobId/apply" component={JobApplicationForm} />
+              <Route path="/jobs/:jobId/application" component={JobApplicationForm} />
               <Route path="/jobs/:jobId/finish" component={ApplicationFinishPage} />
               <Route component={NotFound} />
             </Switch>

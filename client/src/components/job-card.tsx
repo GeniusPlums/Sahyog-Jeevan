@@ -19,7 +19,7 @@ export default function JobCard({ job }: JobCardProps) {
   const queryClient = useQueryClient();
 
   const handleApply = () => {
-    navigate(`/jobs/${job.id}/apply`);
+    navigate(`/jobs/${job.id}/application`, { state: { job } });
   };
 
   // Format salary to include the translated "/month"
