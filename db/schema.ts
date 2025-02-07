@@ -92,7 +92,12 @@ export const applications = pgTable("applications", {
   note: text("note"),
   createdAt: timestamp("created_at").defaultNow(),
   interviewDate: timestamp("interview_date"),
-  // New fields for enhanced application tracking
+  // Application form fields
+  gender: text("gender"),
+  experience: text("experience"),
+  shift: text("shift"),
+  profileImage: text("profile_image"),
+  // Enhanced application tracking fields
   documents: jsonb("documents"),
   interviewLocation: text("interview_location"),
   offeredSalary: text("offered_salary"),

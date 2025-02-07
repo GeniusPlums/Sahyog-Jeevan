@@ -314,6 +314,47 @@ export function registerRoutes(app: express.Express): Server {
   });
 
   // Applications
+  app.post("/api/jobs/:jobId/apply", upload.single('profileImage'), async (req, res) => {
+    if (!req.isAuthenticated() || req.user.role !== "worker") {
+      return res.status(401).send("Unauthorized");
+    }
+
+    try {
+      // Get the job first to make sure it exists and is open
+      const job = await db.query.jobs.findFirst({
+        where: eq(jobs.id, parseInt(req.params.jobId)),
+      });
+
+      if (!job) {
+        return res.status(404).json({ error: "Job not found" });
+      }
+
+      if (job.status !== "open") {
+        return res.status(400).json({ error: "This job is no longer accepting applications" });
+      }
+
+      // Create the application
+      const [application] = await db
+        .insert(applications)
+        .values({
+          jobId: parseInt(req.params.jobId),
+          workerId: req.user.id,
+          status: "pending",
+          gender: req.body.gender,
+          experience: req.body.experience,
+          shift: req.body.shift,
+          profileImage: req.file?.filename,
+          createdAt: new Date()
+        })
+        .returning();
+
+      res.json(application);
+    } catch (error) {
+      console.error('Error creating application:', error);
+      res.status(500).json({ error: "Failed to create application" });
+    }
+  });
+
   app.post("/api/applications", async (req, res) => {
     if (!req.isAuthenticated() || req.user.role !== "worker") {
       return res.status(401).send("Unauthorized");
