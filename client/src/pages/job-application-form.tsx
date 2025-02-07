@@ -80,7 +80,7 @@ export default function JobApplicationForm() {
       await applicationsApi.create(Number(jobId), formData);
       
       // Navigate to the applied jobs page on success
-      navigate('/applied-jobs');
+      navigate('/applied');
     } catch (error) {
       console.error('Error submitting application:', error);
       // You might want to add error handling/notification here

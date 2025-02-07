@@ -18,11 +18,11 @@ import { Badge } from "@/components/ui/badge";
 
 export default function JobDetailsPage() {
   const [, setLocation] = useLocation();
-  const { id } = useParams<{ id: string }>();
+  const { jobId } = useParams<{ jobId: string }>();
 
   const { data: job, isLoading } = useQuery({
-    queryKey: ['job', id],
-    queryFn: () => jobsApi.getById(parseInt(id)),
+    queryKey: ['job', jobId],
+    queryFn: () => jobsApi.getById(parseInt(jobId)),
   });
 
   if (isLoading) {
@@ -154,7 +154,7 @@ export default function JobDetailsPage() {
 
                 <Button 
                   className="w-full"
-                  onClick={() => setLocation(`/jobs/${job.id}/apply`)}
+                  onClick={() => setLocation(`/jobs/${jobId}/apply`)}
                 >
                   Apply Now
                 </Button>
