@@ -57,7 +57,15 @@ export const jobsApi = {
 };
 
 export const applicationsApi = {
-  getAll: () => api.get<Application[]>('/applications/worker').then(res => res.data),
+  getAll: async () => {
+    try {
+      const response = await api.get<Application[]>('/applications/worker');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching applications:', error);
+      throw error;
+    }
+  },
   getAccepted: () => api.get<Application[]>('/applications/accepted').then(res => res.data),
   create: (jobId: number, data: FormData) => api.post<Application>(`/jobs/${jobId}/apply`, data).then(res => res.data),
 };
