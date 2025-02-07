@@ -80,8 +80,8 @@ export default function JobApplicationForm() {
       // Call the API to create the application
       await applicationsApi.create(Number(jobId), formData);
       
-      // Navigate to the applied jobs page on success
-      navigate('/applied');
+      // Navigate to the application finish page on success
+      navigate(`/jobs/${jobId}/finish`);
     } catch (error) {
       console.error('Error submitting application:', error);
       // You might want to add error handling/notification here
