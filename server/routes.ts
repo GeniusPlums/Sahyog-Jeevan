@@ -377,13 +377,16 @@ export function registerRoutes(app: express.Express): Server {
     }
 
     try {
-      const workerApplications = await db
-        .select()
-        .from(applications)
-        .where(eq(applications.workerId, req.user.id))
-        .orderBy(applications.createdAt);
+      const workerApplications = await db.query.applications.findMany({
+        where: eq(applications.workerId, req.user.id),
+        with: {
+          job: true
+        },
+        orderBy: (applications, { desc }) => [desc(applications.createdAt)]
+      });
       res.json(workerApplications);
     } catch (error) {
+      console.error('Error fetching applications:', error);
       res.status(500).json({ error: "Failed to fetch applications" });
     }
   });
