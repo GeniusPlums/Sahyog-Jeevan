@@ -38,8 +38,14 @@ export function registerRoutes(app: express.Express): Server {
     fs.mkdirSync('uploads');
   }
 
-  // Serve static files from uploads directory
-  app.use('/uploads', express.static('uploads'));
+  // Serve static files from uploads directory with proper caching and security headers
+  app.use('/uploads', express.static('uploads', {
+    maxAge: '1d', // Cache for 1 day
+    setHeaders: (res) => {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  }));
 
   // Get current user
   app.get("/api/user", (req, res) => {

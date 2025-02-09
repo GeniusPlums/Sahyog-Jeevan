@@ -66,6 +66,7 @@ export async function setupVite(app: Express, server: Server) {
 
 export function serveStatic(app: Express) {
   const distPath = path.resolve(__dirname, "public");
+  const uploadsPath = path.resolve(__dirname, "..", "uploads");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
@@ -73,7 +74,22 @@ export function serveStatic(app: Express) {
     );
   }
 
+  // Ensure uploads directory exists
+  if (!fs.existsSync(uploadsPath)) {
+    fs.mkdirSync(uploadsPath);
+  }
+
+  // Serve static files from the build directory
   app.use(express.static(distPath));
+
+  // Serve uploads with caching and security headers
+  app.use('/uploads', express.static(uploadsPath, {
+    maxAge: '1d',
+    setHeaders: (res) => {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  }));
 
   // fall through to index.html if the file doesn't exist
   app.use("*", (_req, res) => {
