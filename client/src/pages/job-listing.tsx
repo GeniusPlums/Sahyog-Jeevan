@@ -50,6 +50,7 @@ const stagger = {
 export default function JobListing() {
   const [search, setSearch] = useState("");
   const [view, setView] = useState<"grid" | "list">("list");
+  const [sortBy, setSortBy] = useState<"recent" | "oldest">("recent");
   const [filters, setFilters] = useState({
     type: "all",
     location: "all",
@@ -76,40 +77,46 @@ export default function JobListing() {
     console.error('Job listing error:', error);
   }
 
-  const filteredJobs = jobs.filter(job => {
-    console.log('Filtering job:', job);
-    console.log('Current filters:', filters);
-    
-    const matchesSearch = 
-      job.title.toLowerCase().includes(search.toLowerCase()) ||
-      job.description.toLowerCase().includes(search.toLowerCase()) ||
-      job.location.toLowerCase().includes(search.toLowerCase());
-    console.log('Matches search:', matchesSearch);
-    
-    const matchesType = 
-      filters.type === "all" || 
-      job.type.toUpperCase() === filters.type.toUpperCase();
-    console.log('Matches type:', matchesType, 'Job type:', job.type, 'Filter type:', filters.type);
+  const filteredJobs = jobs
+    .filter(job => {
+      console.log('Filtering job:', job);
+      console.log('Current filters:', filters);
+      
+      const matchesSearch = 
+        job.title.toLowerCase().includes(search.toLowerCase()) ||
+        job.description.toLowerCase().includes(search.toLowerCase()) ||
+        job.location.toLowerCase().includes(search.toLowerCase());
+      console.log('Matches search:', matchesSearch);
+      
+      const matchesType = 
+        filters.type === "all" || 
+        job.type.toUpperCase() === filters.type.toUpperCase();
+      console.log('Matches type:', matchesType, 'Job type:', job.type, 'Filter type:', filters.type);
 
-    const matchesLocation =
-      filters.location === "all" ||
-      job.location.toLowerCase() === filters.location.toLowerCase();
-    console.log('Matches location:', matchesLocation);
+      const matchesLocation =
+        filters.location === "all" ||
+        job.location.toLowerCase() === filters.location.toLowerCase();
+      console.log('Matches location:', matchesLocation);
 
-    const matchesShift =
-      filters.shift === "all" ||
-      job.shift.toLowerCase() === filters.shift.toLowerCase();
-    console.log('Matches shift:', matchesShift);
+      const matchesShift =
+        filters.shift === "all" ||
+        job.shift.toLowerCase() === filters.shift.toLowerCase();
+      console.log('Matches shift:', matchesShift);
 
-    const matchesSalary =
-      parseInt(job.salary) >= filters.salary[0] &&
-      parseInt(job.salary) <= filters.salary[1];
-    console.log('Matches salary:', matchesSalary);
+      const matchesSalary =
+        parseInt(job.salary) >= filters.salary[0] &&
+        parseInt(job.salary) <= filters.salary[1];
+      console.log('Matches salary:', matchesSalary);
 
-    const matches = matchesSearch && matchesType && matchesLocation && matchesShift && matchesSalary;
-    console.log('Final match result:', matches);
-    return matches;
-  });
+      const matches = matchesSearch && matchesType && matchesLocation && matchesShift && matchesSalary;
+      console.log('Final match result:', matches);
+      return matches;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0);
+      const dateB = new Date(b.createdAt || 0);
+      return sortBy === "recent" ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime();
+    });
 
   return (
     <RootLayout>
@@ -150,6 +157,15 @@ export default function JobListing() {
                       <LayoutList className="h-5 w-5" />
                     )}
                   </Button>
+                  <Select value={sortBy} onValueChange={(value: "recent" | "oldest") => setSortBy(value)}>
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder="Sort by date" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="recent">Most Recent</SelectItem>
+                      <SelectItem value="oldest">Oldest First</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <Sheet>
                     <SheetTrigger asChild>
                       <Button variant="outline" size="icon" className="hover:bg-primary/10">
