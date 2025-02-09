@@ -11,17 +11,16 @@ export default defineConfig({
       '/uploads': {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
       },
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
+        secure: false
       }
     },
-    allowedHosts: [
-      'a2a87056-f109-4a78-91e9-046bfd391c70-00-18gslr0rwfyef.pike.replit.dev',
-      '.replit.dev',
-      'localhost'
-    ],
+    allowedHosts: 'all'
   },
   plugins: [react()],
   resolve: {

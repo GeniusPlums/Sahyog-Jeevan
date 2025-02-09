@@ -43,7 +43,7 @@ export default function Navbar() {
           >
             <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-primary/10 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500" />
             <img 
-              src="/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg" 
+              src={`${window.location.origin}/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg`}
               alt="SahyogJeevan" 
               className="h-8 w-8 object-contain rounded-full"
             />
