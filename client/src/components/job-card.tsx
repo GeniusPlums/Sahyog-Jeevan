@@ -46,11 +46,15 @@ export default function JobCard({ job }: JobCardProps) {
       <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-background rounded-lg blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
       <Card className="relative overflow-hidden border-primary/10 bg-gradient-to-br from-background via-background/80 to-primary/5 backdrop-blur-sm transition-all duration-500 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/10">
         {job.previewImage && (
-          <div className="w-full h-48 overflow-hidden">
+          <div className="w-full h-48 overflow-hidden bg-muted">
             <img
               src={`/uploads/${job.previewImage}`}
               alt={`${job.title} preview`}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.style.display = 'none';
+              }}
             />
           </div>
         )}
@@ -59,11 +63,15 @@ export default function JobCard({ job }: JobCardProps) {
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 {job.companyLogo && (
-                  <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                     <img
                       src={`/uploads/${job.companyLogo}`}
                       alt={`${job.employerId} logo`}
                       className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
                     />
                   </div>
                 )}
