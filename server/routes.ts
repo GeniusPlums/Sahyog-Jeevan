@@ -8,6 +8,11 @@ import multer from "multer";
 import path from "path";
 import fs from 'fs'; 
 import bcrypt from 'bcryptjs'; 
+import { fileURLToPath } from "url";
+
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -39,7 +44,8 @@ export function registerRoutes(app: express.Express): Server {
   }
 
   // Serve static files from uploads directory with proper caching and security headers
-  app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads'), {
+  const uploadsPath = path.join(path.dirname(__dirname), 'uploads');
+  app.use('/uploads', express.static(uploadsPath, {
     maxAge: '30d',
     etag: true,
     lastModified: true,
