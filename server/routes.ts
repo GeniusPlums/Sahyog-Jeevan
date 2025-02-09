@@ -40,10 +40,12 @@ export function registerRoutes(app: express.Express): Server {
 
   // Serve static files from uploads directory with proper caching and security headers
   app.use('/uploads', express.static('uploads', {
-    maxAge: '1d', // Cache for 1 day
+    maxAge: '30d', // Cache for 30 days
     setHeaders: (res) => {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Cache-Control', 'public, max-age=2592000');
       res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('X-XSS-Protection', '1; mode=block');
+      res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     }
   }));
 

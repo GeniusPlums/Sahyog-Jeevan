@@ -42,7 +42,11 @@ export default function Navbar() {
             className="flex items-center space-x-2 relative"
           >
             <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-primary/10 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500" />
-            <BriefcaseIcon className="h-6 w-6 text-primary relative" />
+            <img 
+              src="/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg" 
+              alt="SahyogJeevan" 
+              className="h-8 w-8 object-contain rounded-full"
+            />
             <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-xl font-bold text-transparent relative">
               SahyogJeevan
             </span>
