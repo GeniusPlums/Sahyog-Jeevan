@@ -68,8 +68,10 @@ export default function HomePage() {
     );
   }
 
-  // Filter jobs based on search and job type
-  const filteredJobs = jobs.filter(job => {
+  // Sort jobs by date (most recent first) and filter based on search and job type
+  const filteredJobs = jobs
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .filter(job => {
     const matchesSearch = !searchQuery || 
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.location.toLowerCase().includes(searchQuery.toLowerCase());

@@ -195,45 +195,6 @@ export default function JobApplicationForm() {
             </motion.div>
           </motion.div>
 
-          {/* Job Responsibilities */}
-          <motion.div 
-            variants={fadeInUp}
-            initial="initial"
-            animate="animate"
-            className="px-4 mb-8"
-          >
-            <Card className="border-0 shadow-sm bg-primary/5 rounded-2xl overflow-hidden">
-              <CardContent className="p-6">
-                <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <Briefcase className="h-5 w-5 text-primary" />
-                  Job Responsibilities
-                </h2>
-                <motion.ul 
-                  className="space-y-3"
-                  variants={stagger}
-                  initial="initial"
-                  animate="animate"
-                >
-                  {[
-                    "Drive safely and efficiently to deliver packages",
-                    "Maintain vehicle cleanliness and perform basic checks",
-                    "Follow traffic rules and company policies",
-                    "Provide excellent customer service"
-                  ].map((responsibility, index) => (
-                    <motion.li 
-                      key={index}
-                      variants={fadeInUp}
-                      className="flex items-start gap-3 text-muted-foreground"
-                    >
-                      <CheckCircle2 className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span>{responsibility}</span>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </CardContent>
-            </Card>
-          </motion.div>
-
           {/* Application Form */}
           <motion.div 
             className="px-4"

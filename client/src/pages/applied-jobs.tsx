@@ -2,11 +2,9 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Search,
   MapPin, 
   Building2, 
   Clock,
@@ -33,7 +31,6 @@ const STATUS_ICONS = {
 } as const;
 
 export default function AppliedJobsPage() {
-  const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
 
   const { data: applications = [], isLoading } = useQuery<Application[]>({
@@ -42,16 +39,11 @@ export default function AppliedJobsPage() {
   });
 
   const filteredApplications = applications.filter(application => {
-    const matchesSearch = 
-      application.job.title.toLowerCase().includes(search.toLowerCase()) ||
-      application.job.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      application.job.location.toLowerCase().includes(search.toLowerCase());
-    
     const matchesStatus = 
       statusFilter === "all" || 
       application.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
+    return matchesStatus;
   });
 
   return (
@@ -67,18 +59,8 @@ export default function AppliedJobsPage() {
           </p>
         </div>
 
-        {/* Search and Filters */}
+        {/* Filters */}
         <div className="space-y-4 mb-8">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <Input
-              placeholder="Search applications"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-
           <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="all">All</TabsTrigger>
