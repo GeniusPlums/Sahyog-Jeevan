@@ -8,7 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Briefcase, User2, Lock, Globe2, MapPin } from "lucide-react";
+import { Loader2, User2, Lock, Globe2, MapPin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LanguageSelector from "@/components/language-selector";
 import RegionSelector from "@/components/region-selector";
@@ -57,7 +57,14 @@ export default function AuthPage() {
 
   const onRegister = async (data: FormData) => {
     try {
-      await register(data);
+      // Ensure all required properties are defined before registering
+      const registerData = {
+        ...data,
+        role: data.role || userRole,
+        preferredLanguage: data.preferredLanguage || 'en',
+        region: data.region || 'default'
+      };
+      await register(registerData);
     } catch (error) {
       toast({
         variant: "destructive",
@@ -87,9 +94,18 @@ export default function AuthPage() {
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
-              className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center"
+              className="mx-auto w-48 h-48 rounded-full bg-primary/10 flex items-center justify-center"
             >
-              <Briefcase className="h-8 w-8 text-primary" />
+              <img 
+                src={`${window.location.origin}/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg`}
+                alt="SahyogJeevan" 
+                className="h-16 w-16 object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = '/Feb_6,_2025_at_34928 PM[1].pdf.png';
+                }}
+              />
             </motion.div>
             <CardTitle className="text-2xl text-center bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Welcome to Sahyog Jeevan
@@ -153,7 +169,16 @@ export default function AuthPage() {
                               htmlFor="login-employer"
                               className="flex items-center gap-2 cursor-pointer"
                             >
-                              <Briefcase className="h-4 w-4" />
+                              <img 
+                                src={`${window.location.origin}/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg`}
+                                alt="SahyogJeevan" 
+                                className="h-4 w-4 object-contain"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.onerror = null;
+                                  target.src = '/Feb_6,_2025_at_34928 PM[1].pdf.png';
+                                }}
+                              />
                               Employer
                             </Label>
                           </div>
@@ -256,7 +281,16 @@ export default function AuthPage() {
                               htmlFor="register-employer"
                               className="flex items-center gap-2 cursor-pointer"
                             >
-                              <Briefcase className="h-4 w-4" />
+                              <img 
+                                src={`${window.location.origin}/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg`}
+                                alt="SahyogJeevan" 
+                                className="h-4 w-4 object-contain"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.onerror = null;
+                                  target.src = '/Feb_6,_2025_at_34928 PM[1].pdf.png';
+                                }}
+                              />
                               Employer
                             </Label>
                           </div>

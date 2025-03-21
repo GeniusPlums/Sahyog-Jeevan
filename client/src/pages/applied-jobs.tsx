@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,15 +35,21 @@ export default function AppliedJobsPage() {
 
   const { data: applications = [], isLoading } = useQuery<Application[]>({
     queryKey: ['applications'],
-    queryFn: applicationsApi.getAll
+    queryFn: applicationsApi.getAll,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    staleTime: 0
   });
 
   const filteredApplications = applications.filter(application => {
-    const matchesStatus = 
-      statusFilter === "all" || 
-      application.status === statusFilter;
-
-    return matchesStatus;
+    if (statusFilter === "all") {
+      return true;
+    } else if (statusFilter === "accepted") {
+      return application.status === "accepted" || application.status === "shortlisted";
+    } else if (statusFilter === "rejected") {
+      return application.status === "rejected";
+    }
+    return false;
   });
 
   return (
@@ -62,10 +68,9 @@ export default function AppliedJobsPage() {
         {/* Filters */}
         <div className="space-y-4 mb-8">
           <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="all">All</TabsTrigger>
-              <TabsTrigger value="pending">Pending</TabsTrigger>
-              <TabsTrigger value="shortlisted">Shortlisted</TabsTrigger>
+              <TabsTrigger value="accepted">Accepted</TabsTrigger>
               <TabsTrigger value="rejected">Rejected</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -98,7 +103,7 @@ export default function AppliedJobsPage() {
               <Building2 className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-semibold mb-2">No applications found</h3>
               <p className="text-gray-600 mb-4">You haven't applied to any jobs yet.</p>
-              <Button onClick={() => window.location.href = '/jobs'}>
+              <Button onClick={() => window.location.href = '/'}>
                 Browse jobs
               </Button>
             </CardContent>
@@ -152,15 +157,9 @@ export default function AppliedJobsPage() {
                           <Button 
                             variant="default" 
                             size="sm"
-                            onClick={() => window.location.href = `/applications/${application.id}`}
+                            onClick={() => window.location.href = `/jobs/${application.jobId}`}
                           >
-                            View Details
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                          >
-                            Withdraw
+                            View Job
                           </Button>
                         </div>
                       </div>

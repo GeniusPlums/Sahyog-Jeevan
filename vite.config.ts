@@ -9,7 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export default defineConfig({
   plugins: [react(), runtimeErrorOverlay(), themePlugin()],
-  configFile: './client/vite.config.ts',
   server: {
     host: '0.0.0.0',
     port: 5173,

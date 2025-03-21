@@ -7,7 +7,7 @@ export type Job = {
   location: string;
   salary: string;
   requirements: string[];
-  type: "FULL TIME" | "PART TIME" | "CONTRACT";
+  type: "Full Time" | "Part Time" | "Gig";
   shift: string;
   workingDays: string;
   status: "open" | "closed";

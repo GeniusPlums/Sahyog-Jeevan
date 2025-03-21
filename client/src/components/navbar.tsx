@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { BriefcaseIcon, UserCircle, LogOut, Menu, Globe } from "lucide-react";
+import { BriefcaseIcon, UserCircle, LogOut, Menu, Globe, HelpCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
@@ -45,11 +45,13 @@ export default function Navbar() {
             <img 
               src={`${window.location.origin}/uploads/app-assets/WhatsApp Image 2025-01-10 at 21.36.47_0b27d639.jpg`}
               alt="SahyogJeevan" 
-              className="h-8 w-8 object-contain rounded-full"
+              className="h-24 w-24 object-contain rounded-full"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.onerror = null;
+                target.src = '/Feb_6,_2025_at_34928 PM[1].pdf.png';
+              }}
             />
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-xl font-bold text-transparent relative">
-              SahyogJeevan
-            </span>
           </motion.div>
         </Link>
 
@@ -78,6 +80,26 @@ export default function Navbar() {
                   </Button>
                 </Link>
               </motion.div>
+              <motion.div variants={navItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+                <Link href="/profile">
+                  <Button 
+                    variant="ghost" 
+                    className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
+                  >
+                    Profile
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div variants={navItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+                <Link href="/help">
+                  <Button 
+                    variant="ghost" 
+                    className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
+                  >
+                    Help
+                  </Button>
+                </Link>
+              </motion.div>
             </>
           )}
 
@@ -100,6 +122,26 @@ export default function Navbar() {
                     className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
                   >
                     Post Job
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div variants={navItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
+                <Link href="/profile">
+                  <Button 
+                    variant="ghost" 
+                    className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
+                  >
+                    Profile
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.div variants={navItemVariants} initial="hidden" animate="visible" transition={{ delay: 0.3 }}>
+                <Link href="/help">
+                  <Button 
+                    variant="ghost" 
+                    className="px-4 font-medium transition-all duration-300 hover:text-primary hover:bg-primary/10 rounded-full"
+                  >
+                    Help
                   </Button>
                 </Link>
               </motion.div>
@@ -190,6 +232,18 @@ export default function Navbar() {
                       Applied Jobs
                     </DropdownMenuItem>
                   </Link>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
+                      <UserCircle className="mr-2 h-4 w-4 text-primary" />
+                      Profile
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/help">
+                    <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
+                      <HelpCircle className="mr-2 h-4 w-4 text-primary" />
+                      Help
+                    </DropdownMenuItem>
+                  </Link>
                 </>
               )}
 
@@ -205,6 +259,18 @@ export default function Navbar() {
                     <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
                       <BriefcaseIcon className="mr-2 h-4 w-4 text-primary" />
                       Post Job
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/profile">
+                    <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
+                      <UserCircle className="mr-2 h-4 w-4 text-primary" />
+                      Profile
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/help">
+                    <DropdownMenuItem className="hover:bg-primary/10 transition-colors duration-300">
+                      <HelpCircle className="mr-2 h-4 w-4 text-primary" />
+                      Help
                     </DropdownMenuItem>
                   </Link>
                 </>

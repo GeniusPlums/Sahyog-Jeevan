@@ -22,7 +22,9 @@ import {
   Clock,
   BarChart3,
   TrendingUp,
-  ArrowUpRight
+  ArrowUpRight,
+  FileText,
+  UserPlus
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -81,16 +83,16 @@ export default function EmployerDashboard() {
   const stats = {
     totalJobs: jobs.length,
     activeJobs: jobs.filter(job => job.status === "open").length,
-    totalApplications: jobs.reduce((acc, job) => acc + job.applications, 0),
-    totalViews: jobs.reduce((acc, job) => acc + job.views, 0),
-    applicationsToday: jobs.reduce((acc, job) => acc + job.applicationsToday, 0)
+    totalApplications: jobs.reduce((acc, job) => acc + (job.applications || 0), 0),
+    totalViews: jobs.reduce((acc, job) => acc + (job.views || 0), 0),
+    applicationsToday: jobs.reduce((acc, job) => acc + (job.applicationsToday || 0), 0)
   };
 
   const filteredJobs = jobs
     .filter(job => {
       const matchesSearch = 
-        job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        job.location.toLowerCase().includes(searchQuery.toLowerCase());
+        job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        job.location?.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus = 
         !statusFilter || 
         job.status === statusFilter;
@@ -98,13 +100,15 @@ export default function EmployerDashboard() {
     })
     .sort((a, b) => {
       if (sortBy === "date") {
-        const dateA = new Date(a.postedDate).getTime();
-        const dateB = new Date(b.postedDate).getTime();
+        const dateA = new Date(a.postedDate || a.createdAt).getTime();
+        const dateB = new Date(b.postedDate || b.createdAt).getTime();
         return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
       } else {
+        const appsA = a.applications || 0;
+        const appsB = b.applications || 0;
         return sortOrder === "asc" 
-          ? a.applications - b.applications 
-          : b.applications - a.applications;
+          ? appsA - appsB 
+          : appsB - appsA;
       }
     });
 
@@ -133,10 +137,16 @@ export default function EmployerDashboard() {
                     Manage your job listings and view applications
                   </p>
                 </div>
-                <Button onClick={() => navigate("/employer/jobs/new")}>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Post New Job
-                </Button>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={() => navigate("/employer/applications")}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    View Applications
+                  </Button>
+                  <Button onClick={() => navigate("/employer/jobs/new")}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    Post New Job
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>
@@ -203,40 +213,25 @@ export default function EmployerDashboard() {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">{stats.totalViews}</div>
-                      <div className="mt-2 flex items-center text-xs text-muted-foreground">
-                        <TrendingUp className="h-3 w-3 mr-1" />
-                        Last Month
-                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>
 
-                <motion.div variants={fadeInUp}>
-                  <Card className="relative overflow-hidden bg-primary text-primary-foreground">
+                <motion.div variants={fadeInUp} onClick={() => navigate("/employer/applications")} className="cursor-pointer">
+                  <Card className="relative overflow-hidden hover:border-primary/50 transition-all">
+                    <div className="absolute right-4 top-4 text-primary/10">
+                      <FileText className="h-16 w-16" />
+                    </div>
                     <CardHeader className="space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">
-                        Quick Actions
+                      <CardTitle className="text-sm font-medium text-muted-foreground">
+                        Applications
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-2">
-                        <Button 
-                          variant="secondary" 
-                          className="w-full justify-start"
-                          onClick={() => navigate("/employer/applications")}
-                        >
-                          <Users className="h-4 w-4 mr-2" />
-                          View Applications
-                        </Button>
-                        <Button 
-                          variant="secondary" 
-                          className="w-full justify-start"
-                          onClick={() => navigate("/employer/analytics")}
-                        >
-                          <BarChart3 className="h-4 w-4 mr-2" />
-                          View Analytics
-                        </Button>
-                      </div>
+                      <div className="text-2xl font-bold">{stats.totalApplications}</div>
+                      <p className="mt-2 text-xs text-primary">
+                        Click to view all applications
+                      </p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -322,16 +317,21 @@ export default function EmployerDashboard() {
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                               <div className="flex items-center text-sm">
                                 <Users className="h-4 w-4 mr-2 text-muted-foreground" />
-                                {job.applications} Applications
+                                {job.applications || 0} Applications
                               </div>
                               <div className="flex items-center text-sm">
                                 <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                                {new Date(job.postedDate).toLocaleDateString()}
+                                {new Date(job.postedDate || job.createdAt).toLocaleDateString()}
                               </div>
                               <div className="flex items-center text-sm">
                                 <Eye className="h-4 w-4 mr-2 text-muted-foreground" />
-                                {job.views} Views
+                                {job.views || 0} Views
                               </div>
+                            </div>
+
+                            <div className="flex items-center text-sm mt-2 text-primary-600">
+                              <UserPlus className="h-4 w-4 mr-2" />
+                              <span className="font-medium">Hiring {job.positions || 1} {job.positions && parseInt(String(job.positions)) > 1 ? 'people' : 'person'}</span>
                             </div>
 
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4">
@@ -366,38 +366,10 @@ export default function EmployerDashboard() {
                 ))}
 
                 {filteredJobs.length === 0 && (
-                  <motion.div
-                    variants={fadeInUp}
-                    className="flex flex-col items-center justify-center py-12 text-center"
-                  >
-                    <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-medium mb-2">No Jobs Found</h3>
-                    <p className="text-sm text-muted-foreground max-w-md">
-                      {searchQuery || statusFilter 
-                        ? 'No jobs match the current filter'
-                        : 'No jobs have been posted'}
-                    </p>
-                    {searchQuery || statusFilter ? (
-                      <Button 
-                        variant="outline"
-                        onClick={() => {
-                          setSearchQuery("");
-                          setStatusFilter(null);
-                        }}
-                        className="mt-4"
-                      >
-                        Clear Filters
-                      </Button>
-                    ) : (
-                      <Button 
-                        variant="default"
-                        onClick={() => navigate("/employer/jobs/new")}
-                        className="mt-4"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Post First Job
-                      </Button>
-                    )}
+                  <motion.div variants={fadeInUp}>
+                    <Card className="p-6 text-center">
+                      <p className="text-muted-foreground">No jobs found. Try adjusting your filters or post a new job.</p>
+                    </Card>
                   </motion.div>
                 )}
               </motion.div>

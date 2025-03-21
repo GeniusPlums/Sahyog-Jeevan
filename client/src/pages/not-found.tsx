@@ -70,7 +70,7 @@ export default function NotFound() {
                 >
                   <Button
                     variant="outline"
-                    onClick={() => navigate(-1)}
+                    onClick={() => window.history.back()}
                     className="flex items-center gap-2 hover:bg-destructive/10"
                   >
                     <ArrowLeft className="h-4 w-4" />

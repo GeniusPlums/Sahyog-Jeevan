@@ -1,12 +1,11 @@
 import { useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { Home, Briefcase, CheckSquare } from "lucide-react";
+import { Home, Briefcase } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Briefcase, label: "Applied Jobs", path: "/applied" },
-  { icon: CheckSquare, label: "Accepted Jobs", path: "/accepted" },
 ];
 
 export default function RootLayout({

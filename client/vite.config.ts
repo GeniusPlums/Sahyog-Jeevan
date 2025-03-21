@@ -20,7 +20,7 @@ export default defineConfig({
         secure: false
       }
     },
-    allowedHosts: 'all'
+    allowedHosts: true
   },
   plugins: [react()],
   resolve: {

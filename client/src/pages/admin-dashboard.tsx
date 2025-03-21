@@ -116,8 +116,7 @@ export default function AdminDashboard() {
   const filteredJobs = recentJobs
     .filter(job => {
       const matchesSearch = 
-        job.title.toLowerCase().includes(jobSearch.toLowerCase()) ||
-        job.company.toLowerCase().includes(jobSearch.toLowerCase());
+        job.title.toLowerCase().includes(jobSearch.toLowerCase());
       const matchesFilter = 
         jobFilter === "all" || 
         job.status === jobFilter;
@@ -366,7 +365,7 @@ export default function AdminDashboard() {
                         <TableHeader>
                           <TableRow>
                             <TableHead>Title</TableHead>
-                            <TableHead>Company</TableHead>
+                            <TableHead>Employer ID</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Created At</TableHead>
                             <TableHead>Actions</TableHead>
@@ -376,7 +375,7 @@ export default function AdminDashboard() {
                           {filteredJobs.map((job) => (
                             <TableRow key={job.id} className="hover:bg-muted/50">
                               <TableCell className="font-medium">{job.title}</TableCell>
-                              <TableCell>{job.company}</TableCell>
+                              <TableCell>{job.employerId}</TableCell>
                               <TableCell>
                                 <Badge 
                                   variant={

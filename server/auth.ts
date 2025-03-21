@@ -5,7 +5,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import db from "../db";
-import { users } from "../db/schema";
+import { users, User } from "../db/schema";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import createMemoryStore from "memorystore";
@@ -29,7 +29,7 @@ const crypto = {
 declare global {
   namespace Express {
     // Use the User type from schema.ts
-    interface User extends Omit<User, keyof User> {
+    interface User {
       id: number;
       username: string;
       role: "worker" | "employer" | "admin";
@@ -155,7 +155,7 @@ export function setupAuth(app: express.Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err: any, user: express.User, info: any) => {
+    passport.authenticate("local", (err: any, user: User, info: any) => {
       if (err) {
         return next(err);
       }

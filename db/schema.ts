@@ -72,7 +72,7 @@ export const jobs = pgTable("jobs", {
   location: text("location").notNull(),
   salary: text("salary").notNull(),
   requirements: text("requirements").array(),
-  type: text("type", { enum: ["FULL TIME", "PART TIME", "CONTRACT"] }).notNull(),
+  type: text("type", { enum: ["Full Time", "Part Time", "Gig"] }).notNull(),
   shift: text("shift").notNull(),
   workingDays: text("working_days").notNull(),
   status: text("status", { enum: ["open", "closed"] }).notNull().default("open"),

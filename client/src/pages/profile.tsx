@@ -50,12 +50,12 @@ export default function ProfilePage() {
     if (profile) {
       reset({
         name: profile.name,
-        bio: profile.bio || "",
-        skills: profile.skills?.join("\n") || "",
-        location: profile.location || "",
-        contact: profile.contact || "",
-        companyName: profile.companyName,
-        companyDescription: profile.companyDescription,
+        bio: profile.bio ?? "",
+        skills: profile.skills?.join("\n") ?? "",
+        location: profile.location ?? "",
+        contact: profile.contact ?? "",
+        companyName: profile.companyName ?? undefined,
+        companyDescription: profile.companyDescription ?? undefined,
       });
     }
   }, [profile, reset]);

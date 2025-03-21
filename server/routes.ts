@@ -106,7 +106,7 @@ export function registerRoutes(app: express.Express): Server {
     }
 
     try {
-      const files = req.files as { [fieldname: string]: express.Multer.File[] };
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
       // Process files
       const companyLogo = files?.companyLogo?.[0]?.filename;
@@ -163,6 +163,11 @@ export function registerRoutes(app: express.Express): Server {
 
       const employer = await db.query.users.findFirst({
         where: eq(users.id, job.employerId),
+      });
+
+      // Get company name from profiles table instead
+      const profile = await db.query.profiles.findFirst({
+        where: eq(profiles.userId, job.employerId),
         columns: {
           companyName: true,
         },
@@ -170,7 +175,7 @@ export function registerRoutes(app: express.Express): Server {
 
       return res.json({
         ...job,
-        companyName: employer?.companyName || 'Company Name'
+        companyName: profile?.companyName || 'Company Name'
       });
     } catch (error) {
       console.error("Error fetching job:", error);
@@ -209,7 +214,7 @@ export function registerRoutes(app: express.Express): Server {
         location: "mumbai",
         salary: "30000",
         requirements: ["test requirement"],
-        type: "FULL TIME",
+        type: "Full Time",
         shift: "day",
         workingDays: "Monday-Friday",
         status: "open",
@@ -245,10 +250,10 @@ export function registerRoutes(app: express.Express): Server {
           location: "Mumbai",
           salary: "25000",
           requirements: ["Valid license", "2 years experience"],
-          type: "FULL TIME",
+          type: "Full Time" as const,
           shift: "day",
           workingDays: "Monday-Friday",
-          status: "open",
+          status: "open" as const,
           benefits: { health: true, insurance: true }
         },
         {
@@ -259,10 +264,10 @@ export function registerRoutes(app: express.Express): Server {
           location: "Delhi",
           salary: "20000",
           requirements: ["Security certification", "Physical fitness"],
-          type: "FULL TIME",
+          type: "Full Time" as const,
           shift: "night",
           workingDays: "Monday-Sunday",
-          status: "open",
+          status: "open" as const,
           benefits: { health: true, insurance: true }
         },
         {
@@ -273,10 +278,10 @@ export function registerRoutes(app: express.Express): Server {
           location: "Bangalore",
           salary: "30000",
           requirements: ["Physical fitness", "Construction experience"],
-          type: "FULL TIME",
+          type: "Full Time" as const,
           shift: "day",
           workingDays: "Monday-Saturday",
-          status: "open",
+          status: "open" as const,
           benefits: { health: true, insurance: true }
         }
       ];
@@ -334,40 +339,27 @@ export function registerRoutes(app: express.Express): Server {
   });
 
   // Applications
-  app.post("/api/jobs/:jobId/apply", upload.single('profileImage'), async (req, res) => {
-    if (!req.isAuthenticated() || req.user.role !== "worker") {
-      return res.status(401).send("Unauthorized");
+  app.post("/api/jobs/:jobId/apply", async (req, res) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "Not authenticated" });
     }
 
     try {
-      // Get the job first to make sure it exists and is open
-      const job = await db.query.jobs.findFirst({
-        where: eq(jobs.id, parseInt(req.params.jobId)),
-      });
-
-      if (!job) {
-        return res.status(404).json({ error: "Job not found" });
-      }
-
-      if (job.status !== "open") {
-        return res.status(400).json({ error: "This job is no longer accepting applications" });
-      }
-
-      // Create the application
+      const jobId = parseInt(req.params.jobId);
+      console.log('Creating application for job:', jobId, 'by user:', req.user.id);
+      
+      // Create the application with minimal required fields
       const [application] = await db
         .insert(applications)
         .values({
-          jobId: parseInt(req.params.jobId),
+          jobId: jobId,
           workerId: req.user.id,
           status: "pending",
-          gender: req.body.gender,
-          experience: req.body.experience,
-          shift: req.body.shift,
-          profileImage: req.file?.filename,
           createdAt: new Date()
         })
         .returning();
 
+      console.log('Application created successfully:', application);
       res.json(application);
     } catch (error) {
       console.error('Error creating application:', error);

@@ -30,7 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 
 const LOCATIONS = ["mumbai", "delhi", "bangalore", "hyderabad", "chennai"];
-const JOB_TYPES = ["FULL TIME", "PART TIME", "CONTRACT"];
+const JOB_TYPES = ["Full Time", "Part Time", "Gig"];
 const SHIFTS = ["day", "night", "flexible"];
 
 const fadeInUp = {

@@ -11,7 +11,7 @@ import JobCard from "@/components/job-card";
 import { motion } from "framer-motion";
 
 const JOB_CATEGORIES = [
-  { id: "DRIVER", icon: <Car className="w-6 h-6" />, label: "Driver" },
+  { id: "Driver", icon: <Car className="w-6 h-6" />, label: "Driver" },
   { id: "SECURITY", icon: <Shield className="w-6 h-6" />, label: "Security" },
   { id: "CONSTRUCTION", icon: <HardHat className="w-6 h-6" />, label: "Construction" },
   { id: "CLEANER", icon: <Brush className="w-6 h-6" />, label: "Cleaner" },
@@ -27,6 +27,7 @@ export default function HomePage() {
   const [, setLocation] = useLocation();
   const [jobType, setJobType] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [employmentType, setEmploymentType] = useState<string>("ALL");
   
   const { data: jobs = [], isError, error, isLoading } = useQuery({
     queryKey: ['jobs'],
@@ -68,7 +69,7 @@ export default function HomePage() {
     );
   }
 
-  // Sort jobs by date (most recent first) and filter based on search and job type
+  // Sort jobs by date (most recent first) and filter based on search, job type, and employment type
   const filteredJobs = jobs
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .filter(job => {
@@ -76,7 +77,10 @@ export default function HomePage() {
       job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = jobType === 'ALL' || job.category === jobType;
-    return matchesSearch && matchesType;
+    const matchesEmploymentType = employmentType === 'ALL' || 
+      (employmentType === 'JOB' && job.employmentType === 'FULL_TIME') ||
+      (employmentType === 'GIG' && job.employmentType === 'PART_TIME');
+    return matchesSearch && matchesType && matchesEmploymentType;
   });
 
   return (
@@ -137,6 +141,16 @@ export default function HomePage() {
                     {category.label}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+            <Select value={employmentType} onValueChange={setEmploymentType}>
+              <SelectTrigger className="w-full md:w-[200px]">
+                <SelectValue placeholder="Jobs or Gigs" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All Opportunities</SelectItem>
+                <SelectItem value="JOB">Full-time Jobs</SelectItem>
+                <SelectItem value="GIG">Part-time Gigs</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -11,10 +11,13 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import RootLayout from "@/components/layouts/RootLayout";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { jobsApi, applicationsApi } from "@/lib/api";
+import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@/hooks/use-user";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -34,10 +37,71 @@ export default function ApplicationFinishPage() {
   const { jobId } = useParams();
   const [_, navigate] = useLocation();
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { user } = useUser(); // Get current user
 
-  const { data: job } = useQuery({
-    queryKey: [`/api/jobs/${jobId}`],
+  // Fetch job details properly
+  const { data: job, isLoading: jobLoading } = useQuery({
+    queryKey: ['job', jobId],
+    queryFn: () => jobsApi.getById(parseInt(jobId || '0')),
+    enabled: !!jobId,
   });
+
+  const handleFinish = async () => {
+    if (!termsAccepted) {
+      toast({
+        title: "Please accept the terms",
+        description: "You must accept the terms to submit your application",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Direct API call without mutation
+      const formData = new FormData();
+      const result = await applicationsApi.create(Number(jobId), formData);
+      
+      // Success handling
+      toast({
+        title: "Application submitted successfully!",
+        description: "Your application has been received.",
+      });
+      
+      // Invalidate applications query to refresh the data
+      queryClient.invalidateQueries({ queryKey: ['applications'] });
+      
+      // Navigate to applied jobs page
+      window.location.href = "/applied";
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast({
+        title: "Error submitting application",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (jobLoading) {
+    return (
+      <RootLayout>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="animate-pulse space-y-4 w-full max-w-md p-4">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mx-auto"></div>
+            <div className="h-20 bg-gray-200 rounded mx-auto"></div>
+            <div className="h-32 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </RootLayout>
+    );
+  }
 
   return (
     <RootLayout>
@@ -53,7 +117,7 @@ export default function ApplicationFinishPage() {
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate(`/jobs/${jobId}`)}
                 className="hover:bg-primary/10"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -146,9 +210,9 @@ export default function ApplicationFinishPage() {
                   <p>Please read and agree to our terms and conditions.</p>
                   <ul className="space-y-2">
                     {[
-                      'Term 1',
-                      'Term 2',
-                      'Term 3',
+                      'I understand that submitting this application does not guarantee employment.',
+                      'I confirm that all information provided is accurate and complete.',
+                      'I agree to be contacted regarding this job application.',
                     ].map((term, index) => (
                       <motion.li 
                         key={index}
@@ -199,10 +263,10 @@ export default function ApplicationFinishPage() {
           >
             <Button 
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => navigate("/applied")}
-              disabled={!termsAccepted}
+              onClick={handleFinish}
+              disabled={isSubmitting || !termsAccepted}
             >
-              Finish Application
+              {isSubmitting ? "Submitting..." : "Finish Application"}
             </Button>
           </motion.div>
         </div>

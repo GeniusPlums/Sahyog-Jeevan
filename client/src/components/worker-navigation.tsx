@@ -8,10 +8,9 @@ export default function WorkerNavigation() {
     <div className="border-b">
       <div className="container">
         <Tabs value={location} onValueChange={navigate} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="/home">Home</TabsTrigger>
             <TabsTrigger value="/applied-jobs">Applied Jobs</TabsTrigger>
-            <TabsTrigger value="/accepted-jobs">Accepted Jobs</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

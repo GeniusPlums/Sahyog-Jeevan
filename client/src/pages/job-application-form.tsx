@@ -26,14 +26,15 @@ import {
 import RootLayout from "@/components/layouts/RootLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
-import { applicationsApi } from "@/lib/api";
+import { useState, useRef } from "react";
+import { applicationsApi, jobsApi } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
 
 const applicationSchema = z.object({
   gender: z.string().min(1, "Please select your gender"),
   experience: z.string().min(1, "Please select your experience"),
   shift: z.string().min(1, "Please select your preferred shift"),
-  profileImage: z.any().optional(),
 });
 
 type FormData = z.infer<typeof applicationSchema>;
@@ -61,36 +62,75 @@ export default function JobApplicationForm() {
   const [_, navigate] = useLocation();
   const [progress, setProgress] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const { toast } = useToast();
+
+  // Fetch job details
+  const { data: job } = useQuery({
+    queryKey: ['job', jobId],
+    queryFn: () => jobsApi.getById(parseInt(jobId || '0')),
+  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(applicationSchema),
+    defaultValues: {
+      gender: "",
+      experience: "",
+      shift: ""
+    }
   });
 
   const onSubmit = async (data: FormData) => {
     try {
+      setIsSubmitting(true);
+      
       // Create FormData object for the API
       const formData = new FormData();
       formData.append('gender', data.gender);
       formData.append('experience', data.experience);
       formData.append('shift', data.shift);
-      if (data.profileImage?.[0]) {
-        formData.append('profileImage', data.profileImage[0]);
+      
+      // Handle profile image upload
+      if (profileImageFile) {
+        formData.append('profileImage', profileImageFile);
       }
 
+      console.log('Submitting application with data:', data);
+      console.log('Profile image file:', profileImageFile);
+
       // Call the API to create the application
-      await applicationsApi.create(Number(jobId), formData);
+      const result = await applicationsApi.create(Number(jobId), formData);
+      console.log('Application submitted successfully:', result);
+      
+      // Show success toast
+      toast({
+        title: "Application submitted successfully!",
+        description: "Your application has been received.",
+      });
       
       // Navigate to the application finish page on success
-      navigate(`/jobs/${jobId}/finish`);
+      window.location.href = `/jobs/${jobId}/finish`;
     } catch (error) {
       console.error('Error submitting application:', error);
-      // You might want to add error handling/notification here
+      toast({
+        title: "Error submitting application",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      // Save the file for later upload
+      setProfileImageFile(file);
+      
+      // Show preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
@@ -102,11 +142,12 @@ export default function JobApplicationForm() {
   // Update progress based on form completion
   const updateProgress = () => {
     const fields = ['gender', 'experience', 'shift'];
-    const filledFields = fields.filter(field => form.watch(field));
+    const filledFields = fields.filter(field => form.watch(field as keyof FormData));
     const newProgress = (filledFields.length / fields.length) * 100;
     setProgress(newProgress);
   };
 
+  // Watch form fields for changes
   form.watch(() => updateProgress());
 
   return (
@@ -123,7 +164,7 @@ export default function JobApplicationForm() {
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => navigate("/")}
+                onClick={() => navigate(`/jobs/${jobId}`)}
                 className="hover:bg-primary/10"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -165,7 +206,7 @@ export default function JobApplicationForm() {
                 </div>
                 <span className="text-sm text-muted-foreground">Salary</span>
               </div>
-              <p className="font-semibold">25000/month</p>
+              <p className="font-semibold">{job?.salary || "Not specified"}</p>
             </motion.div>
 
             <motion.div 
@@ -178,7 +219,7 @@ export default function JobApplicationForm() {
                 </div>
                 <span className="text-sm text-muted-foreground">Job Type</span>
               </div>
-              <p className="font-semibold">FULL TIME</p>
+              <p className="font-semibold">{job?.type || "Full Time"}</p>
             </motion.div>
 
             <motion.div 
@@ -191,7 +232,7 @@ export default function JobApplicationForm() {
                 </div>
                 <span className="text-sm text-muted-foreground">Shift</span>
               </div>
-              <p className="font-semibold">9 AM - 5 PM</p>
+              <p className="font-semibold">{job?.shift || "Not specified"}</p>
             </motion.div>
           </motion.div>
 
@@ -202,7 +243,7 @@ export default function JobApplicationForm() {
             initial="initial"
             animate="animate"
           >
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form id="applicationForm" className="space-y-6">
               {[
                 { label: "Gender", options: GENDER_OPTIONS, field: "gender", icon: User2 },
                 { label: "Experience", options: EXPERIENCE_OPTIONS, field: "experience", icon: CalendarDays },
@@ -254,7 +295,7 @@ export default function JobApplicationForm() {
                   className={`relative bg-primary/5 border-2 border-dashed border-primary/20 rounded-2xl p-6 text-center cursor-pointer transition-all duration-300 ${
                     selectedImage ? 'hover:border-primary/40' : 'hover:bg-primary/10 hover:border-primary/30'
                   }`}
-                  onClick={() => document.getElementById('profile-upload')?.click()}
+                  onClick={() => fileInputRef.current?.click()}
                 >
                   {selectedImage ? (
                     <motion.div
@@ -279,11 +320,10 @@ export default function JobApplicationForm() {
                   )}
                   <input
                     type="file"
-                    id="profile-upload"
+                    ref={fileInputRef}
                     className="hidden"
                     accept="image/*"
                     onChange={handleImageChange}
-                    {...form.register("profileImage")}
                   />
                 </div>
               </motion.div>
@@ -300,11 +340,19 @@ export default function JobApplicationForm() {
         >
           <div className="max-w-4xl mx-auto">
             <Button 
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
+              type="button"
+              onClick={() => window.location.href = `/jobs/${jobId}/finish`}
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-12 text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+              disabled={isSubmitting}
             >
-              Apply Now
+              {isSubmitting ? (
+                <div className="flex items-center gap-2">
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Submitting...
+                </div>
+              ) : (
+                "Apply Now"
+              )}
             </Button>
           </div>
         </motion.div>

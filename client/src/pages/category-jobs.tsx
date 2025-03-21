@@ -33,7 +33,7 @@ const MOCK_JOBS = [
     description: "Full-time delivery driver needed for local deliveries",
     image: "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80",
     category: "driver",
-    type: "FULL TIME",
+    type: "Full Time",
     shift: "9 AM - 5 PM",
     requirements: [
       "Valid driving license",
@@ -50,7 +50,7 @@ const MOCK_JOBS = [
     description: "Experienced truck driver for interstate routes",
     image: "https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80",
     category: "driver",
-    type: "FULL TIME",
+    type: "Full Time",
     shift: "8 PM - 5 AM",
     requirements: [
       "Heavy vehicle license",

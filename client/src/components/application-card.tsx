@@ -65,7 +65,7 @@ export default function ApplicationCard({ application }: ApplicationCardProps) {
                   transition={{ delay: 0.2 }}
                 >
                   <Badge 
-                    variant={getStatusColor(application.status)}
+                    variant={getStatusColor(application.status) as "default" | "destructive" | "outline" | "secondary"}
                     className="transition-all duration-300 hover:scale-105"
                   >
                     {application.status.charAt(0).toUpperCase() + application.status.slice(1)}

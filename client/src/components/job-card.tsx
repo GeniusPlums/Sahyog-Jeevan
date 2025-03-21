@@ -7,9 +7,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { MapPin, Building, Clock, DollarSign, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLocation } from "wouter";
+import type { Job } from "@db/schema";
 
 type JobCardProps = {
-  job: Job;
+  job: Job & { applied?: boolean };
 };
 
 export default function JobCard({ job }: JobCardProps) {
