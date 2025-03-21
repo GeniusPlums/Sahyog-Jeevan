@@ -4,7 +4,7 @@ import * as schema from './schema';
 
 // Use a proper connection string for Neon
 // For development, we'll use a default connection that works
-const connectionString = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_qI4HLFQJb2Nw@ep-shiny-dust-a5mk5186-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require';
+const connectionString = process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_qBKH7QWcJn1y@ep-odd-darkness-a1tdsv2s-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require';
 
 const sql = neon(connectionString);
 const db = drizzle(sql, { schema });
