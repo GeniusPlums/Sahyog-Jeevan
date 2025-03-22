@@ -10,29 +10,13 @@ import fs from 'fs';
 import bcrypt from 'bcryptjs'; 
 import { fileURLToPath } from "url";
 
-// Check for production environment
-const isProduction = process.env.NODE_ENV === 'production';
-
-// Configure upload directory based on environment
-const getUploadsPath = () => {
-  // In production, use absolute path from process.cwd()
-  const basePath = isProduction ? process.cwd() : path.dirname(__dirname);
-  return path.join(basePath, 'uploads');
-};
-
-const uploadsPath = getUploadsPath();
-console.log(`File uploads will be stored at: ${uploadsPath}`);
+// ES Module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination: function(req, file, cb) {
-      // Ensure uploads directory exists before saving files
-      if (!fs.existsSync(uploadsPath)) {
-        fs.mkdirSync(uploadsPath, { recursive: true });
-        console.log(`Created uploads directory at: ${uploadsPath}`);
-      }
-      cb(null, uploadsPath);
-    },
+    destination: 'uploads/',
     filename: function (req, file, cb) {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
@@ -54,7 +38,13 @@ const upload = multer({
 export function registerRoutes(app: express.Express): Server {
   setupAuth(app);
 
+  // Ensure uploads directory exists
+  if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+  }
+
   // Serve static files from uploads directory with proper caching and security headers
+  const uploadsPath = path.join(path.dirname(__dirname), 'uploads');
   app.use('/uploads', express.static(uploadsPath, {
     maxAge: '30d',
     etag: true,
