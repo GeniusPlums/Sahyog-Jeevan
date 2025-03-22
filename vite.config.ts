@@ -18,7 +18,12 @@ export default defineConfig({
       '.replit.dev',
       'hot-shanna-astrazen-ff947eb8.koyeb.app',
       '*.koyeb.app',
-      'localhost'
+      'localhost',
+      'ec2-*-*-*-*.*.compute.amazonaws.com', // Allow EC2 instances
+      '*.amazonaws.com', // Allow all AWS domains
+      '*.compute.amazonaws.com', // Allow AWS compute domains
+      '*.compute-1.amazonaws.com', // Allow AWS compute domains
+      '*.elasticbeanstalk.com' // Allow Elastic Beanstalk domains
     ],
   },
   resolve: {
@@ -31,5 +36,20 @@ export default defineConfig({
   build: {
     outDir: path.resolve(__dirname, "dist/public"),
     emptyOutDir: true,
+    // Ensure source maps are generated for easier debugging
+    sourcemap: true,
+    // Ensure assets are properly handled
+    assetsDir: "assets",
+    // Optimize chunks for better loading performance
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
+        }
+      }
+    }
   },
+  // Base public path for assets - important for production deployment
+  base: '/',
 });

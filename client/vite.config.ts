@@ -26,7 +26,12 @@ export default defineConfig({
     allowedHosts: [
       'hot-shanna-astrazen-ff947eb8.koyeb.app', 
       '*.koyeb.app',
-      'localhost'
+      'localhost',
+      'ec2-*-*-*-*.*.compute.amazonaws.com', // Allow EC2 instances
+      '*.amazonaws.com', // Allow all AWS domains
+      '*.compute.amazonaws.com', // Allow AWS compute domains
+      '*.compute-1.amazonaws.com', // Allow AWS compute domains
+      '*.elasticbeanstalk.com' // Allow Elastic Beanstalk domains
     ]
   },
   plugins: [react()],
@@ -35,4 +40,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    outDir: '../dist/public',
+    emptyOutDir: true,
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu']
+        }
+      }
+    }
+  }
 })

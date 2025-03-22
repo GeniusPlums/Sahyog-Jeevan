@@ -2,7 +2,13 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import * as dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(express.json());
@@ -57,14 +63,32 @@ app.get("/health", (_req: Request, res: Response) => {
   // Check if we're in production mode
   // In Koyeb, NODE_ENV should be set to 'production'
   const isProduction = process.env.NODE_ENV === 'production';
+  
+  log(`Running in ${isProduction ? 'production' : 'development'} mode`, "express");
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (!isProduction) {
+    // Development mode - use Vite's dev server
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    // Production mode - serve static files
+    // Serve static files from the dist/public directory
+    const distPath = path.resolve(__dirname, "public");
+    log(`Serving static files from: ${distPath}`, "express");
+    
+    // Serve static assets
+    app.use(express.static(distPath));
+    
+    // Serve uploads directory if it exists
+    const uploadsPath = path.resolve(process.cwd(), "uploads");
+    app.use('/uploads', express.static(uploadsPath));
+    
+    // For all non-API routes, serve the index.html file (SPA behavior)
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(path.resolve(distPath, 'index.html'));
+    });
   }
 
   // Use PORT from environment variable or default to 5000

@@ -23,6 +23,8 @@ export function log(message: string, source = "express") {
 }
 
 export async function setupVite(app: Express, server: Server) {
+  log("Setting up Vite in development mode", "vite");
+  
   const vite = await createViteServer({
     ...viteConfig,
     configFile: false,
@@ -30,18 +32,28 @@ export async function setupVite(app: Express, server: Server) {
       ...viteLogger,
       error: (msg, options) => {
         viteLogger.error(msg, options);
-        process.exit(1);
+        // Don't exit on error in development mode, just log it
+        if (msg.includes('Pre-transform error')) {
+          log(`Vite transform error: ${msg}`, "vite");
+        } else {
+          process.exit(1);
+        }
       },
     },
     server: {
       middlewareMode: true,
       hmr: { server },
-      // Ensure Koyeb hosts are allowed in development mode
+      // Ensure AWS hosts are allowed in development mode
       allowedHosts: [
         'hot-shanna-astrazen-ff947eb8.koyeb.app',
         '*.koyeb.app',
         'localhost',
-        '.replit.dev'
+        '.replit.dev',
+        'ec2-*-*-*-*.*.compute.amazonaws.com', // Allow EC2 instances
+        '*.amazonaws.com', // Allow all AWS domains
+        '*.compute.amazonaws.com', // Allow AWS compute domains
+        '*.compute-1.amazonaws.com', // Allow AWS compute domains
+        '*.elasticbeanstalk.com' // Allow Elastic Beanstalk domains
       ]
     },
     appType: "custom",
@@ -61,7 +73,6 @@ export async function setupVite(app: Express, server: Server) {
 
       // always reload the index.html file from disk incase it changes
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
-      template = template.replace(`src="/src/main.tsx"`, `src="/src/main.tsx?v=${nanoid()}"`)
       const page = await vite.transformIndexHtml(url, template);
       res.status(200).set({ "Content-Type": "text/html" }).end(page);
     } catch (e) {
@@ -72,10 +83,12 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
+  log("Setting up static file serving for production mode", "express");
+  
   // In production, the dist/public directory contains the built client files
   // This path is relative to where the compiled server code runs (dist folder)
   const distPath = path.resolve(__dirname, "public");
-  const uploadsPath = path.resolve(__dirname, "..", "uploads");
+  const uploadsPath = path.resolve(process.cwd(), "uploads");
 
   log(`Serving static files from: ${distPath}`, "express");
 
@@ -87,7 +100,7 @@ export function serveStatic(app: Express) {
 
   // Ensure uploads directory exists
   if (!fs.existsSync(uploadsPath)) {
-    fs.mkdirSync(uploadsPath);
+    fs.mkdirSync(uploadsPath, { recursive: true });
   }
 
   // Serve static files from the build directory
@@ -102,8 +115,20 @@ export function serveStatic(app: Express) {
     }
   }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // For all other routes, serve the index.html file (SPA behavior)
+  app.get('*', (req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    
+    try {
+      const indexPath = path.resolve(distPath, 'index.html');
+      log(`Serving index.html for path: ${req.path}`, "express");
+      res.sendFile(indexPath);
+    } catch (err) {
+      log(`Error serving index.html: ${err}`, "express");
+      res.status(500).send("Internal Server Error");
+    }
   });
 }
