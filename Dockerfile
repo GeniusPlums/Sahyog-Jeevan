@@ -1,5 +1,5 @@
 # Use Node.js LTS version
-FROM node:20-slim
+FROM node:20-slim AS base
 
 # Set working directory
 WORKDIR /app
@@ -13,8 +13,23 @@ RUN npm install
 # Copy source code
 COPY . .
 
-# Build the application
+# Build stage for client and server
+FROM base AS build
 RUN npm run build
+
+# Production stage
+FROM node:20-slim AS production
+
+WORKDIR /app
+
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm install --production
+
+# Copy built files from build stage
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/migrations ./migrations
+COPY --from=build /app/db ./db
 
 # Expose the port your app runs on
 EXPOSE 5000
@@ -27,4 +42,4 @@ RUN echo '#!/bin/sh\nnpm run migrate && npm start' > /app/start.sh
 RUN chmod +x /app/start.sh
 
 # Start the application with migrations
-CMD ["/app/start.sh"]
+CMD ["sh", "/app/start.sh"]

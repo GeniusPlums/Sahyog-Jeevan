@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - "5000:5000"
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/client/node_modules
+    depends_on:
+      - db-dev
+    command: npm run dev
+    restart: unless-stopped
+
+  db-dev:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-sahyog}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-sahyogpassword}
+      - POSTGRES_DB=${POSTGRES_DB:-sahyog_jeevan}
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data_dev:
