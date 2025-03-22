@@ -20,7 +20,7 @@ export default defineConfig({
         secure: false
       }
     },
-    allowedHosts: true
+    allowedHosts: ['localhost', 'colorful-norene-sahyog-e2eebb57.koyeb.app']
   },
   plugins: [react()],
   resolve: {
