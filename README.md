@@ -83,6 +83,78 @@ To deploy Sahyog Jeevan on Koyeb, follow these steps:
 - **Health Check Failures**: Verify the server is listening on port 5000
 - **Blocked Requests**: Check that your domain is in the `allowedHosts` configuration
 
+### AWS Deployment
+
+Follow these steps to deploy the application on AWS Elastic Beanstalk:
+
+#### Prerequisites
+
+1. Install the AWS CLI and EB CLI:
+   ```bash
+   pip install awscli awsebcli
+   ```
+
+2. Configure AWS credentials:
+   ```bash
+   aws configure
+   ```
+   You'll need to enter your AWS Access Key ID, Secret Access Key, default region, and output format.
+
+#### Deployment Steps
+
+1. **Initialize Elastic Beanstalk in your project**:
+   ```bash
+   cd /path/to/your/project
+   eb init
+   ```
+   - Select your region
+   - Create a new application (or select existing)
+   - Choose Node.js platform
+   - Set up SSH for instance access (optional)
+
+2. **Create an Elastic Beanstalk environment**:
+   ```bash
+   eb create sahyog-jeevan-env
+   ```
+
+3. **Set required environment variables**:
+   ```bash
+   eb setenv NODE_ENV=production PORT=5000 DATABASE_URL=your-database-connection-string
+   ```
+
+4. **Deploy your application**:
+   ```bash
+   eb deploy
+   ```
+
+5. **Open your application**:
+   ```bash
+   eb open
+   ```
+
+#### Database Setup
+
+1. Create a PostgreSQL database using AWS RDS
+2. Configure security groups to allow connections from your Elastic Beanstalk environment
+3. Update the DATABASE_URL environment variable with your RDS endpoint
+
+#### Troubleshooting AWS Deployments
+
+If you encounter issues:
+
+1. Check CloudWatch logs: `eb logs`
+2. SSH into the instance: `eb ssh`
+3. Verify environment variables: `eb printenv`
+4. Test your build locally with: `NODE_ENV=production npm run build && npm start`
+
+#### Important AWS Configuration Notes
+
+1. **Security Groups**: Ensure your application can access your database
+2. **Load Balancer**: Configure health checks to use the `/health` endpoint on port 5000
+3. **Environment Variables**: Set all required environment variables
+4. **Logs**: Check CloudWatch logs for troubleshooting
+5. **Domain**: Set up a custom domain with Route 53 if needed
+
 ## 🌐 Internationalization
 
 Sahyog Jeevan currently supports:
