@@ -20,7 +20,10 @@ export default defineConfig({
         secure: false
       }
     },
-    allowedHosts: ['localhost', 'colorful-norene-sahyog-e2eebb57.koyeb.app']
+    cors: {
+      origin: ['http://localhost:5173', 'https://colorful-norene-sahyog-e2eebb57.koyeb.app']
+    },
+    allowedHosts: true
   },
   plugins: [react()],
   resolve: {
