@@ -36,6 +36,13 @@ export async function setupVite(app: Express, server: Server) {
     server: {
       middlewareMode: true,
       hmr: { server },
+      // Ensure Koyeb hosts are allowed in development mode
+      allowedHosts: [
+        'hot-shanna-astrazen-ff947eb8.koyeb.app',
+        '*.koyeb.app',
+        'localhost',
+        '.replit.dev'
+      ]
     },
     appType: "custom",
   });
