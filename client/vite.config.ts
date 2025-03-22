@@ -23,7 +23,11 @@ export default defineConfig({
     cors: {
       origin: ['http://localhost:5173', 'https://colorful-norene-sahyog-e2eebb57.koyeb.app']
     },
-    allowedHosts: true
+    allowedHosts: [
+      'hot-shanna-astrazen-ff947eb8.koyeb.app', 
+      '*.koyeb.app',
+      'localhost'
+    ]
   },
   plugins: [react()],
   resolve: {
