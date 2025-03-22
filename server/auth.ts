@@ -40,23 +40,38 @@ declare global {
 export function setupAuth(app: express.Express) {
   const MemoryStore = createMemoryStore(session);
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.REPL_ID || "blue-collar-jobs",
+    secret: process.env.SESSION_SECRET || process.env.REPL_ID || "blue-collar-jobs",
     resave: false,
     saveUninitialized: false,
-    cookie: {},
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true
+    },
     store: new MemoryStore({
       checkPeriod: 86400000, // 24 hours
     }),
   };
 
-  if (app.get("env") === "production") {
-    app.set("trust proxy", 1);
+  // Check if we're in production mode
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  if (isProduction) {
+    console.log("Setting up session for production environment");
+    // In AWS and other cloud environments, we need to be careful with cookie settings
+    // Remove secure: true for now as it requires HTTPS
     sessionSettings.cookie = {
-      secure: true,
-      sameSite: "none",
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      httpOnly: true
+      httpOnly: true,
+      // Don't set secure: true unless you have HTTPS configured
+      // secure: true,
+      // Don't set sameSite: 'none' unless you have HTTPS configured
+      // sameSite: 'none'
     };
+    
+    // Trust the first proxy in production
+    app.set("trust proxy", 1);
+  } else {
+    console.log("Setting up session for development environment");
   }
 
   app.use(session(sessionSettings));
@@ -166,6 +181,8 @@ export function setupAuth(app: express.Express) {
         if (err) {
           return next(err);
         }
+        // Log successful login
+        console.log(`User ${user.username} logged in successfully`);
         return res.json(user);
       });
     })(req, res, next);
@@ -180,10 +197,14 @@ export function setupAuth(app: express.Express) {
     });
   });
 
+  // Add a GET endpoint to check if the user is authenticated
   app.get("/api/user", (req, res) => {
-    if (!req.isAuthenticated()) {
-      return res.status(401).send("Not authenticated");
+    if (req.isAuthenticated()) {
+      console.log(`User ${req.user.username} is authenticated`);
+      return res.json(req.user);
+    } else {
+      console.log("User is not authenticated");
+      return res.status(401).json({ message: "Not authenticated" });
     }
-    res.json(req.user);
   });
 }
