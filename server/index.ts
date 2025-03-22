@@ -63,9 +63,9 @@ app.get("/health", (_req: Request, res: Response) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
+  // ALWAYS serve the app on port 8000
   // this serves both the API and the client
-  const PORT = 5000;
+  const PORT = 8000;
   server.listen(PORT, "0.0.0.0", () => {
     log(`serving on port ${PORT}`);
   });

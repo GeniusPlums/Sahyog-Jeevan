@@ -32,7 +32,7 @@ COPY --from=build /app/migrations ./migrations
 COPY --from=build /app/db ./db
 
 # Expose the port your app runs on
-EXPOSE 5000
+EXPOSE 8000
 
 # Set environment variables
 ENV NODE_ENV=production

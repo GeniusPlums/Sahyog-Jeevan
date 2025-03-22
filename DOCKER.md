@@ -53,8 +53,8 @@ This will:
 
 ## Accessing the Application
 
-- Production: http://localhost:5000
-- Development: http://localhost:5000 (API) and http://localhost:5173 (Client dev server)
+- Production: http://localhost:8000
+- Development: http://localhost:8000 (API) and http://localhost:5173 (Client dev server)
 
 ## Database Persistence
 

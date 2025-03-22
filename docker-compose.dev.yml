@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
       target: base
     ports:
-      - "5000:5000"
+      - "8000:8000"
       - "5173:5173"
     environment:
       - NODE_ENV=development
@@ -16,6 +16,7 @@ services:
       - .:/app
       - /app/node_modules
       - /app/client/node_modules
+      - /app/mobile-app
     depends_on:
       - db-dev
     command: npm run dev

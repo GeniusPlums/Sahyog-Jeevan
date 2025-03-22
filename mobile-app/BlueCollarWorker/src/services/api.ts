@@ -12,16 +12,16 @@ const getApiUrl = () => {
   
   // Use localhost for emulators and 10.0.2.2 specifically for Android emulators
   if (Platform.OS === 'android') {
-    return 'http://10.0.2.2:5000/api'; // Special IP for Android emulators
+    return 'http://10.0.2.2:8000/api'; // Special IP for Android emulators
   }
   
   // For iOS emulators
   if (Platform.OS === 'ios') {
-    return 'http://localhost:5000/api';
+    return 'http://localhost:8000/api';
   }
   
   // Fallback to a common local IP address
-  return 'http://192.168.1.4:5000/api';
+  return 'http://192.168.1.4:8000/api';
 };
 
 const API_URL = getApiUrl();
