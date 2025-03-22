@@ -63,9 +63,9 @@ app.get("/health", (_req: Request, res: Response) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 8000
-  // this serves both the API and the client
-  const PORT = 8000;
+  // Use PORT from environment variable or default to 5000
+  // This ensures compatibility with Koyeb's health checks
+  const PORT = parseInt(process.env.PORT || '5000', 10);
   server.listen(PORT, "0.0.0.0", () => {
     log(`serving on port ${PORT}`);
   });
