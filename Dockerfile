@@ -37,6 +37,9 @@ EXPOSE 8000
 # Set environment variables
 ENV NODE_ENV=production
 
+# Copy the migration script to ensure it's available
+COPY db/migrate.ts ./db/
+
 # Create a script to run migrations and start the app
 RUN echo '#!/bin/sh\nnpm run migrate && npm start' > /app/start.sh
 RUN chmod +x /app/start.sh
