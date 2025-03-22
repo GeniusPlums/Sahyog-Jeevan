@@ -50,6 +50,39 @@ Sahyog Jeevan is a modern job platform specifically designed for blue-collar wor
 - **Search**: Elasticsearch
 - **Job Queue**: Bull
 
+## 🚢 Deployment Guide
+
+### Koyeb Deployment
+
+To deploy Sahyog Jeevan on Koyeb, follow these steps:
+
+1. **Fork or clone this repository**
+
+2. **Set up required environment variables in Koyeb:**
+   - `NODE_ENV`: Set to `production`
+   - `PORT`: Set to `5000` (Koyeb health checks use this port)
+   - `DATABASE_URL`: Your PostgreSQL connection string
+
+3. **Configure your Koyeb app:**
+   - **Build Command**: `npm run build`
+   - **Start Command**: `npm start`
+   - **Health Check Path**: `/health`
+   - **Health Check Port**: `5000`
+
+4. **Configure allowed hosts:**
+   - The application is already configured to allow Koyeb domains in the Vite configuration
+   - If you're using a custom domain, add it to the `allowedHosts` in both Vite config files
+
+5. **Deploy your app:**
+   - Connect your GitHub repository to Koyeb
+   - Deploy the main branch
+
+### Common Deployment Issues
+
+- **Blank Screen**: Ensure `NODE_ENV` is set to `production`
+- **Health Check Failures**: Verify the server is listening on port 5000
+- **Blocked Requests**: Check that your domain is in the `allowedHosts` configuration
+
 ## 🌐 Internationalization
 
 Sahyog Jeevan currently supports:
