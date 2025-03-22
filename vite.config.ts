@@ -16,6 +16,8 @@ export default defineConfig({
     allowedHosts: [
       'a2a87056-f109-4a78-91e9-046bfd391c70-00-18gslr0rwfyef.pike.replit.dev',
       '.replit.dev',
+      'hot-shanna-astrazen-ff947eb8.koyeb.app',
+      '*.koyeb.app',
       'localhost'
     ],
   },
